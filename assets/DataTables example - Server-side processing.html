@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)https://datatables.net/examples/server_side/simple.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>DataTables example - Server-side processing</title>
+	<link rel="shortcut icon" type="image/png" href="https://datatables.net/media/images/favicon.png">
+	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.datatables.net/rss.xml">
+	<link rel="stylesheet" type="text/css" href="./DataTables example - Server-side processing_files/site-examples.css">
+	<link rel="stylesheet" type="text/css" href="./DataTables example - Server-side processing_files/jquery.dataTables.min.css">
+	<style type="text/css" class="init">
+	
+	</style>
+	<script type="text/javascript" async="" src="./DataTables example - Server-side processing_files/ga.js.download"></script><script type="text/javascript" src="./DataTables example - Server-side processing_files/site.js.download"></script>
+	<script type="text/javascript" src="./DataTables example - Server-side processing_files/dynamic.php" async=""></script>
+	<script type="text/javascript" language="javascript" src="./DataTables example - Server-side processing_files/jquery-1.12.4.js.download"></script>
+	<script type="text/javascript" language="javascript" src="./DataTables example - Server-side processing_files/jquery.dataTables.min.js.download"></script>
+	<script type="text/javascript" language="javascript" src="./DataTables example - Server-side processing_files/demo.js.download"></script>
+	<script type="text/javascript" class="init">
+	
+$(document).ready(function() {
+	$('#example').DataTable( {
+		"processing": true,
+		"serverSide": true,
+		"ajax": "scripts/server_processing.php"
+	} );
+} );
+
+	</script>
+</head>
+<body class="wide comments example">
+	<a name="top" id="top"></a>
+	<div id="logo"><img src="./DataTables example - Server-side processing_files/logo-fade.png" class="logo"></div>
+	<div class="fw-container">
+		<div class="fw-header fh-fixedHeader">
+			<img src="./DataTables example - Server-side processing_files/logo-fade.png" class="logo">
+			<div class="nav-master">
+				<ul>
+					<li class="active">
+						<a href="https://datatables.net/"><img src="./DataTables example - Server-side processing_files/nav-dt.png" alt="DataTables logo"> DataTables</a>
+					</li>
+					<li>
+						<a href="https://editor.datatables.net/"><img src="./DataTables example - Server-side processing_files/nav-e.png" alt="Editor logo"> Editor</a>
+					</li>
+				</ul>
+				<div class="account">Your account:<br><a href="https://datatables.net/examples/server_side/simple.html" class="register-action follow-link login">Login / Register</a></div>
+			</div>
+			<div id="search">
+				<form action="https://datatables.net/q/" method="get">
+					<input type="text" name="q" placeholder="Search . . ." autocomplete="off"><div class="search-clear">×</div> <button>Search</button>
+				</form>
+			</div>
+		</div>
+		<div class="fw-nav">
+			<div class="nav-main">
+				<ul><li class="sub-active sub"><a href="https://datatables.net/examples/index">Examples</a><ul><li class=""><a href="https://datatables.net/examples/basic_init">Basic initialisation</a></li><li class=""><a href="https://datatables.net/examples/advanced_init">Advanced initialisation</a></li><li class=""><a href="https://datatables.net/examples/styling">Styling</a></li><li class=""><a href="https://datatables.net/examples/data_sources">Data sources</a></li><li class=""><a href="https://datatables.net/examples/api">API</a></li><li class=""><a href="https://datatables.net/examples/ajax">Ajax</a></li><li class="active"><a href="https://datatables.net/examples/server_side">Server-side</a></li><li class=""><a href="https://datatables.net/examples/plug-ins">Plug-ins</a></li></ul></li><li class=" sub"><a href="https://datatables.net/manual/index">Manual</a></li><li class=" sub"><a href="https://datatables.net/reference/index">Reference</a></li><li class=" sub"><a href="https://datatables.net/extensions/index">Extensions</a></li><li class=" sub"><a href="https://datatables.net/plug-ins/index">Plug-ins</a></li><li class=""><a href="https://datatables.net/blog/index">Blog</a></li><li class=""><a href="https://datatables.net/forums/index">Forums</a></li><li class=""><a href="https://datatables.net/support/index">Support</a></li><li class=""><a href="https://datatables.net/faqs/index">FAQs</a></li><li class=""><a href="https://datatables.net/download/index">Download</a></li><li class=""><a href="https://datatables.net/purchase/index">Purchase</a></li></ul>
+			</div>
+			<div class="mobile-show">
+				<a><i>Show site navigation</i></a>
+			</div>
+		</div>
+		<div class="fw-body">
+			<div class="content">
+				<h1 class="page_title">Server-side processing</h1>
+				<div class="info">
+					<p>There are many ways to get your data into DataTables, and if you are working with seriously large databases, you might want to consider using the
+					server-side options that DataTables provides. With server-side processing enabled, all actions that DataTables performs (such as paging, searching and
+					ordering) are handed off to a server where an SQL engine (or similar) can perform these actions on the large data set (after all, that's what the database
+					engine is designed for!). As such, each draw of the table will result in a new Ajax request to get the required data.</p>
+					<p>Server-side processing is enabled by setting the <a href="https://datatables.net/reference/option/serverSide"><code class="option" title="DataTables initialisation option">serverSide</code></a> option to <code>true</code> and providing an Ajax data source through the <a href="https://datatables.net/reference/option/ajax"><code class="option" title="DataTables initialisation option">ajax</code></a> option.</p>
+					<p>This example shows a very simple table, matching the other client-side processing examples, but in this instance using server-side processing.</p>
+				</div>
+				<div id="example_wrapper" class="dataTables_wrapper"><div class="dataTables_length" id="example_length"><label>Show <select name="example_length" aria-controls="example" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="example_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="example"></label></div><div id="example_processing" class="dataTables_processing" style="display: none;">Processing...</div><table id="example" class="display dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
+					<thead>
+						<tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="First name: activate to sort column descending" style="width: 94px;">First name</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Last name: activate to sort column ascending" style="width: 93px;">Last name</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 218px;">Position</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 99px;">Office</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 88px;">Start date</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 77px;">Salary</th></tr>
+					</thead>
+					<tfoot>
+						<tr><th rowspan="1" colspan="1">First name</th><th rowspan="1" colspan="1">Last name</th><th rowspan="1" colspan="1">Position</th><th rowspan="1" colspan="1">Office</th><th rowspan="1" colspan="1">Start date</th><th rowspan="1" colspan="1">Salary</th></tr>
+					</tfoot>
+				<tbody><tr role="row" class="odd"><td class="sorting_1">Airi</td><td>Satou</td><td>Accountant</td><td>Tokyo</td><td>28th Nov 08</td><td>$162,700</td></tr><tr role="row" class="even"><td class="sorting_1">Angelica</td><td>Ramos</td><td>Chief Executive Officer (CEO)</td><td>London</td><td>9th Oct 09</td><td>$1,200,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Ashton</td><td>Cox</td><td>Junior Technical Author</td><td>San Francisco</td><td>12th Jan 09</td><td>$86,000</td></tr><tr role="row" class="even"><td class="sorting_1">Bradley</td><td>Greer</td><td>Software Engineer</td><td>London</td><td>13th Oct 12</td><td>$132,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Brenden</td><td>Wagner</td><td>Software Engineer</td><td>San Francisco</td><td>7th Jun 11</td><td>$206,850</td></tr><tr role="row" class="even"><td class="sorting_1">Brielle</td><td>Williamson</td><td>Integration Specialist</td><td>New York</td><td>2nd Dec 12</td><td>$372,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Bruno</td><td>Nash</td><td>Software Engineer</td><td>London</td><td>3rd May 11</td><td>$163,500</td></tr><tr role="row" class="even"><td class="sorting_1">Caesar</td><td>Vance</td><td>Pre-Sales Support</td><td>New York</td><td>12th Dec 11</td><td>$106,450</td></tr><tr role="row" class="odd"><td class="sorting_1">Cara</td><td>Stevens</td><td>Sales Assistant</td><td>New York</td><td>6th Dec 11</td><td>$145,600</td></tr><tr role="row" class="even"><td class="sorting_1">Cedric</td><td>Kelly</td><td>Senior Javascript Developer</td><td>Edinburgh</td><td>29th Mar 12</td><td>$433,060</td></tr></tbody></table><div class="dataTables_info" id="example_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div><div class="dataTables_paginate paging_simple_numbers" id="example_paginate"><a class="paginate_button previous disabled" aria-controls="example" data-dt-idx="0" tabindex="0" id="example_previous">Previous</a><span><a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="example" data-dt-idx="2" tabindex="0">2</a><a class="paginate_button " aria-controls="example" data-dt-idx="3" tabindex="0">3</a><a class="paginate_button " aria-controls="example" data-dt-idx="4" tabindex="0">4</a><a class="paginate_button " aria-controls="example" data-dt-idx="5" tabindex="0">5</a><a class="paginate_button " aria-controls="example" data-dt-idx="6" tabindex="0">6</a></span><a class="paginate_button next" aria-controls="example" data-dt-idx="7" tabindex="0" id="example_next">Next</a></div></div>
+				<ul class="tabs">
+					<li class="">Javascript</li>
+					<li class="">HTML</li>
+					<li class="">CSS</li>
+					<li class="" style="display: block;">Ajax</li>
+					<li class="active" style="display: block;">Server-side script</li>
+					<li class="comment-count">Comments <span class="comment_count">(1)</span></li>
+				</ul>
+				<div class="tabs">
+					<div class="js" style="display: none;">
+						<p>The Javascript shown below is used to initialise the table shown in this example:</p><div><div id="highlighter_551359" class="syntaxhighlighter  js"><div class="toolbar"><span><a href="https://datatables.net/examples/server_side/simple.html#" class="toolbar_item command_lang lang">Javascript</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">$(document).ready(</code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">$(</code><code class="js string">'#example'</code><code class="js plain">).DataTable( {</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"processing"</code><code class="js plain">: </code><code class="js keyword">true</code><code class="js plain">,</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"serverSide"</code><code class="js plain">: </code><code class="js keyword">true</code><code class="js plain">,</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"ajax"</code><code class="js plain">: </code><code class="js string">"scripts/server_processing.php"</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">} );</code></div><div class="line number7 index6 alt2"><code class="js plain">} );</code></div></div></td></tr></tbody></table></div></div>
+						<p>In addition to the above code, the following Javascript library files are loaded for use in this example:</p>
+						<ul>
+							<li>
+								<a href="./DataTables example - Server-side processing_files/jquery-1.12.4.js.download">https://code.jquery.com/jquery-1.12.4.js</a>
+							</li>
+							<li>
+								<a href="./DataTables example - Server-side processing_files/jquery.dataTables.min.js.download">https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js</a>
+							</li>
+						</ul>
+					</div>
+					<div class="table" style="display: none;">
+						<p>The HTML shown below is the raw HTML table element, before it has been enhanced by DataTables:</p>
+					<div><div id="highlighter_687327" class="syntaxhighlighter  html"><div class="toolbar"><span><a href="https://datatables.net/examples/server_side/simple.html#" class="toolbar_item command_lang lang">HTML</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div><div class="line number16 index15 alt1">16</div><div class="line number17 index16 alt2">17</div><div class="line number18 index17 alt1">18</div><div class="line number19 index18 alt2">19</div><div class="line number20 index19 alt1">20</div><div class="line number21 index20 alt2">21</div><div class="line number22 index21 alt1">22</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="html plain">&lt;</code><code class="html keyword">table</code> <code class="html color1">id</code><code class="html plain">=</code><code class="html string">"example"</code> <code class="html color1">class</code><code class="html plain">=</code><code class="html string">"display"</code> <code class="html color1">cellspacing</code><code class="html plain">=</code><code class="html string">"0"</code> <code class="html color1">width</code><code class="html plain">=</code><code class="html string">"100%"</code><code class="html plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">thead</code><code class="html plain">&gt;</code></div><div class="line number3 index2 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">tr</code><code class="html plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;First name&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number5 index4 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Last name&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Position&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number7 index6 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Office&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number8 index7 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Start date&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number9 index8 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Salary&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number10 index9 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">tr</code><code class="html plain">&gt;</code></div><div class="line number11 index10 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">thead</code><code class="html plain">&gt;</code></div><div class="line number12 index11 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">tfoot</code><code class="html plain">&gt;</code></div><div class="line number13 index12 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">tr</code><code class="html plain">&gt;</code></div><div class="line number14 index13 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;First name&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number15 index14 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Last name&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number16 index15 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Position&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number17 index16 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Office&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number18 index17 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Start date&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number19 index18 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">th</code><code class="html plain">&gt;Salary&lt;/</code><code class="html keyword">th</code><code class="html plain">&gt;</code></div><div class="line number20 index19 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">tr</code><code class="html plain">&gt;</code></div><div class="line number21 index20 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">tfoot</code><code class="html plain">&gt;</code></div><div class="line number22 index21 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">table</code><code class="html plain">&gt;</code></div></div></td></tr></tbody></table></div></div></div>
+					<div class="css" style="display: none;">
+						<div style="display: none;">
+							<p style="display: none;">This example uses a little bit of additional CSS beyond what is loaded from the library files (below), in order to correctly display the table. The
+							additional CSS used is shown below:</p><div><div id="highlighter_293240" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="https://datatables.net/examples/server_side/simple.html#" class="toolbar_item command_lang lang">CSS</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2">&nbsp;</div></div></td></tr></tbody></table></div></div>
+						</div>
+						<p>The following CSS library files are loaded for use in this example to provide the styling of the table:</p>
+						<ul>
+							<li>
+								<a href="./DataTables example - Server-side processing_files/jquery.dataTables.min.css">https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css</a>
+							</li>
+						</ul>
+					</div>
+					<div class="ajax" style="display: none;">
+						<p>This table loads data by Ajax. The latest data that has been loaded is shown below. This data will update automatically as any additional data is
+						loaded.</p>
+					<div></div><div></div><div></div><div></div><div></div><div><div id="highlighter_805827" class="syntaxhighlighter  js"><div class="toolbar"><span><a href="https://datatables.net/examples/server_side/simple.html#" class="toolbar_item command_lang lang">Javascript</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div><div class="line number16 index15 alt1">16</div><div class="line number17 index16 alt2">17</div><div class="line number18 index17 alt1">18</div><div class="line number19 index18 alt2">19</div><div class="line number20 index19 alt1">20</div><div class="line number21 index20 alt2">21</div><div class="line number22 index21 alt1">22</div><div class="line number23 index22 alt2">23</div><div class="line number24 index23 alt1">24</div><div class="line number25 index24 alt2">25</div><div class="line number26 index25 alt1">26</div><div class="line number27 index26 alt2">27</div><div class="line number28 index27 alt1">28</div><div class="line number29 index28 alt2">29</div><div class="line number30 index29 alt1">30</div><div class="line number31 index30 alt2">31</div><div class="line number32 index31 alt1">32</div><div class="line number33 index32 alt2">33</div><div class="line number34 index33 alt1">34</div><div class="line number35 index34 alt2">35</div><div class="line number36 index35 alt1">36</div><div class="line number37 index36 alt2">37</div><div class="line number38 index37 alt1">38</div><div class="line number39 index38 alt2">39</div><div class="line number40 index39 alt1">40</div><div class="line number41 index40 alt2">41</div><div class="line number42 index41 alt1">42</div><div class="line number43 index42 alt2">43</div><div class="line number44 index43 alt1">44</div><div class="line number45 index44 alt2">45</div><div class="line number46 index45 alt1">46</div><div class="line number47 index46 alt2">47</div><div class="line number48 index47 alt1">48</div><div class="line number49 index48 alt2">49</div><div class="line number50 index49 alt1">50</div><div class="line number51 index50 alt2">51</div><div class="line number52 index51 alt1">52</div><div class="line number53 index52 alt2">53</div><div class="line number54 index53 alt1">54</div><div class="line number55 index54 alt2">55</div><div class="line number56 index55 alt1">56</div><div class="line number57 index56 alt2">57</div><div class="line number58 index57 alt1">58</div><div class="line number59 index58 alt2">59</div><div class="line number60 index59 alt1">60</div><div class="line number61 index60 alt2">61</div><div class="line number62 index61 alt1">62</div><div class="line number63 index62 alt2">63</div><div class="line number64 index63 alt1">64</div><div class="line number65 index64 alt2">65</div><div class="line number66 index65 alt1">66</div><div class="line number67 index66 alt2">67</div><div class="line number68 index67 alt1">68</div><div class="line number69 index68 alt2">69</div><div class="line number70 index69 alt1">70</div><div class="line number71 index70 alt2">71</div><div class="line number72 index71 alt1">72</div><div class="line number73 index72 alt2">73</div><div class="line number74 index73 alt1">74</div><div class="line number75 index74 alt2">75</div><div class="line number76 index75 alt1">76</div><div class="line number77 index76 alt2">77</div><div class="line number78 index77 alt1">78</div><div class="line number79 index78 alt2">79</div><div class="line number80 index79 alt1">80</div><div class="line number81 index80 alt2">81</div><div class="line number82 index81 alt1">82</div><div class="line number83 index82 alt2">83</div><div class="line number84 index83 alt1">84</div><div class="line number85 index84 alt2">85</div><div class="line number86 index85 alt1">86</div><div class="line number87 index86 alt2">87</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">{</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;</code><code class="js string">"draw"</code><code class="js plain">: 6,</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;</code><code class="js string">"recordsTotal"</code><code class="js plain">: 57,</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;</code><code class="js string">"recordsFiltered"</code><code class="js plain">: 57,</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;</code><code class="js string">"data"</code><code class="js plain">: [</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Airi"</code><code class="js plain">,</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Satou"</code><code class="js plain">,</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Accountant"</code><code class="js plain">,</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Tokyo"</code><code class="js plain">,</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"28th Nov 08"</code><code class="js plain">,</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$162,700"</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Angelica"</code><code class="js plain">,</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Ramos"</code><code class="js plain">,</code></div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Chief Executive Officer (CEO)"</code><code class="js plain">,</code></div><div class="line number18 index17 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"London"</code><code class="js plain">,</code></div><div class="line number19 index18 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"9th Oct 09"</code><code class="js plain">,</code></div><div class="line number20 index19 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$1,200,000"</code></div><div class="line number21 index20 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number22 index21 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number23 index22 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Ashton"</code><code class="js plain">,</code></div><div class="line number24 index23 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Cox"</code><code class="js plain">,</code></div><div class="line number25 index24 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Junior Technical Author"</code><code class="js plain">,</code></div><div class="line number26 index25 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"San Francisco"</code><code class="js plain">,</code></div><div class="line number27 index26 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"12th Jan 09"</code><code class="js plain">,</code></div><div class="line number28 index27 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$86,000"</code></div><div class="line number29 index28 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number30 index29 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number31 index30 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Bradley"</code><code class="js plain">,</code></div><div class="line number32 index31 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Greer"</code><code class="js plain">,</code></div><div class="line number33 index32 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Software Engineer"</code><code class="js plain">,</code></div><div class="line number34 index33 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"London"</code><code class="js plain">,</code></div><div class="line number35 index34 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"13th Oct 12"</code><code class="js plain">,</code></div><div class="line number36 index35 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$132,000"</code></div><div class="line number37 index36 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number38 index37 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number39 index38 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Brenden"</code><code class="js plain">,</code></div><div class="line number40 index39 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Wagner"</code><code class="js plain">,</code></div><div class="line number41 index40 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Software Engineer"</code><code class="js plain">,</code></div><div class="line number42 index41 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"San Francisco"</code><code class="js plain">,</code></div><div class="line number43 index42 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"7th Jun 11"</code><code class="js plain">,</code></div><div class="line number44 index43 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$206,850"</code></div><div class="line number45 index44 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number46 index45 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number47 index46 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Brielle"</code><code class="js plain">,</code></div><div class="line number48 index47 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Williamson"</code><code class="js plain">,</code></div><div class="line number49 index48 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Integration Specialist"</code><code class="js plain">,</code></div><div class="line number50 index49 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"New York"</code><code class="js plain">,</code></div><div class="line number51 index50 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"2nd Dec 12"</code><code class="js plain">,</code></div><div class="line number52 index51 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$372,000"</code></div><div class="line number53 index52 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number54 index53 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number55 index54 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Bruno"</code><code class="js plain">,</code></div><div class="line number56 index55 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Nash"</code><code class="js plain">,</code></div><div class="line number57 index56 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Software Engineer"</code><code class="js plain">,</code></div><div class="line number58 index57 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"London"</code><code class="js plain">,</code></div><div class="line number59 index58 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"3rd May 11"</code><code class="js plain">,</code></div><div class="line number60 index59 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$163,500"</code></div><div class="line number61 index60 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number62 index61 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number63 index62 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Caesar"</code><code class="js plain">,</code></div><div class="line number64 index63 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Vance"</code><code class="js plain">,</code></div><div class="line number65 index64 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Pre-Sales Support"</code><code class="js plain">,</code></div><div class="line number66 index65 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"New York"</code><code class="js plain">,</code></div><div class="line number67 index66 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"12th Dec 11"</code><code class="js plain">,</code></div><div class="line number68 index67 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$106,450"</code></div><div class="line number69 index68 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number70 index69 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number71 index70 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Cara"</code><code class="js plain">,</code></div><div class="line number72 index71 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Stevens"</code><code class="js plain">,</code></div><div class="line number73 index72 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Sales Assistant"</code><code class="js plain">,</code></div><div class="line number74 index73 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"New York"</code><code class="js plain">,</code></div><div class="line number75 index74 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"6th Dec 11"</code><code class="js plain">,</code></div><div class="line number76 index75 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$145,600"</code></div><div class="line number77 index76 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">],</code></div><div class="line number78 index77 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">[</code></div><div class="line number79 index78 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Cedric"</code><code class="js plain">,</code></div><div class="line number80 index79 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Kelly"</code><code class="js plain">,</code></div><div class="line number81 index80 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Senior Javascript Developer"</code><code class="js plain">,</code></div><div class="line number82 index81 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"Edinburgh"</code><code class="js plain">,</code></div><div class="line number83 index82 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"29th Mar 12"</code><code class="js plain">,</code></div><div class="line number84 index83 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">"$433,060"</code></div><div class="line number85 index84 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">]</code></div><div class="line number86 index85 alt1"><code class="js spaces">&nbsp;&nbsp;</code><code class="js plain">]</code></div><div class="line number87 index86 alt2"><code class="js plain">}</code></div></div></td></tr></tbody></table></div></div></div>
+					<div class="php" style="display: block;">
+						<p>The script used to perform the server-side processing for this table is shown below. Please note that this is just an example script using PHP.
+						Server-side processing scripts can be written in any language, using <a href="https://datatables.net/manual/server-side">the protocol described in the DataTables
+						documentation</a>.</p>
+					<div><div id="highlighter_245014" class="syntaxhighlighter  php"><div class="toolbar"><span><a href="https://datatables.net/examples/server_side/simple.html#" class="toolbar_item command_lang lang">PHP</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div><div class="line number16 index15 alt1">16</div><div class="line number17 index16 alt2">17</div><div class="line number18 index17 alt1">18</div><div class="line number19 index18 alt2">19</div><div class="line number20 index19 alt1">20</div><div class="line number21 index20 alt2">21</div><div class="line number22 index21 alt1">22</div><div class="line number23 index22 alt2">23</div><div class="line number24 index23 alt1">24</div><div class="line number25 index24 alt2">25</div><div class="line number26 index25 alt1">26</div><div class="line number27 index26 alt2">27</div><div class="line number28 index27 alt1">28</div><div class="line number29 index28 alt2">29</div><div class="line number30 index29 alt1">30</div><div class="line number31 index30 alt2">31</div><div class="line number32 index31 alt1">32</div><div class="line number33 index32 alt2">33</div><div class="line number34 index33 alt1">34</div><div class="line number35 index34 alt2">35</div><div class="line number36 index35 alt1">36</div><div class="line number37 index36 alt2">37</div><div class="line number38 index37 alt1">38</div><div class="line number39 index38 alt2">39</div><div class="line number40 index39 alt1">40</div><div class="line number41 index40 alt2">41</div><div class="line number42 index41 alt1">42</div><div class="line number43 index42 alt2">43</div><div class="line number44 index43 alt1">44</div><div class="line number45 index44 alt2">45</div><div class="line number46 index45 alt1">46</div><div class="line number47 index46 alt2">47</div><div class="line number48 index47 alt1">48</div><div class="line number49 index48 alt2">49</div><div class="line number50 index49 alt1">50</div><div class="line number51 index50 alt2">51</div><div class="line number52 index51 alt1">52</div><div class="line number53 index52 alt2">53</div><div class="line number54 index53 alt1">54</div><div class="line number55 index54 alt2">55</div><div class="line number56 index55 alt1">56</div><div class="line number57 index56 alt2">57</div><div class="line number58 index57 alt1">58</div><div class="line number59 index58 alt2">59</div><div class="line number60 index59 alt1">60</div><div class="line number61 index60 alt2">61</div><div class="line number62 index61 alt1">62</div><div class="line number63 index62 alt2">63</div><div class="line number64 index63 alt1">64</div><div class="line number65 index64 alt2">65</div><div class="line number66 index65 alt1">66</div><div class="line number67 index66 alt2">67</div><div class="line number68 index67 alt1">68</div><div class="line number69 index68 alt2">69</div><div class="line number70 index69 alt1">70</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="php plain">&lt;?php</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="php comments">/*</code></div><div class="line number4 index3 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* DataTables example server-side processing script.</code></div><div class="line number5 index4 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">*</code></div><div class="line number6 index5 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* Please note that this script is intentionally extremely simply to show how</code></div><div class="line number7 index6 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">* server-side processing can be implemented, and probably shouldn't be used as</code></div><div class="line number8 index7 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* the basis for a large complex system. It is suitable for simple use cases as</code></div><div class="line number9 index8 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">* for learning.</code></div><div class="line number10 index9 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">*</code></div><div class="line number11 index10 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">* See <a href="http://datatables.net/usage/server-side">http://datatables.net/usage/server-side</a> for full details on the server-</code></div><div class="line number12 index11 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* side processing requirements of DataTables.</code></div><div class="line number13 index12 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">*</code></div><div class="line number14 index13 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* @license MIT - <a href="http://datatables.net/license_mit">http://datatables.net/license_mit</a></code></div><div class="line number15 index14 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">*/</code></div><div class="line number16 index15 alt1">&nbsp;</div><div class="line number17 index16 alt2"><code class="php comments">/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *</code></div><div class="line number18 index17 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* Easy set variables</code></div><div class="line number19 index18 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">*/</code></div><div class="line number20 index19 alt1">&nbsp;</div><div class="line number21 index20 alt2"><code class="php comments">// DB table to use</code></div><div class="line number22 index21 alt1"><code class="php variable">$table</code> <code class="php plain">= </code><code class="php string">'datatables_demo'</code><code class="php plain">;</code></div><div class="line number23 index22 alt2">&nbsp;</div><div class="line number24 index23 alt1"><code class="php comments">// Table's primary key</code></div><div class="line number25 index24 alt2"><code class="php variable">$primaryKey</code> <code class="php plain">= </code><code class="php string">'id'</code><code class="php plain">;</code></div><div class="line number26 index25 alt1">&nbsp;</div><div class="line number27 index26 alt2"><code class="php comments">// Array of database columns which should be read and sent back to DataTables.</code></div><div class="line number28 index27 alt1"><code class="php comments">// The `db` parameter represents the column name in the database, while the `dt`</code></div><div class="line number29 index28 alt2"><code class="php comments">// parameter represents the DataTables column identifier. In this case simple</code></div><div class="line number30 index29 alt1"><code class="php comments">// indexes</code></div><div class="line number31 index30 alt2"><code class="php variable">$columns</code> <code class="php plain">= </code><code class="php keyword">array</code><code class="php plain">(</code></div><div class="line number32 index31 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">array</code><code class="php plain">( </code><code class="php string">'db'</code> <code class="php plain">=&gt; </code><code class="php string">'first_name'</code><code class="php plain">, </code><code class="php string">'dt'</code> <code class="php plain">=&gt; 0 ),</code></div><div class="line number33 index32 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">array</code><code class="php plain">( </code><code class="php string">'db'</code> <code class="php plain">=&gt; </code><code class="php string">'last_name'</code><code class="php plain">,&nbsp; </code><code class="php string">'dt'</code> <code class="php plain">=&gt; 1 ),</code></div><div class="line number34 index33 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">array</code><code class="php plain">( </code><code class="php string">'db'</code> <code class="php plain">=&gt; </code><code class="php string">'position'</code><code class="php plain">,&nbsp;&nbsp; </code><code class="php string">'dt'</code> <code class="php plain">=&gt; 2 ),</code></div><div class="line number35 index34 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">array</code><code class="php plain">( </code><code class="php string">'db'</code> <code class="php plain">=&gt; </code><code class="php string">'office'</code><code class="php plain">,&nbsp;&nbsp;&nbsp;&nbsp; </code><code class="php string">'dt'</code> <code class="php plain">=&gt; 3 ),</code></div><div class="line number36 index35 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">array</code><code class="php plain">(</code></div><div class="line number37 index36 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'db'</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code class="php plain">=&gt; </code><code class="php string">'start_date'</code><code class="php plain">,</code></div><div class="line number38 index37 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'dt'</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code class="php plain">=&gt; 4,</code></div><div class="line number39 index38 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'formatter'</code> <code class="php plain">=&gt; </code><code class="php keyword">function</code><code class="php plain">( </code><code class="php variable">$d</code><code class="php plain">, </code><code class="php variable">$row</code> <code class="php plain">) {</code></div><div class="line number40 index39 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">return</code> <code class="php functions">date</code><code class="php plain">( </code><code class="php string">'jS M y'</code><code class="php plain">, </code><code class="php functions">strtotime</code><code class="php plain">(</code><code class="php variable">$d</code><code class="php plain">));</code></div><div class="line number41 index40 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php plain">}</code></div><div class="line number42 index41 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php plain">),</code></div><div class="line number43 index42 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">array</code><code class="php plain">(</code></div><div class="line number44 index43 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'db'</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code class="php plain">=&gt; </code><code class="php string">'salary'</code><code class="php plain">,</code></div><div class="line number45 index44 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'dt'</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code class="php plain">=&gt; 5,</code></div><div class="line number46 index45 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'formatter'</code> <code class="php plain">=&gt; </code><code class="php keyword">function</code><code class="php plain">( </code><code class="php variable">$d</code><code class="php plain">, </code><code class="php variable">$row</code> <code class="php plain">) {</code></div><div class="line number47 index46 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php keyword">return</code> <code class="php string">'$'</code><code class="php plain">.number_format(</code><code class="php variable">$d</code><code class="php plain">);</code></div><div class="line number48 index47 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php plain">}</code></div><div class="line number49 index48 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php plain">)</code></div><div class="line number50 index49 alt1"><code class="php plain">);</code></div><div class="line number51 index50 alt2">&nbsp;</div><div class="line number52 index51 alt1"><code class="php comments">// SQL server connection information</code></div><div class="line number53 index52 alt2"><code class="php variable">$sql_details</code> <code class="php plain">= </code><code class="php keyword">array</code><code class="php plain">(</code></div><div class="line number54 index53 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'user'</code> <code class="php plain">=&gt; </code><code class="php string">''</code><code class="php plain">,</code></div><div class="line number55 index54 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'pass'</code> <code class="php plain">=&gt; </code><code class="php string">''</code><code class="php plain">,</code></div><div class="line number56 index55 alt1"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'db'</code>&nbsp;&nbsp; <code class="php plain">=&gt; </code><code class="php string">''</code><code class="php plain">,</code></div><div class="line number57 index56 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php string">'host'</code> <code class="php plain">=&gt; </code><code class="php string">''</code></div><div class="line number58 index57 alt1"><code class="php plain">);</code></div><div class="line number59 index58 alt2">&nbsp;</div><div class="line number60 index59 alt1">&nbsp;</div><div class="line number61 index60 alt2"><code class="php comments">/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *</code></div><div class="line number62 index61 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">* If you just want to use the basic configuration for DataTables with PHP</code></div><div class="line number63 index62 alt2"><code class="php spaces">&nbsp;</code><code class="php comments">* server-side, there is no need to edit below this line.</code></div><div class="line number64 index63 alt1"><code class="php spaces">&nbsp;</code><code class="php comments">*/</code></div><div class="line number65 index64 alt2">&nbsp;</div><div class="line number66 index65 alt1"><code class="php keyword">require</code><code class="php plain">( </code><code class="php string">'ssp.class.php'</code> <code class="php plain">);</code></div><div class="line number67 index66 alt2">&nbsp;</div><div class="line number68 index67 alt1"><code class="php functions">echo</code> <code class="php plain">json_encode(</code></div><div class="line number69 index68 alt2"><code class="php spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="php plain">SSP::simple( </code><code class="php variable">$_GET</code><code class="php plain">, </code><code class="php variable">$sql_details</code><code class="php plain">, </code><code class="php variable">$table</code><code class="php plain">, </code><code class="php variable">$primaryKey</code><code class="php plain">, </code><code class="php variable">$columns</code> <code class="php plain">)</code></div><div class="line number70 index69 alt1"><code class="php plain">);</code></div></div></td></tr></tbody></table></div></div></div>
+					<div class="comments" style="display: none;">
+						<div class="comments-insert"><a name="Comments"></a><h2 class="comments_title" data-anchor="Comments">Comments <span class="comment_count">(1)</span></h2><div class="comments"><dl class="comments"><dt class="even"><a href="https://datatables.net/forums/profile/allan"><b>allan</b></a><span class="version" title="This was the release version at the time the comment was originally posted">@v1.10.16</span><span>17:19, Mon 13th Nov 2017</span></dt><dd class="even"><p>Anyone looking for the SSP class can <a rel="nofollow" href="https://github.com/DataTables/DataTablesSrc/blob/master/examples/server_side/scripts/ssp.class.php">find it here</a> or in the full DataTables <a rel="nofollow" href="https://datatables.net/download/packages">download package</a>.</p>
+</dd></dl><div class="comment_add"><h3>Post new comment</h3><p>Contributions in the form of tips, code snippets and suggestions for the above material are very welcome. To post a comment, please use the form below. Text is formatted by <a href="https://datatables.net/tn/8">Markdown</a>.</p><p>To post comments, please sign in to your DataTables account, or register:</p><p></p><ul class="formatting"><li><a href="https://datatables.net/forums/entry/signin?Target=https%3A%2F%2Fdatatables.net%2Fexamples%2Fserver_side%2Fsimple.html">Sign in</a></li><li><a href="https://datatables.net/forums/entry/register?Target=https%3A%2F%2Fdatatables.net%2Fexamples%2Fserver_side%2Fsimple.html">Register</a></li></ul><p><b>Any questions posted here will be deleted without being published.</b><br>Please post questions in the <a href="https://datatables.net/forums">Forums</a>. Comments are moderated.</p></div></div></div>
+					<dl class="comments"><dt class="even"><a href="https://datatables.net/forums/profile/allan"><b>allan</b></a><span class="version" title="This was the release version at the time the comment was originally posted">@v1.10.16</span><span>17:19, Mon 13th Nov 2017</span></dt><dd class="even"><p>Anyone looking for the SSP class can <a rel="nofollow" href="https://github.com/DataTables/DataTablesSrc/blob/master/examples/server_side/scripts/ssp.class.php">find it here</a> or in the full DataTables <a rel="nofollow" href="https://datatables.net/download/packages">download package</a>.</p>
+</dd></dl><div class="comment_add"><h3>Post new comment</h3><p>Contributions in the form of tips, code snippets and suggestions for the above material are very welcome. To post a comment, please use the form below. Text is formatted by <a href="https://datatables.net/tn/8">Markdown</a>.</p><p>To post comments, please sign in to your DataTables account, or register:</p><p></p><ul class="formatting"><li><a href="https://datatables.net/forums/entry/signin?Target=https%3A%2F%2Fdatatables.net%2Fexamples%2Fserver_side%2Fsimple.html">Sign in</a></li><li><a href="https://datatables.net/forums/entry/register?Target=https%3A%2F%2Fdatatables.net%2Fexamples%2Fserver_side%2Fsimple.html">Register</a></li></ul><p><b>Any questions posted here will be deleted without being published.</b><br>Please post questions in the <a href="https://datatables.net/forums">Forums</a>. Comments are moderated.</p></div></div>
+				</div>
+				<h2>Other examples</h2>
+				<div class="toc">
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/basic_init/index.html">Basic initialisation</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/basic_init/zero_configuration.html">Zero configuration</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/filter_only.html">Feature enable / disable</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/table_sorting.html">Default ordering (sorting)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/multi_col_sort.html">Multi-column ordering</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/multiple_tables.html">Multiple tables</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/hidden_columns.html">Hidden columns</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/complex_header.html">Complex headers (rowspan and colspan)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/dom.html">DOM positioning</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/flexible_width.html">Flexible table width</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/state_save.html">State saving</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/alt_pagination.html">Alternative pagination</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/scroll_y.html">Scroll - vertical</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/scroll_y_dynamic.html">Scroll - vertical, dynamic height</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/scroll_x.html">Scroll - horizontal</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/scroll_xy.html">Scroll - horizontal and vertical</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/comma-decimal.html">Language - Comma decimal place</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/basic_init/language.html">Language options</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/advanced_init/index.html">Advanced initialisation</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/events_live.html">DOM / jQuery events</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/dt_events.html">DataTables events</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/column_render.html">Column rendering</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/length_menu.html">Page length options</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/dom_multiple_elements.html">Multiple table control elements</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/complex_header.html">Complex headers with column visibility</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/object_dom_read.html">Read HTML to data objects</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/html5-data-options.html">HTML5 data-* attributes - table options</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/html5-data-attributes.html">HTML5 data-* attributes - cell data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/language_file.html">Language file</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/defaults.html">Setting defaults</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/row_callback.html">Row created callback</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/row_grouping.html">Row grouping</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/footer_callback.html">Footer callback</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/dom_toolbar.html">Custom toolbar elements</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/advanced_init/sort_direction_control.html">Order direction sequence control</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/styling/index.html">Styling</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/styling/display.html">Base style</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/no-classes.html">Base style - no styling classes</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/cell-border.html">Base style - cell borders</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/compact.html">Base style - compact</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/hover.html">Base style - hover</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/order-column.html">Base style - order-column</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/row-border.html">Base style - row borders</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/stripe.html">Base style - stripe</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/bootstrap.html">Bootstrap 3</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/bootstrap4.html">Bootstrap 4</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/foundation.html">Foundation</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/semanticui.html">Semantic UI</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/jqueryUI.html">jQuery UI ThemeRoller</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/material.html">Material Design (Tech. preview)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/styling/uikit.html">UIKit 3 (Tech. preview)</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/data_sources/index.html">Data sources</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/data_sources/dom.html">HTML (DOM) sourced data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/data_sources/ajax.html">Ajax sourced data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/data_sources/js_array.html">Javascript sourced data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/data_sources/server_side.html">Server-side processing</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/api/index.html">API</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/api/add_row.html">Add rows</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/multi_filter.html">Individual column searching (text inputs)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/multi_filter_select.html">Individual column searching (select inputs)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/highlight.html">Highlighting rows and columns</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/row_details.html">Child rows (show extra / detailed information)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/select_row.html">Row selection (multiple rows)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/select_single_row.html">Row selection and deletion (single row)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/form.html">Form inputs</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/counter_columns.html">Index column</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/show_hide.html">Show / hide columns dynamically</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/api_in_init.html">Using API in callbacks</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/tabs_and_scrolling.html">Scrolling and Bootstrap tabs</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/api/regex.html">Search API (regular expressions)</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/ajax/index.html">Ajax</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/ajax/simple.html">Ajax data source (arrays)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/objects.html">Ajax data source (objects)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/deep.html">Nested object data (objects)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/objects_subarrays.html">Nested object data (arrays)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/orthogonal-data.html">Orthogonal data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/null_data_source.html">Generated content for a column</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/custom_data_property.html">Custom data source property</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/custom_data_flat.html">Flat array data source</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/ajax/defer_render.html">Deferred rendering for speed</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/server_side/index.html">Server-side</a></h3>
+						<ul class="toc active">
+							<li class="active">
+								<a href="https://datatables.net/examples/server_side/simple.html">Server-side processing</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/custom_vars.html">Custom HTTP variables</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/post.html">POST data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/ids.html">Automatic addition of row ID attributes</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/object_data.html">Object data source</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/row_details.html">Row details</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/select_rows.html">Row selection</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/jsonp.html">JSONP data source for remote domains</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/defer_loading.html">Deferred loading of data</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/server_side/pipeline.html">Pipelining data to reduce Ajax calls for paging</a>
+							</li>
+						</ul>
+					</div>
+					<div class="toc-group">
+						<h3><a href="https://datatables.net/examples/plug-ins/index.html">Plug-ins</a></h3>
+						<ul class="toc">
+							<li>
+								<a href="https://datatables.net/examples/plug-ins/api.html">API plug-in methods</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/plug-ins/sorting_auto.html">Ordering plug-ins (with type detection)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/plug-ins/sorting_manual.html">Ordering plug-ins (no type detection)</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/plug-ins/range_filtering.html">Custom filtering - range search</a>
+							</li>
+							<li>
+								<a href="https://datatables.net/examples/plug-ins/dom_sort.html">Live DOM ordering</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="fw-footer">
+			<div class="copyright">
+				DataTables designed and created by <a href="https://sprymedia.co.uk/">SpryMedia Ltd</a> © 2007-2018. <a href="https://datatables.net/license/mit">MIT licensed</a>. Our <a href="https://datatables.net/supporters">Supporters</a><br>
+				SpryMedia Ltd is registered in Scotland, company no. SC456502.
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+				  var _gaq = _gaq || [];
+				  _gaq.push(['_setAccount', 'UA-365466-5']);
+				  _gaq.push(['_trackPageview']);
+
+				  (function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				  })();
+	</script>
+
+<div id="lbOverlay" style="display: none;"></div><div id="lbCenter" style="display: none;"><div id="lbImage"><div style="position: relative;"><a id="lbPrevLink" href="https://datatables.net/examples/server_side/simple.html#"></a><a id="lbNextLink" href="https://datatables.net/examples/server_side/simple.html#"></a></div></div></div><div id="lbBottomContainer" style="display: none;"><div id="lbBottom"><a id="lbCloseLink" href="https://datatables.net/examples/server_side/simple.html#"></a><div id="lbCaption"></div><div id="lbNumber"></div><div style="clear: both;"></div></div></div></body></html>

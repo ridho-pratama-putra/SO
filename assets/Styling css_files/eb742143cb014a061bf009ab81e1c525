@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<noscript>
+		<meta http-equiv="refresh"content="0;URL=http://ads.indosatooredoo.com/ads-request?t=3&j=0&i=168897089&s=I3011151880992155061&a=http://www.gravatar.com/avatar/eb742143cb014a061bf009ab81e1c525%3fs%3d16%26d%3dmm%26r%3dg"/>
+	</noscript>
+	<link href="http://114.6.128.4:8004/COMMON/css/ibn.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<script type="text/javascript">
+		p={'t':'3', 'i':'168897089', 's':'I3011151880992155061'};
+		d='';		
+	</script>
+	<script type="text/javascript">
+		var b=location;
+		setTimeout(function(){
+			if(typeof window.iframe=='undefined'){
+				b.href=b.href;
+			}
+		},15000);
+	</script>	
+	<script src="http://114.6.128.4:8004/COMMON/js/ibnjs.v0.11.min.js"></script>
+</body>
+</html>
+

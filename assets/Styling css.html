@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>CSS3 - Webkit - Vertical Scrollbars | CSSDeck</title>
+
+		<link rel="stylesheet" href="./Styling css_files/app-66df569899d28c442f897ea972ee822e.css">
+	
+	
+	
+		<meta name="description" content="A nice and quick experiment by Tim Holman. He created 14 vertical scrollbars that work only in webkit browsers. The different styling is achieved using">
+		
+	<style>
+	.ui-resizable-e {
+		cursor: ew-resize;
+	}
+	.ui-resizable-e:active {
+		background: #cecece;
+	}
+	</style>
+	<script src="./Styling css_files/ca-pub-2225482417208543.js.download"></script><script async="" src="./Styling css_files/analytics.js.download"></script><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-64162604-1', 'auto');
+  ga('send', 'pageview');
+
+</script> 
+<link rel="preload" href="./Styling css_files/integrator.js.download" as="script"><script type="text/javascript" src="./Styling css_files/integrator.js.download"></script><link rel="preload" href="./Styling css_files/integrator.js(1).download" as="script"><script type="text/javascript" src="./Styling css_files/integrator.js(1).download"></script></head>
+
+<body style="">
+<div id="full_shadow"></div>
+
+<!-- ajax loader -->
+<div class="ajax_loader">
+	<img src="./Styling css_files/ajax-loader.gif" alt="Ajax Loader">
+</div>
+<!-- /ajax loader -->
+
+<!-- Broadcast container -->
+<div id="bcast_container" style="display: none;"><ul></ul></div>
+
+<header>
+	<!-- Logo -->
+	<div class="logo">
+		<a href="http://cssdeck.com/">Labs</a>
+	</div>
+	
+	<!-- Nav -->
+	<ul class="top_nav">
+
+				<li><a href="http://cssdeck.com/labs">New</a></li>
+
+				<li><a href="javascript:void(0);" id="fork">Fork</a></li>
+		<li><a href="javascript:void(0);" id="save" style="display: none;">Save</a></li>
+		
+		
+			</ul>
+
+	<!-- Extra Menu -->
+	<ul class="extra">
+		<!-- Nav -->
+				<li>
+			<a id="like" class="icons " href="http://cssdeck.com/login/?next=%2Flabs%2Fcss3-webkit-vertical-scrollbars%2F" title="Like this Creation">
+				<i class="icon-heart"></i>
+			</a>
+		</li>
+		<li>
+			<a id="random_item" class="icons" href="http://cssdeck.com/labs/css-only-solar-system-model" title="Next Item">
+				<i class="icon-random"></i>
+			</a>
+		</li>
+				<li>
+			<a id="refresh_output" class="icons" href="javascript:void(0);" title="Refresh Output">
+				<i class="icon-refresh"></i>
+			</a>
+		</li>
+
+		
+		
+        
+            <li class="multi">
+                <a href="javascript:void(0);">Share</a>
+
+                <ul class="share_box dropdown" style="top: 44px; opacity: 0; display: none;">
+                    <li>
+                        <label for="share_full_url">Full Screen Result</label>
+                        <input type="url" id="share_full_url" value="http://cssdeck.com/labs/full/css3-webkit-vertical-scrollbars" onclick="this.select();">
+                    </li>
+                    <li>
+                        <label for="embed_url">Embed on your webpage (blogs, articles, etc.)</label>
+                        <input type="url" id="embed_url" value="&lt;pre class=&quot;_cssdeck_embed&quot; data-pane=&quot;output&quot; data-user=&quot;kushsolitary&quot; data-href=&quot;css3-webkit-vertical-scrollbars&quot; data-version=&quot;0&quot;&gt;&lt;/pre&gt;&lt;script async src=&quot;http://cssdeck.com/assets/js/embed.js&quot;&gt;&lt;/script&gt;" onclick="this.select();">
+                    </li>
+                                        <li class="share-links">
+                        <a href="http://twitter.com/share?text=CSS3+-+Webkit+-+Vertical+Scrollbars&amp;via=cssdeck" target="_blank">
+                            <i class="icon-twitter-sign"></i>
+                        </a>
+                        |
+                        <a href="http://facebook.com/share.php?s=100&amp;p[title]=CSS3+-+Webkit+-+Vertical+Scrollbars&amp;p[url]=http://cssdeck.com/labs/css3-webkit-vertical-scrollbars" target="_blank">
+                            <i class="icon-facebook-sign"></i>
+                        </a>
+                        |
+                        <a href="https://plus.google.com/share?url=http://cssdeck.com/labs/css3-webkit-vertical-scrollbars" target="_blank">
+                            <i class="icon-google-plus-sign"></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        
+        		<li><a href="http://cssdeck.com/login/?next=%2Flabs%2Fcss3-webkit-vertical-scrollbars%2F">Login</a></li>
+			</ul>	
+
+</header>
+
+<div id="wrapper">
+
+	<section id="details_pane" class="side_panes left_pane" style="display: none;">
+
+  <div class="pane_controls">
+        <a href="javascript:void(0);" class="details_btn close">×</a>
+  </div>
+
+
+  <article id="content">
+    <h1 id="title">CSS3 - Webkit - Vertical Scrollbars</h1>
+
+        <div id="member_info">
+              <img src="./Styling css_files/eb742143cb014a061bf009ab81e1c525" class="gravatar" alt="" width="16">
+        <a class="username" href="http://cssdeck.com/user/kushsolitary">Kushagra Agarwal</a>
+      
+            <ul>
+        <li><a href="javascript:void(0);">3719281 <i class="icon-eye-open"></i></a></li>
+                <li><a href="javascript:void(0);" class="like_btn">145 <i class="icon-heart"></i></a></li>
+                <li><a href="javascript:void(0);" class="comments_btn">3 <i class="icon-comment"></i></a></li>
+      </ul>
+          </div>
+    
+    <div id="description">
+      
+            <p>A nice and quick experiment by <a href="http://tholman.com/">Tim Holman</a>. He created 14 vertical scrollbars that work only in webkit browsers. The different styling is achieved using webkit-only pseudo properties:</p>
+
+<p></p><ul><li><code>-webkit-scrollbar-track</code>: This styles the main track of the scollbar.</li>
+<li><code>-webkit-scrollbar</code>: It is the main scrollbar container.&nbsp;</li>
+<li><code>-webkit-scrollbar-thumb</code>: This styles the thumb of the scrollbar.</li>
+</ul><p>&nbsp;Check out the code below.</p>
+
+            <div id="subscribe" style="display: block; overflow: hidden; font-size: 11px; padding: 10px; background: #dadada;">
+        <form method="post" class="subscribe_form" target="_blank" action="http://cssdeck.com/subscribe">
+          <h4>Subscribe to updates</h4>
+
+          <div style="margin-bottom: 0;">
+            <input style="width: 100%;" type="email" value="" name="email" class="required email" placeholder="Email address">
+          </div>
+
+          <div style="margin-top: 5px; margin-bottom: 0;">
+            <input type="submit" value="Subscribe" name="subscribe" class="button">
+          </div>
+        </form>
+      </div>
+
+      <h4 style="font-size: 14px;">Related:</h4>
+
+      <ul style="list-style: none; padding: 0; margin: 0;">
+                <li><a style="font-size: 12px;" href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/css-only-solar-system-model">CSS Only Solar System Model</a></li>
+                <li><a style="font-size: 12px;" href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/minions-css">Minions in pure CSS</a></li>
+                <li><a style="font-size: 12px;" href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/multiple-box-shadows">Multiple Box Shadows</a></li>
+                <li><a style="font-size: 12px;" href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/ijq7nfp6">Clicking Game</a></li>
+                <li><a style="font-size: 12px;" href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/css3-room">CSS3 Room</a></li>
+              </ul>
+      
+    </div>
+
+  </article>
+
+  </section>
+	<section id="side_controls">
+		<ul>
+
+			<li>
+				<a href="javascript:void(0);" class="preferences_btn" title="Preferences" data-pane="preferences">
+					<i class="icon-wrench"></i>
+				</a>
+			</li>
+			<li style="display: none;">
+				<a href="javascript:void(0);" class="settings_btn" title="Settings" data-pane="settings">
+				</a>
+			</li>
+
+						<li>
+				<a href="javascript:void(0);" class="details_btn" title="Details" data-pane="details">
+					<i class="icon-file-alt"></i>
+				</a>
+			</li>
+            			
+			<li>
+				<a href="javascript:void(0);" class="documentation_btn" title="Extras and Tips" data-pane="documentation">
+					<i class="icon-lightbulb"></i>
+				</a>
+			</li>
+
+			
+			<!-- Share -->
+							<li class="panel_share">
+	<ul>
+
+		<!-- Twitter -->
+		<li><a href="http://twitter.com/share?text=CSS3+-+Webkit+-+Vertical+Scrollbars&amp;via=cssdeck" target="_blank">
+			<!--<img src="http://cssdeck.com/assets/img/share/tw.png" alt="twitter">-->
+			<i class="icon-twitter-sign"></i>
+		</a></li>
+
+		<!-- Facebook -->
+		<!--<li class="fb">
+			<div class="fb-like" data-send="false" data-layout="button_count" data-width="50" data-show-faces="false" data-font="lucida grande"></div>
+
+			<div id="fb-root" style="display: none;"></div>
+			<script>(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) return;
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=190502394323833";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));</script>
+		</li>-->
+
+		<li class="fb">
+			<a href="http://facebook.com/share.php?s=100&amp;p[title]=CSS3+-+Webkit+-+Vertical+Scrollbars&amp;p[url]=http://cssdeck.com/labs/css3-webkit-vertical-scrollbars" target="_blank">
+				<i class="icon-facebook-sign"></i>
+			</a>
+		</li>
+
+		<!-- Google Plus -->
+		<!--<li class="gp">
+			<div class="g-plusone" data-size="medium" data-annotation="none"></div>
+
+			<script type="text/javascript">
+			  (function() {
+			    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			    po.src = 'https://apis.google.com/js/plusone.js';
+			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+			  })();
+			</script>
+
+			<div id="social_icons_spacer"></div>
+		</li>-->
+
+		<li class="gplus">
+			<a href="https://plus.google.com/share?url=http://cssdeck.com/labs/css3-webkit-vertical-scrollbars">
+				<i class="icon-google-plus-sign"></i>
+			</a>
+		</li>
+
+	</ul>
+
+</li>					</ul>
+	</section>
+
+	<section id="preferences_pane" class="side_panes left_pane" style="display: none;">
+
+  <div class="pane_controls" style="float: right;">
+    <a href="javascript:void(0);" class="preferences_btn close">×</a>
+  </div>
+
+  <h3 style="float: left;">Coding Preferences
+    </h3>
+
+  <br style="clear: both">
+
+  <div class="html_pref code_pref">
+    <h4>HTML</h4>
+
+    <div>
+      <select id="html_pp" name="html_pp">
+        <option value="none">Preprocessor...</option>
+        <option value="haml">HAML</option>
+        <option value="jade">Jade</option>
+        <option value="markdown">Markdown</option>
+        <option value="slim">Slim</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="css_pref code_pref">
+    <h4>CSS</h4>
+
+    <div>
+      <select id="css_pp" name="css_pp">
+        <option value="none">Preprocessor...</option>
+        <option value="less">Less</option>
+        <option value="stylus">Stylus</option>
+        <option value="sass">SASS</option>
+        <option value="scss">SCSS</option>
+        <option value="sass_compass">SASS w/ Compass</option>
+        <option value="scss_compass">SCSS w/ Compass</option>
+      </select>
+    </div>
+
+    <div class="css_libs dd_select">
+      <input type="text" name="include_search" placeholder="Search Library..." class="include_search">
+      <ul><li>Bootstrap 2.0.4</li><li>jQuery UI</li><li>jQuery Mobile</li><li>Sencha Touch</li></ul>
+      <a href="javascript:void(0);" class="libs_chosen css">Done</a>
+    </div>
+
+    <div>
+      <input type="checkbox" id="prefixfree">
+      <label for="prefixfree">Prefixfree</label>
+
+      <input type="checkbox" id="normalize">
+      <label for="normalize">Normalize</label>
+    </div>
+  </div>
+
+  <div class="js_pref code_pref">
+    <h4>Javascript</h4>
+
+    <div>
+      <select id="js_pp" name="js_pp">
+        <option value="none">Preprocessor...</option>
+        <option value="coffeescript">Coffeescript</option>
+      </select>
+    </div>
+
+    <div class="js_libs dd_select">
+      <input type="text" name="include_search" placeholder="Search Library..." class="include_search">
+      <ul><li>YUI 3.3.0</li><li>jQuery 1.8.0</li><li>Mootools 1.3.2</li><li>Prototype 1.7.0.0</li><li>jQuery Mobile 1.0</li><li>Underscore 1.2.2</li><li>Backbone 0.5.3</li><li>CoffeeScript 1.3.1</li><li>Modernizr 2.0.6</li><li>Sencha Touch</li><li>Dojo 1.6.0</li><li>Bootstrap 2.0.4</li></ul>
+      <a href="javascript:void(0);" class="libs_chosen js">Done</a>
+    </div>
+  </div>
+
+  <div class="more_pref code_pref">
+    <h4>More</h4>
+
+    <div>
+      <label class="font-size slider" title="Font size">
+        <span title="smaller">A</span>
+
+        <input id="font_size" type="range" name="font_size" min="55" max="100" value="70" step="5">
+
+        <span title="larger" style="font-size: 24px;">A</span>
+      </label>
+    </div>
+
+      </div>
+        
+</section>
+		<section id="settings_pane" class="side_panes left_pane" style="display: none;">
+
+  <div class="pane_controls" style="float: right;">
+    <a href="javascript:void(0);" class="settings_btn close">×</a>
+  </div>
+
+  <h3>Your Default Settings - 
+    <a href="javascript:void(0);" style="font-size: 12px;" class="preferences_btn"> Preferences</a>
+  </h3>
+
+  <form method="post">
+
+    <div class="input_block">
+      <label>Default <strong>HTML</strong> Preprocessor:</label>
+      <select id="default_html_pp" name="html_pp">
+        <option value="">None</option>
+        <option value="haml">HAML</option>
+        <option value="jade">Jade</option>
+        <option value="markdown">Markdown</option>
+        <option value="slim">Slim</option>
+      </select>
+    </div>
+
+    <div class="input_block">
+      <label>Default <strong>CSS</strong> Preprocessor:</label>
+      <select id="default_css_pp" name="css_pp">
+        <option value="">None</option>
+        <option value="less">Less</option>
+        <option value="stylus">Stylus</option>
+        <option value="sass">SASS</option>
+        <option value="scss">SCSS</option>
+        <option value="sass_compass">SASS w/ Compass</option>
+        <option value="scss_compass">SCSS w/ Compass</option>
+      </select>
+    </div>
+
+    <div class="input_block">
+      <label>Default <strong>JS</strong> Preprocessor:</label>
+      <select id="default_js_pp" name="js_pp">
+        <option value="">None</option>
+        <option value="coffeescript">Coffeescript</option>
+      </select>
+    </div>
+
+    <div class="input_block">
+      <label>Editor <strong>Positioning</strong>:</label>
+      <select id="default_editor_position" name="editor_position">
+        <option value="vert">Vertical Editors</option>
+        <option value="horiz">Horizontal Editors</option>
+      </select>
+    </div>
+
+    <div class="input_block">
+      <label>Enable <strong>Prefixfree</strong> by Default:</label>
+      <input id="default_prefixfree" type="checkbox" name="prefixfree" value="1">
+    </div>
+
+    <div class="input_block">
+      <label>Enable <strong>Normalize</strong> by Default:</label>
+      <input id="default_normalize" type="checkbox" name="normalize" value="1">
+    </div>
+
+    <div>
+      <label class="font-size slider" title="Font size">
+        <span title="smaller">A</span>
+        <input id="default_font_size" type="range" name="font_size" min="55" max="100" value="60" step="5">
+        <span title="larger" style="font-size: 24px;">A</span>
+      </label>
+    </div>
+
+    <div>
+      <input type="submit" name="submit" id="save_settings" value="Save">
+    </div>
+  </form>
+
+</section>	<section id="admin_action_pane" class="side_panes" style="display: none;">
+
+  <div class="pane_controls">
+    <a href="javascript:void(0);" class="admin_action_btn close">×</a>
+  </div>
+
+  
+</section>	
+<section id="documentation_pane" class="side_panes right_pane" style="display: none;">
+  
+  <div class="pane_controls">
+    <a href="javascript:void(0);" class="documentation_btn close">×</a>
+  </div>
+  
+</section>
+
+	<section id="validations_pane" class="side_panes right_pane" style="display: none;">
+
+  <div class="pane_controls">
+    <a href="javascript:void(0);" class="validations_btn close">×</a>
+  </div>
+
+  <h3>Validations</h3>
+  <p style="margin-top: 0; font-size: 11px;">(Errors from your JS or Pre-Processors code)</p>
+
+  <ol></ol>
+
+</section> 
+	<div id="work_area" style="left: 40px;">
+        <section id="editor_pane" class="editor_pane editor_pane_vert ui-resizable ui-resizable-autohide" style="position: absolute;">
+    
+            <div id="editor_tabs">
+            <ul>
+            <li>
+                <a href="javascript:void(0);" id="horiz_editor_handle"><i class="icon-arrow-down"></i></a>
+                <a href="javascript:void(0);" id="vert_editor_handle" style="display: none;"><i class="icon-arrow-left"></i></a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" class="code_tab active html_tab" data-type="html" title="Enable/Disable HTML Codebox">HTML</a>
+            </li>
+            <li class="et_sep"></li>
+            <li>
+                <a href="javascript:void(0);" class="code_tab active css_tab" data-type="css" title="Enable/Disable CSS Codebox">CSS</a>
+            </li>
+            <li class="et_sep"></li>
+            <li>
+                <a href="javascript:void(0);" class="code_tab js_tab" data-type="js" title="Enable/Disable JS Codebox">JavaScript</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" class="compiled_code_tab" data-type="js" title="Compiled Code">
+                    <i class="icon-exclamation-sign"></i>
+                </a>
+            </li>
+                            <li>
+                    <a href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/#" id="unflag-post" style="display: none;" data-bin-id="144" title="Unflag this post">
+                        <i style="color: red;" class="icon-flag"></i>
+                    </a>
+                    <a href="http://cssdeck.com/labs/css3-webkit-vertical-scrollbars/#" id="flag-post" data-bin-id="144" title="Flag this post as offensive or having illegal content">
+                        <i class="icon-flag-alt"></i>
+                    </a>
+                </li>
+                    </ul>
+    </div>
+            <div class="code-ad-container">
+            <ins class="adsbygoogle" style="display: inline-block; width: 529.391px; max-width: 1200px; height: 100px;" data-ad-client="ca-pub-2225482417208543" data-ad-slot="8622748913" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display:inline-table;border:none;height:100px;margin:0;padding:0;position:relative;visibility:visible;width:529px;background-color:transparent;"><ins id="aswift_0_anchor" style="display:block;border:none;height:100px;margin:0;padding:0;position:relative;visibility:visible;width:529px;background-color:transparent;"><iframe width="529" height="100" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;width:529px;height:100px;" src="./Styling css_files/saved_resource.html"></iframe></ins></ins></ins>
+                            <script async="" src="./Styling css_files/adsbygoogle.js.download"></script>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+        <div id="code" class="code">
+
+        <div class="cb_equal_2">
+            <span class="editor_label" style="display: block;">HTML</span>
+            <div id="html" class="code_boxes">
+                <textarea name="html" style="display: none;"></textarea><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 28px;"><textarea autocorrect="off" autocapitalize="off" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;"></textarea></div><div class="CodeMirror-hscrollbar" style="left: 24px;"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar" style="display: block; bottom: 0px;"><div style="width: 1px; height: 1088px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div style="position: relative; min-height: 100%;"><div class="CodeMirror-sizer" style="margin-left: 24px; min-height: 1088px;"><div style="position: relative; top: 666px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span> </span><span> </span><span class="cm-tag">&lt;</span><span class="cm-tag">d</span><span class="cm-tag">i</span><span class="cm-tag">v</span><span> </span><span class="cm-attribute">i</span><span class="cm-attribute">d</span><span>=</span><span class="cm-string">"</span><span class="cm-string">w</span><span class="cm-string">r</span><span class="cm-string">a</span><span class="cm-string">p</span><span class="cm-string">p</span><span class="cm-string">e</span><span class="cm-string">r</span><span class="cm-string">"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative; z-index: 1; display: none;"></div><div style=""><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">38</div></div><pre> &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"scrollbar"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"style-9"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">39</div></div><pre> &nbsp; &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"force-overflow"</span><span class="cm-tag">&gt;&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">40</div></div><pre> &nbsp;  <span class="cm-tag">&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">41</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">42</div></div><pre> &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"scrollbar"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"style-10"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">43</div></div><pre> &nbsp; &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"force-overflow"</span><span class="cm-tag">&gt;&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">44</div></div><pre> &nbsp;  <span class="cm-tag">&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">45</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">46</div></div><pre> &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"scrollbar"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"style-11"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">47</div></div><pre> &nbsp; &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"force-overflow"</span><span class="cm-tag">&gt;&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">48</div></div><pre> &nbsp;  <span class="cm-tag">&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">49</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">50</div></div><pre> &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"scrollbar"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"style-13"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">51</div></div><pre> &nbsp; &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"force-overflow"</span><span class="cm-tag">&gt;&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">52</div></div><pre> &nbsp;  <span class="cm-tag">&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">53</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">54</div></div><pre> &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"scrollbar"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"style-14"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">55</div></div><pre> &nbsp; &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"force-overflow"</span><span class="cm-tag">&gt;&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">56</div></div><pre> &nbsp;  <span class="cm-tag">&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">57</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">58</div></div><pre> &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"scrollbar"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"style-15"</span><span class="cm-tag">&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">59</div></div><pre> &nbsp; &nbsp;  <span class="cm-tag">&lt;div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"force-overflow"</span><span class="cm-tag">&gt;&lt;/div&gt;</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -24px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 15px;">60</div></div><pre> &nbsp;  <span class="cm-tag">&lt;/div&gt;</span></pre></div></div><div class="CodeMirror-cursor" style="left: 4px; top: -666px; height: 17px;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="display: none;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 1088px;"></div><div class="CodeMirror-gutters" style="left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 23px;"></div></div></div></div></div>
+            </div>
+        </div>
+
+        <div class="cb_equal_2">
+            <span class="editor_label" style="display: block;">CSS</span>
+            <div id="css" class="code_boxes">
+                <textarea name="css" style="display: none;"></textarea><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 36px;"><textarea autocorrect="off" autocapitalize="off" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;"></textarea></div><div class="CodeMirror-hscrollbar" style="left: 32px;"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar" style="display: block; bottom: 0px;"><div style="width: 1px; height: 8630px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div style="position: relative; min-height: 100%;"><div class="CodeMirror-sizer" style="margin-left: 32px; min-height: 8630px;"><div style="position: relative; top: 8208px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span class="cm-tag">h</span><span class="cm-tag">e</span><span class="cm-tag">a</span><span class="cm-tag">d</span><span class="cm-tag">e</span><span class="cm-tag">r</span></pre></div><div style="position: relative; z-index: 1; display: none;"></div><div style=""><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">452</div></div><pre><span class="cm-tab">  </span><span class="cm-meta">-webkit-</span><span class="cm-property">box-shadow</span><span class="cm-operator">:</span> <span class="cm-string-2">inset</span> <span class="cm-number">0</span> <span class="cm-number">0</span> <span class="cm-number">6px</span> <span class="cm-string-2">rgba</span>(<span class="cm-number">0</span>,<span class="cm-number">0</span>,<span class="cm-number">0</span>,<span class="cm-number">0.1</span>);</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">453</div></div><pre><span class="cm-tab">  </span><span class="cm-property">background-color</span><span class="cm-operator">:</span> <span class="cm-atom">#F5F5F5</span>;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">454</div></div><pre><span class="cm-tab">  </span><span class="cm-property">border-radius</span><span class="cm-operator">:</span> <span class="cm-number">10px</span>;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">455</div></div><pre>}</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">456</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">457</div></div><pre><span class="cm-builtin">#style-16</span><span class="cm-operator">::</span><span class="cm-meta">-webkit-</span><span class="cm-tag">scrollbar</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">458</div></div><pre>{</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">459</div></div><pre><span class="cm-tab">  </span><span class="cm-property">width</span><span class="cm-operator">:</span> <span class="cm-number">10px</span>;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">460</div></div><pre><span class="cm-tab">  </span><span class="cm-property">background-color</span><span class="cm-operator">:</span> <span class="cm-atom">#F5F5F5</span>;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">461</div></div><pre>}</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">462</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">463</div></div><pre><span class="cm-builtin">#style-16</span><span class="cm-operator">::</span><span class="cm-meta">-webkit-</span><span class="cm-tag">scrollbar-thumb</span></pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">464</div></div><pre>{</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">465</div></div><pre><span class="cm-tab">  </span><span class="cm-property">border-radius</span><span class="cm-operator">:</span> <span class="cm-number">10px</span>;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">466</div></div><pre><span class="cm-tab">  </span><span class="cm-property">background-color</span><span class="cm-operator">:</span> <span class="cm-atom">#FFF</span>;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">467</div></div><pre><span class="cm-tab">  </span><span class="cm-property">background-image</span><span class="cm-operator">:</span> <span class="cm-meta">-webkit-</span><span class="cm-variable-2">linear-gradient</span>(<span class="cm-string-2">top</span>,</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">468</div></div><pre><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span>  <span class="cm-atom">#e4f5fc</span> <span class="cm-number">0%</span>,</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">469</div></div><pre><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span>  <span class="cm-atom">#bfe8f9</span> <span class="cm-number">50%</span>,</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">470</div></div><pre><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span>  <span class="cm-atom">#9fd8ef</span> <span class="cm-number">51%</span>,</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">471</div></div><pre><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span><span class="cm-tab">  </span>  <span class="cm-atom">#2ab0ed</span> <span class="cm-number">100%</span>);</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">472</div></div><pre>}</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">473</div></div><pre>&nbsp;</pre></div><div style="position: relative;"><div style="position: absolute; left: -32px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 23px;">474</div></div><pre>&nbsp;</pre></div></div><div class="CodeMirror-cursor" style="left: 4px; top: -8208px; height: 17px;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="display: none;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 8630px;"></div><div class="CodeMirror-gutters" style="left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 31px;"></div></div></div></div></div>
+            </div>
+        </div>
+
+        <div class="cb_equal_2" style="display: none;">
+            <span class="editor_label">JavaScript</span>
+            <div id="js" class="code_boxes removed" style="display: none;">
+                <textarea name="js" style="display: none;"></textarea><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 4px; left: 25px;"><textarea autocorrect="off" autocapitalize="off" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;"></textarea></div><div class="CodeMirror-hscrollbar" style="left: 21px;"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div style="position: relative; min-height: 100%;"><div class="CodeMirror-sizer" style="margin-left: 21px; min-height: 26px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>&nbsp;</span></pre></div><div style="position: relative; z-index: 1; display: none;"></div><div style=""><div style="position: relative;"><div style="position: absolute; left: 0px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 12px;">1</div></div><pre>&nbsp;</pre></div></div><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 17px;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="display: none;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 26px;"></div><div class="CodeMirror-gutters" style="left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 20px;"></div></div></div></div></div>
+            </div>
+        </div>
+
+    </div>
+<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90; display: none;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; display: none;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90; display: none;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90; display: none;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90; display: none;"></div></section>
+		<div id="output" class="output">
+					<h2 style="background-color: #f0f0f0; width: 100%; margin-left: 3em;">CSS3 - Webkit - Vertical Scrollbars</h2>
+			<iframe scrolling="no" sandbox="allow-scripts allow-same-origin" src="./Styling css_files/iframe.html"></iframe>
+			<div id="output_mask" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none;"></div>
+
+		
+		</div>
+
+		
+	</div>
+	<!-- main area wrap -->
+
+<a href="https://plus.google.com/+Cssdeck?rel=author" style="display: none;">CSSDeck G+</a>
+
+<script>
+window.__bin = {"user":"kushsolitary","creator":"Kushagra Agarwal","url_slug":"css3-webkit-vertical-scrollbars","bid":144,"bv":0,"pref":{"privacy":"public"},"code":{"html":"  <div id=\"wrapper\">\r\n    <div class=\"scrollbar\" id=\"style-default\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-1\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-2\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-3\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-4\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-5\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-6\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-7\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-8\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-9\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-10\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-11\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-13\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-14\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>\r\n\r\n    <div class=\"scrollbar\" id=\"style-15\">\r\n      <div class=\"force-overflow\"><\/div>\r\n    <\/div>","css":"header\r\n{\r\n\tfont-family: 'Lobster', cursive;\r\n\ttext-align: center;\r\n\tfont-size: 25px;\t\r\n}\r\n\r\n#info\r\n{\r\n\tfont-size: 18px;\r\n\tcolor: #555;\r\n\ttext-align: center;\r\n\tmargin-bottom: 25px;\r\n}\r\n\r\na{\r\n\tcolor: #074E8C;\r\n}\r\n\r\n.scrollbar\r\n{\r\n\tmargin-left: 30px;\r\n\tfloat: left;\r\n\theight: 300px;\r\n\twidth: 65px;\r\n\tbackground: #F5F5F5;\r\n\toverflow-y: scroll;\r\n\tmargin-bottom: 25px;\r\n}\r\n\r\n.force-overflow\r\n{\r\n\tmin-height: 450px;\r\n}\r\n\r\n#wrapper\r\n{\r\n\ttext-align: center;\r\n\twidth: 500px;\r\n\tmargin: auto;\r\n}\r\n\r\n\/*\r\n *  STYLE 1\r\n *\/\r\n\r\n#style-1::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tborder-radius: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-1::-webkit-scrollbar\r\n{\r\n\twidth: 12px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-1::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);\r\n\tbackground-color: #555;\r\n}\r\n\r\n\/*\r\n *  STYLE 2\r\n *\/\r\n\r\n#style-2::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tborder-radius: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-2::-webkit-scrollbar\r\n{\r\n\twidth: 12px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-2::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);\r\n\tbackground-color: #D62929;\r\n}\r\n\r\n\/*\r\n *  STYLE 3\r\n *\/\r\n\r\n#style-3::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-3::-webkit-scrollbar\r\n{\r\n\twidth: 6px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-3::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #000000;\r\n}\r\n\r\n\/*\r\n *  STYLE 4\r\n *\/\r\n\r\n#style-4::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-4::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-4::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #000000;\r\n\tborder: 2px solid #555555;\r\n}\r\n\r\n\r\n\/*\r\n *  STYLE 5\r\n *\/\r\n\r\n#style-5::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-5::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-5::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #0ae;\r\n\t\r\n\tbackground-image: -webkit-gradient(linear, 0 0, 0 100%,\r\n\t                   color-stop(.5, rgba(255, 255, 255, .2)),\r\n\t\t\t\t\t   color-stop(.5, transparent), to(transparent));\r\n}\r\n\r\n\r\n\/*\r\n *  STYLE 6\r\n *\/\r\n\r\n#style-6::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-6::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-6::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #F90;\t\r\n\tbackground-image: -webkit-linear-gradient(45deg,\r\n\t                                          rgba(255, 255, 255, .2) 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(255, 255, 255, .2) 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(255, 255, 255, .2) 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\r\n\/*\r\n *  STYLE 7\r\n *\/\r\n\r\n#style-7::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n\tborder-radius: 10px;\r\n}\r\n\r\n#style-7::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-7::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\tbackground-image: -webkit-gradient(linear,\r\n\t\t\t\t\t\t\t\t\t   left bottom,\r\n\t\t\t\t\t\t\t\t\t   left top,\r\n\t\t\t\t\t\t\t\t\t   color-stop(0.44, rgb(122,153,217)),\r\n\t\t\t\t\t\t\t\t\t   color-stop(0.72, rgb(73,125,189)),\r\n\t\t\t\t\t\t\t\t\t   color-stop(0.86, rgb(28,58,148)));\r\n}\r\n\r\n\/*\r\n *  STYLE 8\r\n *\/\r\n\r\n#style-8::-webkit-scrollbar-track\r\n{\r\n\tborder: 1px solid black;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-8::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-8::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #000000;\t\r\n}\r\n\r\n\r\n\/*\r\n *  STYLE 9\r\n *\/\r\n\r\n#style-9::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-9::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-9::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #F90;\t\r\n\tbackground-image: -webkit-linear-gradient(90deg,\r\n\t                                          rgba(255, 255, 255, .2) 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(255, 255, 255, .2) 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(255, 255, 255, .2) 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\r\n\/*\r\n *  STYLE 10\r\n *\/\r\n\r\n#style-10::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n\tborder-radius: 10px;\r\n}\r\n\r\n#style-10::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-10::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #AAA;\r\n\tborder-radius: 10px;\r\n\tbackground-image: -webkit-linear-gradient(90deg,\r\n\t                                          rgba(0, 0, 0, .2) 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(0, 0, 0, .2) 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(0, 0, 0, .2) 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\r\n\/*\r\n *  STYLE 11\r\n *\/\r\n\r\n#style-11::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\r\n\tbackground-color: #F5F5F5;\r\n\tborder-radius: 10px;\r\n}\r\n\r\n#style-11::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-11::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #3366FF;\r\n\tborder-radius: 10px;\r\n\tbackground-image: -webkit-linear-gradient(0deg,\r\n\t                                          rgba(255, 255, 255, 0.5) 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(255, 255, 255, 0.5) 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(255, 255, 255, 0.5) 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\/*\r\n *  STYLE 12\r\n *\/\r\n\r\n#style-12::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9);\r\n\tborder-radius: 10px;\r\n\tbackground-color: #444444;\r\n}\r\n\r\n#style-12::-webkit-scrollbar\r\n{\r\n\twidth: 12px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-12::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\tbackground-color: #D62929;\r\n\tbackground-image: -webkit-linear-gradient(90deg,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(0, 0, 0, 0.4) 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\/*\r\n *  STYLE 13\r\n *\/\r\n\r\n#style-13::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9);\r\n\tborder-radius: 10px;\r\n\tbackground-color: #CCCCCC;\r\n}\r\n\r\n#style-13::-webkit-scrollbar\r\n{\r\n\twidth: 12px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-13::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\tbackground-color: #D62929;\r\n\tbackground-image: -webkit-linear-gradient(90deg,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(0, 0, 0, 0.4) 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\/*\r\n *  STYLE 14\r\n *\/\r\n\r\n#style-14::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.6);\r\n\tbackground-color: #CCCCCC;\r\n}\r\n\r\n#style-14::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-14::-webkit-scrollbar-thumb\r\n{\r\n\tbackground-color: #FFF;\r\n\tbackground-image: -webkit-linear-gradient(90deg,\r\n\t                                          rgba(0, 0, 0, 1) 0%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(0, 0, 0, 1) 25%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent 100%,\r\n\t\t\t\t\t\t\t\t\t\t\t  rgba(0, 0, 0, 1) 75%,\r\n\t\t\t\t\t\t\t\t\t\t\t  transparent)\r\n}\r\n\r\n\/*\r\n *  STYLE 15\r\n *\/\r\n\r\n#style-15::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);\r\n\tbackground-color: #F5F5F5;\r\n\tborder-radius: 10px;\r\n}\r\n\r\n#style-15::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-15::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\tbackground-color: #FFF;\r\n\tbackground-image: -webkit-gradient(linear,\r\n\t\t\t\t\t\t\t\t\t   40% 0%,\r\n\t\t\t\t\t\t\t\t\t   75% 84%,\r\n\t\t\t\t\t\t\t\t\t   from(#4D9C41),\r\n\t\t\t\t\t\t\t\t\t   to(#19911D),\r\n\t\t\t\t\t\t\t\t\t   color-stop(.6,#54DE5D))\r\n}\r\n\r\n\/*\r\n *  STYLE 16\r\n *\/\r\n\r\n#style-16::-webkit-scrollbar-track\r\n{\r\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);\r\n\tbackground-color: #F5F5F5;\r\n\tborder-radius: 10px;\r\n}\r\n\r\n#style-16::-webkit-scrollbar\r\n{\r\n\twidth: 10px;\r\n\tbackground-color: #F5F5F5;\r\n}\r\n\r\n#style-16::-webkit-scrollbar-thumb\r\n{\r\n\tborder-radius: 10px;\r\n\tbackground-color: #FFF;\r\n\tbackground-image: -webkit-linear-gradient(top,\r\n\t\t\t\t\t\t\t\t\t\t\t  #e4f5fc 0%,\r\n\t\t\t\t\t\t\t\t\t\t\t  #bfe8f9 50%,\r\n\t\t\t\t\t\t\t\t\t\t\t  #9fd8ef 51%,\r\n\t\t\t\t\t\t\t\t\t\t\t  #2ab0ed 100%);\r\n}\r\n\r\n","js":""},"is_picked":true};window.__default_settings = [];
+</script>
+
+
+
+<script src="./Styling css_files/app-7c11a6160aff2799507fa5b1d3acb82b07a568cc28f3a0ed6e5fa29f39615514.js.download"></script>
+
+
+
+<script>
+  setTimeout(function() {
+    var carbon = document.querySelector('.carbonad');
+
+    if (carbon) {
+      var adblock_enabled = window
+        .getComputedStyle(carbon, null)
+        .getPropertyValue('display');
+
+      if (adblock_enabled === 'none') {
+        document.querySelector('.m').style.display = 'block';
+        var img_src = document.querySelector(".m img").getAttribute('data-src');
+        document.querySelector(".m img").setAttribute('src', img_src);
+        return;
+        
+        var cont = document.querySelector('#carbonads-container');
+        cont.style.textAlign = 'center';
+        cont.style.height = 'auto';
+        cont.style.setProperty('display', 'block', '!important');
+
+        var paypal = document.createElement('a');
+        paypal.href = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WF8Q5D4LE5N9A";
+        paypal.setAttribute('class', "pp_donate_btn");
+        paypal.textContent = 'Paypal Donate';
+        paypal.style.display = 'inline-block';
+        paypal.style.marginBottom = '10px';
+        paypal.style.color = 'white';
+        paypal.target = "_blank";
+
+        cont.appendChild(paypal);
+
+        var flattr = document.createElement('a');
+        flattr.href = "http://flattr.com/thing/701630/Collection-of-CSS-Creations";
+        flattr.target="_blank";
+
+        var flattr_img = document.createElement('img');
+        flattr_img.src = "http://api.flattr.com/button/flattr-badge-large.png";
+        flattr_img.alt = "Flattr this!"
+        flattr_img.title = "Flattr this!"
+        flattr_img.style.border = "0";
+        flattr_img.style.display = 'block';
+        flattr_img.style.margin = '0 auto';
+
+        flattr.appendChild(flattr_img);
+
+        cont.appendChild(flattr);
+      }
+
+    }
+  }, 1000);
+
+var under_review = '';
+if(under_review){
+   $("#wrapper").css("top", "90px");
+   $("#flash-message").show();  
+}
+
+  //new page
+  if(window.location.pathname == '/labs'){
+      if($("#details_pane").hasClass("active")) {
+          $(".details_btn.close").click();
+      }
+  }else{
+      //view page
+      $(".details_btn.close").click();
+  }
+
+  //post flagging/unflagging
+  $('body').on('click', '#flag-post', function (evt) {
+      evt.preventDefault();
+
+      var $el = $(this);
+      sendUserFlagAction('flag', $el);
+  });
+
+  $('body').on('click', '#unflag-post', function (evt) {
+      evt.preventDefault();
+
+      var $el = $(this);
+      sendUserFlagAction('unflag', $el);
+  });
+
+
+  function sendUserFlagAction(action, link_element) {
+      var id = link_element.data('bin-id');
+
+      if (['flag', 'unflag'].indexOf(action) == -1) {
+          console.log('illegal action');
+          return;
+      }
+
+      $.ajax({
+          url: "/labs/flag/" + action,
+          method: "POST",
+          data: {"bin_id": id}
+      }).done(function (d) {
+	  if(action == 'flag'){
+		$("#flag-post").hide();
+		$("#unflag-post").show();
+	  }else{
+		$("#flag-post").show();
+		$("#unflag-post").hide();
+	  }
+      }).fail(function () {
+          alert('Failed to perform action!');
+      }).always(function () {
+      })
+  }
+
+//hide output-iframe if on new page and no content yet
+if(window.location.pathname == '/labs'){
+	$("#output-iframe").hide();
+	var is_form_dirty = false;
+
+	$('#editor_pane').on("change keyup","textarea", function(){
+		if(!is_form_dirty){
+			is_form_dirty = true;
+			showOutputIframe();
+			//stop listening for this event
+			$('#editor_pane').off("change keyup","textarea");
+		}
+	});
+}
+
+function showOutputIframe(){
+	$("#instructions").hide();
+	$("#output-iframe").show();
+}
+</script>
+
+
+
+</div></body></html>

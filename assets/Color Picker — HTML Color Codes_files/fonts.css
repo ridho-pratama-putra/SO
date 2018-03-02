@@ -1,0 +1,17 @@
+@font-face {
+	font-family: 'Conv_DharmaGothicE-BoldItalic';
+	src: url('DharmaGothicE-BoldItalic.eot');
+	src: local('☺'), url('DharmaGothicE-BoldItalic.woff') format('woff'), url('DharmaGothicE-BoldItalic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Conv_PayPalSansBig-Medium';
+	src: url('PayPalSansBig-Medium.eot');
+	src: local('☺'), url('PayPalSansBig-Medium.woff') format('woff'), url('PayPalSansBig-Medium.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!-- saved from url=(0027)http://s.cssdeck.com/iframe -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <style>
+      * {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        margin: 0; padding: 0;
+      }
+      html, body, #output {
+        height: 100%; width: 100%;
+      }
+      iframe {
+        width:100%;height:100%;
+        border: 0;
+      }
+
+      ::-webkit-scrollbar {
+        -webkit-appearance:none;
+        width:12px;
+        background-color:#f0f0f0;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        border-radius:12px;
+        border:4px solid rgba(255,255,255,0);
+        background-clip:content-box;
+        background-color:#bfbfbf;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        border-radius:12px;
+        border:4px solid rgba(255,255,255,0);
+        background-clip:content-box;
+        background-color:#A0A0A0;
+      }
+
+      ::-webkit-scrollbar-corner {
+        background-color:#e6e6e6;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="output">
+      
+    <iframe src="./saved_resource(1).html"></iframe></div>
+
+  <script src="./keybinding.js.download"></script>
+  <script>
+
+    var uaMatch = function( ua ) {
+      ua = ua.toLowerCase();
+
+      var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+        /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+        /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+        /(msie) ([\w.]+)/.exec( ua ) ||
+        ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+        [];
+
+      return {
+        browser: match[ 1 ] || "",
+        version: match[ 2 ] || "0"
+      };
+    };
+
+    matched = uaMatch( navigator.userAgent );
+    browser = {};
+
+    if ( matched.browser ) {
+      browser[ matched.browser ] = true;
+      browser.version = matched.version;
+    }
+
+    // Chrome is Webkit, but Webkit is also Safari.
+    if ( browser.chrome ) {
+      browser.webkit = true;
+    } else if ( browser.webkit ) {
+      browser.safari = true;
+    }
+
+    var liveScrollTop = null;
+
+    function receiveMessage(event) {
+      // console.log(event.origin);
+
+      if (event.origin !== 'http://cssdeck.org' && event.origin !== 'http://cssdeck.com' && event.origin !== 'http://dev.cssdeck.com') {
+        return false;
+      }
+
+      // Used in child iframe
+      window.post_message_origin = event.origin;
+
+      var data = JSON.parse(event.data);
+      
+      if (data.action === 'renderSource') {
+        // console.log(data.source);
+        //var first_child = document.querySelector('#output').firstChild;
+        var old_iframe = document.querySelector('#output iframe');
+        // Iframe DOM Element
+        var new_iframe = document.createElement('iframe');
+        /*new_iframe.setAttribute('width', '100%');
+        new_iframe.setAttribute(
+          'height', document.height || document.documentElement.scrollHeight
+        );*/
+
+        //document.querySelector('#output').insertBefore(new_iframe, old_iframe);
+        document.querySelector('#output').appendChild(new_iframe);
+
+        var iframe_win = new_iframe.contentWindow;
+
+        // Iframe document
+        // elem.contentDocument || elem.contentWindow.document
+        var iframe_doc = iframe_win.document;
+
+        // Fixing the 0-width unicode problem
+        // Weirdly, lots of mac user enter that char, I have no idea how/why
+        // http://stackoverflow.com/a/11305926/1437328
+        var prepared_source = data.source.replace(/[\u200B-\u200D\uFEFF]/g, '')
+
+        var writeToIframe = function() {
+
+          iframe_doc.open()
+          iframe_doc.write(prepared_source)
+
+          iframe_win.onscroll = function() {
+            liveScrollTop = this.scrollY;
+          };
+
+          iframe_win.addEventListener('load', function() {
+            // By removing the previous iframe /after/ the
+            // newly created live iframe has run, it doesn't
+            // flicker - which fakes a smooth live update.
+            //console.log('removed')
+            if (old_iframe) {
+              document.querySelector('#output').removeChild(old_iframe);
+              old_iframe = null;
+            }
+
+            if (liveScrollTop !== null)
+              iframe_win.scrollTo(0, liveScrollTop)
+          }, false);
+
+          iframe_doc.close()
+
+          if (old_iframe) {
+            document.querySelector('#output').removeChild(old_iframe);
+            old_iframe = null;
+          }
+
+          if (liveScrollTop !== null)
+            iframe_win.scrollTo(0, liveScrollTop);
+
+          // Key Bindings
+          iframe_win.keyz = window.keyz;
+          iframe_doc.addEventListener('keydown', function(e) {
+            // We dont want keybindings in embedded frames
+            if (!data.embedded)
+              window.keyz.keyHandler(e)
+          }, true);
+        };
+
+        // WebKit has a weird bug. It takes some time to load iframe window.
+        // So to write to it, we need to wait for sometime, else props like
+        // window.innerWidth, window.innerHeight will yield 0 (and maybe there
+        // are other problems that i can't see)
+        // Discovered the bug in opera 12 too
+        if (browser.chrome || browser.webkit || browser.opera) {
+          setTimeout(writeToIframe, 5);
+        }
+        else {
+          writeToIframe()
+        }
+      }
+
+      return; // receiveMessage()
+    }
+
+    window.addEventListener('message', receiveMessage, false);
+
+  </script>
+  
+</body></html>
