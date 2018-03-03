@@ -20,8 +20,11 @@
 					{ "data": "detail_tipe"},
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
-							return '<div class="btn-group" role="group">'+
+							return 
+
+							'<div class="btn-group" role="group">'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" >Edit Indikasi</a>'+
+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteIndikasi" title="hapus indikasi" data-idkarakteristik="'+data+'" >Hapus Indikasi</a>'+
 							'</div>';
 						}
@@ -235,7 +238,7 @@
 	<hr>
 	<div class="container" id="notif"><!-- id="notif digunakan untuk memuat alert sukses/ gagal dari aksi ajax" -->
 		<?=$this->session->flashdata("alert_indikasi_obat");?>
-		<?=$this->session->flashdata("alert_kondisi");?>
+		<?=$this->session->flashdata("alert_gejala");?>
 	</div>
 	<div class="container margin-top-15">
 		<br>

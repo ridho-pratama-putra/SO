@@ -17,7 +17,7 @@
 
 				// decalare isi format urutan kolom
 				columns: [
-					{ "data": "nama_gejala"},
+					{ "data": "detail_gejala"},
 
 					{ "data": "id_gejala" ,
 						render: function ( data, type, full, meta ) {

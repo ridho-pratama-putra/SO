@@ -67,6 +67,17 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
+	// untuk view apa saja kondisi yang ada dalam database
+	public function view_kondisi()
+	{
+		// tampilkan isi tabel kondisi
+		$data['master_kondisi'] 	=	$this->SO_M->readS('kondisi')->result();
+
+		$this->load->view('html/header');
+		$this->load->view('admin/view_kondisi',$data);
+		$this->load->view('html/footer');
+	}
+
 	/*digunakan oleh datatable untuk menampilkan data pada view_$karakteristik*/
 	public function dataTable($karakteristik,$id_obat)
 	{
@@ -101,14 +112,8 @@ class Admin_C extends CI_Controller {
 			$gejala_db = array();
 
 			foreach ($gejala_dari_form as $key => $value) {
-				$gejala_db[$key] = array('nama_gejala' => $gejala_dari_form[$key]);
+				$gejala_db[$key] = array('detail_gejala' => $gejala_dari_form[$key]);
 			}
-			// echo "<pre>";
-			// var_dump($gejala_dari_form);
-			// var_dump($gejala_db);
-			// echo "</pre>";
-			// die();
-
 
 			$result 	= 	$this->SO_M->createS('master_gejala',$gejala_db);
 			$results	=	json_decode($result,true);
@@ -116,13 +121,13 @@ class Admin_C extends CI_Controller {
 			if ($results['status'] != false) {
 				$this->session->set_flashdata(
 												"alert_CRUD_gejala",
-												"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Insert gejala<strong> berhasil!</strong></div>"
+												"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Berhasil!</strong>Insert gejala</div>"
 				);
 			}
 			else{
 				$this->session->set_flashdata(
 												"alert_CRUD_gejala",
-												"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Insert gejala<strong> gagal!</strong></div>"
+												"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Gagal!</strong> Tidak ada data yang di Insert ke master_gejala</div>"
 				);
 			}
 			redirect('Admin_C/view_CRUD_gejala');
@@ -182,7 +187,6 @@ class Admin_C extends CI_Controller {
 	// rename obat 
 	public function view_rename_obat($id_obat)
 	{
-		/*tampilkan form untuk mengganti nama obat*/
 		// deklarasi datacondition
 		$dataCondition = array('id_obat'	=>	$id_obat);
 
@@ -218,12 +222,13 @@ class Admin_C extends CI_Controller {
 		else{
 			$nama_obat_old		= 	$this->input->post('nama_obat_old');
 			$nama_obat_new		= 	$this->input->post('nama_obat_new');
+			
 			if ($nama_obat_new != 	$nama_obat_old) {
 				$dataCondition	=	array('id_obat'=>$this->input->post('id_obat'));
 				$dataUpdate		= 	array('nama_obat'		=>	$nama_obat_new);
-
 				$result 		=	$this->SO_M->update('master_obat',$dataCondition, $dataUpdate);
 				$results		=	json_decode($result,true);
+
 				if ($results['status']) {
 					$this->session->set_flashdata(
 													"alert_rename_obat",
@@ -263,36 +268,13 @@ class Admin_C extends CI_Controller {
 		$data['detailed_user'] 		=	$this->SO_M->read('user',$dataCondition)->result();
 		unset($dataCondition,$dataCol);
 
-		/*dapatkan informasi rekam medis(kondisi)*/
-		/*dapatkan informasi log pemberian obat*/
+		/*dapatkan informasi rekam medis(kondisi) dapatkan informasi log pemberian obat*/
 		$this->load->view('html/header');
 		$this->load->view('admin/detailed_user',$data);
 		$this->load->view('html/footer');
 	}
 
-	/*AJAX VERSION*/
-	/*public function handle_delete_obat()
-	{
-		if ($this->input->post() == null) {
-			$data['heading']= "Tidak ada form data yang di POST";
-			$data['message']= "<p>Coba lagi <a href='".base_url()."Admin_C/view_create_obat'>Create obat</a> </p>";
-			$this->load->view('errors/html/error_general',$data);
-		}else{
-			$result = $this->SO_M->delete("master_obat",$dataCondition);
-			if ($result) {
-				$alert_delete_ajax = "<div class='alert alert-success alert-dismissible fade show' role='alert'> Delete Berhasil <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
-			}
-			else{
-				$alert_delete_ajax = "<div class='alert alert-warning alert-danger fade show' role='alert'>Gagal!<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
-			}
-			echo $alert_delete_ajax;
-		}
-	}*/
-
-	/*
-		PHP VERSION
-		delete suatu obat dalam database
-	*/
+	/* delete suatu obat dalam database	*/
 	public function handle_delete_obat($id_obat)
 	{
 		/*hapus suatu obat*/
@@ -303,10 +285,8 @@ class Admin_C extends CI_Controller {
 
 		// jika, tidak ada di database
 		if ($data->num_rows() == 0) {
-			// info kenapa eror nya
 			$datae['heading']	=	"Data tidak ditemukan";
 			$datae['message']	=	"<p>ID obat tidak ditemukan. Coba lihat <a href='".base_url()."Admin_C/view_read_obat'>daftar obat</a>.</p>";
-
 			$this->load->view('errors/html/error_404',$datae);
 		}
 
@@ -356,8 +336,7 @@ class Admin_C extends CI_Controller {
 													"<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Nama obat sudah ada.<strong> Harus unik!</strong></div>"
 					);	
 				}
-				else{
-					$this->session->set_flashdata(
+				else{$this->session->set_flashdata(
 													"alert_create_obat",
 													"<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Create obat ke master_obat <strong>gagal!</strong></div>"
 					);	
@@ -378,31 +357,42 @@ class Admin_C extends CI_Controller {
 			$this->load->view('errors/html/error_general',$data);
 		}
 		else{
-			
+
 			// dapatkan dulu id obat yang akan ditambahkan karakteristiknya
 			$id_obat			=	$this->input->post('id_obat');
 
+			// ambil apa saja karakteristik yang telah diinputkan di form
+			$karakteristik_dari_form	=	$this->input->post($karakteristik.'[]');
+
+			// definisikan array kosong untuk disiapkan masuk ke database, karena batch input tidak bisa menerima $karakteristik_dari_form. harus ada array di dalam ARRAY sebanyak jumlah input form
+			$karakteristik_db 			=	array();
+
 			// golongakan karakteristik yang akan masuk
-			if (($karakteristik == 'indikasi') OR ($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
-
-				// ambil apa saja karakteristik yang telah diinputkan di form
-				$karakteristik_dari_form	=	$this->input->post($karakteristik.'[]');
-
-				// definisikan array kosong untuk disiapkan masuk ke database, karena batch input tidak bisa menerima $karakteristik_dari_form. harus ada array di dalam ARRAY sebanyak jumlah input form
-				$karakteristik_db 			=	array();
-
+			if (($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
 				// definisikan array kosong untuk masuk ke dalam database kondisi, ini sebagai duplikat untuk dropdown input kondisi
 				$kondisi_db		 			=	array();
-
 
 				// manipulasi array yang akan masuk ke database melalui karakteristik dari form
 				foreach ($karakteristik_dari_form as $key => $value) {
 					$karakteristik_db[$key]	=	array(
-													"id_obat"		=>	$id_obat,
-													"tipe"			=>	$karakteristik,
-													'detail_tipe'	=>	$karakteristik_dari_form[$key]
+														"id_obat"		=>	$id_obat,
+														"tipe"			=>	$karakteristik,
+														'detail_tipe'	=>	$karakteristik_dari_form[$key]
 					);
-					$kondisi_db[$key]		=	array('detail_kondisi' => $karakteristik_dari_form[$key]);
+					$kondisi_db[$key]		=	array(	'detail_kondisi'=>	$karakteristik_dari_form[$key]);
+				}
+			}
+			// jika karakterisitk yang masuk adalah indikasi
+			else{
+				$gejala_db					=	array();
+
+				foreach ($karakteristik_dari_form as $key => $value) {
+					$karakteristik_db[$key]	=	array(
+														"id_obat"		=>	$id_obat,
+														"tipe"			=>	$karakteristik,
+														'detail_tipe'	=>	$karakteristik_dari_form[$key]
+					);
+					$gejala_db[$key]		=	array(	'detail_gejala' =>	$karakteristik_dari_form[$key]);
 				}
 			}
 			
@@ -416,17 +406,15 @@ class Admin_C extends CI_Controller {
 												"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Insert ".$karakteristik." ke karakteristik_obat<strong> berhasil!</strong></div>"
 				);
 
+				// hanya karakteristik kontra dan peringatan yang masuk ke tabel master_kondisi
 				if (($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
 					$resultkondisi	= $this->SO_M->createS('master_kondisi',$kondisi_db);
 					$resultskondisi	=	json_decode($resultkondisi,true);
 
-					// var_dump($resultskondisi['error_message']['code']);
-					// die();
-
 					if ($resultskondisi['status'] == 'true') {
 						$this->session->set_flashdata(
 												"alert_kondisi",
-												"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Insert ke master_kondisi <strong> berhasil!</strong></div>"
+												"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong> Berhasil!</strong> Data masuk ke master_kondisi </div>"
 						);
 					}
 					else{
@@ -438,15 +426,35 @@ class Admin_C extends CI_Controller {
 						}else{
 							$this->session->set_flashdata(
 												"alert_kondisi",
-												"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Tidak ada data </strong>yang di Insert ke master_kondisi</div>"
+												"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Tidak ada data </strong>yang di Insert ke master_kondisi. Another eror message</div>"
 							);
 						}
 					}
-				}else{
-					$this->session->set_flashdata(
-											"alert_kondisi",
-											"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Tidak ada karakteristik yang masuk ke master_kondisi</div>"
-					);
+				}
+				// hanya karakteristik indikasi yang masuk ke tabel gejala
+				else{
+					$resultgejala = $this->SO_M->createS('master_gejala',$gejala_db);
+					$resultsgejala = json_decode($resultgejala,true);
+
+					if ($resultsgejala['status']) {
+						$this->session->set_flashdata(
+												"alert_gejala",
+												"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong> Berhasil!</strong> Data masuk ke master_gejala </div>"
+						);
+					}else{
+						if ($resultsgejala['error_message']['code'] == 1062) {
+							$this->session->set_flashdata(
+												"alert_gejala",
+												"<div class='alert alert-warning alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Duplikasi!</strong> Tidak ada data yang di Insert ke master_gejala.</div>"
+							);
+						}else{
+							$this->session->set_flashdata(
+												"alert_gejala",
+												"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Tidak ada data </strong>yang di Insert ke master_gejala. Error code ".$resultsgejala['error_message']['code']."</div>"
+							);
+						}
+					}
+					
 				}
 			}
 			else{
@@ -464,9 +472,6 @@ class Admin_C extends CI_Controller {
 				$data['message']= "<p>Coba lihat <a href='".base_url()."Admin_C/view_create_obat'>Create obat</a> </p>";
 				$this->load->view('errors/html/error_general',$data);
 			}
-			// echo "<pre>";
-			// var_dump($indikasi_db);
-			// echo "</pre>";
 		}
 	}
 
