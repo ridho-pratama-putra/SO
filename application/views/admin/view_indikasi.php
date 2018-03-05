@@ -20,10 +20,8 @@
 					{ "data": "detail_tipe"},
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
-							return 
-
-							'<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" >Edit Indikasi</a>'+
+							return	'<div class="btn-group" role="group">'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'">Edit Indikasi</a>'+
 
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteIndikasi" title="hapus indikasi" data-idkarakteristik="'+data+'" >Hapus Indikasi</a>'+
 							'</div>';
@@ -83,6 +81,9 @@
 <script type="text/javascript">
 	$('#ModalDeleteIndikasi').on('show.bs.modal', function(e) {
 		$("#idKarakteristik").attr('value', $(e.relatedTarget).data('idkarakteristik'));
+	});
+	$('#ModalDeleteIndikasi').on('hide.bs.modal', function(e) {
+		$("#idKarakteristik").removeAttr('value');
 	});
 </script>
 <!-- END JAVASKRIP UNTUK AMBIL ELEMEN a SEBAGAI ACUAN MODAL -->
@@ -157,14 +158,11 @@
 <script type="text/javascript">
 	$('#ModalEditIndikasi').on('show.bs.modal', function(e) {
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
-
-		var url_detail_tipe = '<?php echo base_url('Admin_C/handle_detail_tipe/')?>'+$(e.relatedTarget).data('idkarakteristik');
-		$.get(url_detail_tipe, function(html){
-			var respon_detail_tipe = JSON.parse(html);
-			// console.log(respon_detail_tipe);
-			// $("#detailTipe").attr('value', respon_detail_tipe[0].detail_tipe);
-			$("#detailTipe").val(respon_detail_tipe[0].detail_tipe);
-		});
+		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
+	});
+	$('#ModalEditIndikasi').on('hide.bs.modal', function(e) {
+		$("#idKarakteristike").removeAttr('value');
+		$("#detailTipe").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT INDIKASI SEBAGAI ACUAN -->

@@ -46,8 +46,9 @@
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<?php if ($this->session->userdata('logged_in')['akses'] == 'admin') { ?>
 								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_read_obat">Lihat KB Obat</a>
-								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_CRUD_gejala">CRUD Gejala</a>
-								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_kondisi">View Kondisi</a>
+								<!-- <a class="dropdown-item" href="<?=base_url()?>Admin_C/view_CRUD_gejala">CRUD Gejala</a> -->
+								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_CRUD_gejala">Lihat Gejala</a>
+								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_kondisi">Lihat Kondisi</a>
 								<a class="dropdown-item" href="<?=base_url()?>Akun_C/view_registered_user">Registered User</a>
 								<!-- <a class="dropdown-item" href="#" title="DORONG MARI">Lihat Rekam Medis Pasien</a> -->
 								<div class="dropdown-divider"></div>

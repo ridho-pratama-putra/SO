@@ -52,9 +52,6 @@ class Admin_C extends CI_Controller {
 		else{
 			if (($karakteristik == 'indikasi') OR ($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
 				$data['master_obat']	=	$this->SO_M->read("master_obat",$dataCondition)->result();
-				// $datacondition['tipe'] 	=	$karakteristik;
-				// $dataCol				=	array('id_karakteristik');
-				// $data[$karakteristik]	=	$this->SO_M->readCol('karakteristik_obat',$dataCondition,$dataCol)->result();
 				$this->load->view('html/header');
 				$this->load->view('admin/view_'.$karakteristik,$data);
 				$this->load->view('html/footer');
@@ -71,7 +68,7 @@ class Admin_C extends CI_Controller {
 	public function view_kondisi()
 	{
 		// tampilkan isi tabel kondisi
-		$data['master_kondisi'] 	=	$this->SO_M->readS('kondisi')->result();
+		$data['master_kondisi'] 	=	$this->SO_M->readS('master_kondisi')->result();
 
 		$this->load->view('html/header');
 		$this->load->view('admin/view_kondisi',$data);
@@ -98,6 +95,21 @@ class Admin_C extends CI_Controller {
 	{
 		$this->load->view('html/header');
 		$this->load->view('admin/view_CRUD_gejala');
+		$this->load->view('html/footer');
+	}
+
+	// halaman tampilkan informasi seorang pasien
+	public function view_detail_user($id_user)
+	{
+		/*dapatkan informasi identitas*/
+		$dataCondition['id_user'] 	=	$id_user;
+		$dataCol					=	array('id_user','nama_user', 'nomor_identitas','alamat','akses','no_hp','link_foto');
+		$data['detailed_user'] 		=	$this->SO_M->read('user',$dataCondition)->result();
+		unset($dataCondition,$dataCol);
+
+		/*dapatkan informasi rekam medis(kondisi) dapatkan informasi log pemberian obat*/
+		$this->load->view('html/header');
+		$this->load->view('admin/detailed_user',$data);
 		$this->load->view('html/footer');
 	}
 
@@ -148,40 +160,50 @@ class Admin_C extends CI_Controller {
 	// dari ajax untuk gdelete gejala
 	public function handle_delete_gejala()
 	{
-		$dataCondition['id_gejala'] = $this->input->post('id_gejala');
-    	$result = $this->SO_M->delete('master_gejala',$dataCondition);
-    	if ($result) {
-			$alert_CRUD_gejala = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus gejala  <strong>berhasil!</strong></div>";
-    	}else{
-			$alert_CRUD_gejala = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus gejala <strong> gagal! </strong></div>";
+		// cek apakah data gejala tersebut dimiliiki oleh suatu obat. jika iya maka jangan dihapus. jika tidak ada satupun obat yang memmilki gejal tersebut maka penghapusan dapat dilakukan
+		$dataCondition['tipe'] = 'indikasi';
+		$dataCondition['detail_tipe'] = $this->input->post('detail_gejala');
+		$result = $this->SO_M->read('karakteristik_obat',$dataCondition);
+
+		// jika data gejala dimilki suatu obat
+		if ($result->num_rows() != null) {
+			echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Gagal! </strong>Data tersebut dimiliki oleh suatu obat!</div>";
 		}
-        echo $alert_CRUD_gejala;
+		else{
+			unset($dataCondition);
+			$dataCondition['id_gejala'] = $this->input->post('id_gejala');
+			$dataCondition['detail_gejala'] = $this->input->post('detail_gejala');
+			$result = $this->SO_M->delete('master_gejala',$dataCondition);
+			if ($result) {
+				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus gejala  <strong>berhasil!</strong></div>";
+			}else{
+				echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus gejala <strong> gagal! </strong></div>";
+			}
+		}
+	}
+
+	// dari ajax untuk gdelete gejala
+	public function handle_delete_kondisi()
+	{
+		$dataCondition['id_master_kondisi'] = $this->input->post('id_master_kondisi');
+		$result = $this->SO_M->read('master_kondisi',$dataCondition)->result();
+		var_dump("<pre>".$result."</pre>");
+		// $result = $this->SO_M->delete('master_kondisi',$dataCondition);
+		// if ($result) {
+		// 	$alert_CRUD_kondisi = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus kondisi<strong>berhasil!</strong></div>";
+		// }else{
+		// 	$alert_CRUD_kondisi = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus kondisi <strong> gagal! </strong></div>";
+		// }
+		// echo $alert_CRUD_kondisi;
 	}
 
 	// dari javaskrip untuk get data nama karakteristik obat melalui id_gejala pada halaman view_crud_gejala (MODAL)
 	public function handle_nama_gejala($id_gejala)
 	{
-		$dataCol['nama_gejala']			=	'nama_gejala';
+		$dataCol['detail_gejala']		=	'detail_gejala';
 		$dataCondition['id_gejala'] 	= 	$id_gejala;
 		$result 						= 	$this->SO_M->readCol('master_gejala',$dataCondition,$dataCol)->result();
 		echo json_encode($result);
-	}
-
-	// dari ajax untuk edit gejala renama pada MODAL
-	public function handle_edit_gejala()
-	{
-		$dataCondition 	=	array(	'id_gejala'	=>	$this->input->post('id_gejala'));
-		$dataUpdate		= 	array(	'nama_gejala'		=>	$this->input->post('nama_gejala'));
-
-		$result 		=	$this->SO_M->update('master_gejala',$dataCondition,$dataUpdate);
-		$results 		=	json_decode($result, true);
-
-		if ($results['status']) {
-			echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit gejala ke tabel master_gejala<strong> berhasil!</strong></div>";
-		}
-		else{
-			echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit gejala ke tabel master_gejala<strong> gagal!</strong> Cek adanya duplikasi nama gejala</div>";
-		}
 	}
  
 	// rename obat 
@@ -257,21 +279,6 @@ class Admin_C extends CI_Controller {
 			}
 			redirect("Admin_C/view_read_obat");
 		}
-	}
-
-	// halaman tampilkan informasi seorang pasien
-	public function view_detail_user($id_user)
-	{
-		/*dapatkan informasi identitas*/
-		$dataCondition['id_user'] 	=	$id_user;
-		$dataCol					=	array('id_user','nama_user', 'nomor_identitas','alamat','akses','no_hp','link_foto');
-		$data['detailed_user'] 		=	$this->SO_M->read('user',$dataCondition)->result();
-		unset($dataCondition,$dataCol);
-
-		/*dapatkan informasi rekam medis(kondisi) dapatkan informasi log pemberian obat*/
-		$this->load->view('html/header');
-		$this->load->view('admin/detailed_user',$data);
-		$this->load->view('html/footer');
 	}
 
 	/* delete suatu obat dalam database	*/
@@ -380,6 +387,11 @@ class Admin_C extends CI_Controller {
 														'detail_tipe'	=>	$karakteristik_dari_form[$key]
 					);
 					$kondisi_db[$key]		=	array(	'detail_kondisi'=>	$karakteristik_dari_form[$key]);
+
+					$result = $this->SO_M->read('karakteristik_obat',$karakteristik_db[$key]['detail_tipe']);
+					if ($result->num_rows() != 0) {
+						unset($karakteristik_db[$key],$kondisi_db[$key]);
+					}
 				}
 			}
 			// jika karakterisitk yang masuk adalah indikasi
@@ -393,9 +405,16 @@ class Admin_C extends CI_Controller {
 														'detail_tipe'	=>	$karakteristik_dari_form[$key]
 					);
 					$gejala_db[$key]		=	array(	'detail_gejala' =>	$karakteristik_dari_form[$key]);
+
+					$where = array('detail_tipe' => $karakteristik_dari_form[$key]);
+
+					$result = $this->SO_M->read('karakteristik_obat',$where);
+					if ($result->num_rows() != 0) {
+						unset($karakteristik_db[$key],$gejala_db[$key]);
+					}
 				}
 			}
-			
+
 			// kuerikan batch input
 			$result 	= $this->SO_M->createS('karakteristik_obat',$karakteristik_db);
 			$results	=	json_decode($result,true);
@@ -408,7 +427,7 @@ class Admin_C extends CI_Controller {
 
 				// hanya karakteristik kontra dan peringatan yang masuk ke tabel master_kondisi
 				if (($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
-					$resultkondisi	= $this->SO_M->createS('master_kondisi',$kondisi_db);
+					$resultkondisi	= 	$this->SO_M->createS('master_kondisi',$kondisi_db);
 					$resultskondisi	=	json_decode($resultkondisi,true);
 
 					if ($resultskondisi['status'] == 'true') {
@@ -497,17 +516,25 @@ class Admin_C extends CI_Controller {
 		echo json_encode($detail_tipe);
 	}
 
-	/*dipanggil oleh AJAX untuk melakukan edit pada indikasi*/
+	/*dipanggil oleh AJAX untuk melakukan edit pada karakteristik*/
 	public function handle_edit_karakteristik()
 	{
 		$dataCondition 	=	array(	'id_karakteristik'	=>	$this->input->post('id_karakteristik'));
 		$dataUpdate		= 	array(	'detail_tipe'		=>	$this->input->post('detail_tipe'));
 
-		$result 		=	$this->SO_M->update('karakteristik_obat',$dataCondition,$dataUpdate);
-		// var_dump($result);
-		$results 		=	json_decode($result, true);
-		if ($results['status']) {
-			echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> berhasil!</strong></div>";
+		$result 		=	$this->SO_M->read('karakteristik_obat',$dataUpdate);
+
+		// akan diupdate jika data tidak mengalami duplikasi
+		if ($result->num_rows() == 0) {
+			$result 		=	$this->SO_M->update('karakteristik_obat',$dataCondition,$dataUpdate);
+			// var_dump($result);
+			$results 		=	json_decode($result, true);
+			if ($results['status']) {
+				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> berhasil!</strong></div>";
+			}
+			else{
+				echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> gagal!</strong></div>";
+			}
 		}
 		else{
 			echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> gagal!</strong></div>";

@@ -34,7 +34,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" >Edit peringatan</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'">Edit peringatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeletePeringatan" title="hapus PERINGATAN" data-idkarakteristik="'+data+'" >Hapus peringatan</a>'+
 							'</div>';
 						}
@@ -79,6 +79,9 @@
 <script type="text/javascript">
 	$('#ModalDeletePeringatan').on('show.bs.modal', function(e) {
 		$("#idKarakteristik").attr('value', $(e.relatedTarget).data('idkarakteristik'));
+	});
+	$('#ModalDeletePeringatan').on('hide.bs.modal', function(e) {
+		$("#idKarakteristik").removeAttr('value');
 	});
 </script>
 <!-- END JAVASKRIP UNTUK AMBIL ELEMEN a SEBAGAI ACUAN MODAL -->
@@ -136,7 +139,7 @@
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Peringatan</label>
-							<input type='text' class='form-control' name='detail_tipe' id='detailTipek'>
+							<input type='text' class='form-control' name='detail_tipe' id='detailTipe'>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -153,14 +156,11 @@
 <script type="text/javascript">
 	$('#ModalEditPeringatan').on('show.bs.modal', function(e) {
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
-		var url_detail_tipe = '<?php echo base_url('Admin_C/handle_detail_tipe/')?>'+$(e.relatedTarget).data('idkarakteristik');
-		// console.log(url_detail_tipe);
-		$.get(url_detail_tipe, function(html){
-			var respon_detail_tipe = JSON.parse(html);
-			// console.log("a"+respon_detail_tipe);
-			// $("#detailTipe").attr('value', respon_detail_tipe[0].detail_tipe);
-			$("#detailTipek").val(respon_detail_tipe[0].detail_tipe);
-		});
+		$("#detailTipek").attr('value', $(e.relatedTarget).data('detailtipe'));
+	});
+	$('#ModalEditPeringatan').on('hide.bs.modal', function(e) {
+		$("#idKarakteristike").removeAttr('value');
+		$("#detailTipe").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT PERINGATAN SEBAGAI ACUAN -->

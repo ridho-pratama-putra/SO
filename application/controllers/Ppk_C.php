@@ -116,22 +116,22 @@ class Ppk_C extends CI_Controller {
 		$dataCondition['id_obat'] = $id_obat;
 
 		// ambil data nama obat berdsarkan idnya
-		$data['obat'] = $this->SO_M->read('master_obat',$dataCondition)->result();
+		$data['obat'] 				=	$this->SO_M->read('master_obat',$dataCondition)->result();
+		
+		// ambil data catatan yang terdapat pada suatu obat
+		$data['catatan_obat'] 		=	$this->SO_M->read('catatan_obat',$dataCondition)->result();
 
 		// ambil kontra berdsarkan id obat
-		$dataCondition['tipe'] = 'kontraindikasi';
-		$data['kontraindikasi_obat']= $this->SO_M->read('karakteristik_obat',$dataCondition)->result();
-		unset($dataCondition['tipe']);
+		$dataCondition['tipe'] 		=	'kontraindikasi';
+		$data['kontraindikasi_obat']=	$this->SO_M->read('karakteristik_obat',$dataCondition)->result();
 
 		// ambil indikasi
-		$dataCondition['tipe'] = 'indikasi';
-		$data['indikasi_obat']= $this->SO_M->read('karakteristik_obat',$dataCondition)->result();
-		unset($dataCondition['tipe']);
+		$dataCondition['tipe'] 		=	'indikasi';
+		$data['indikasi_obat']		=	$this->SO_M->read('karakteristik_obat',$dataCondition)->result();
 
 		// ambil peringatan
-		$dataCondition['tipe'] = 'peringatan';
-		$data['peringatan_obat']= $this->SO_M->read('karakteristik_obat',$dataCondition)->result();
-		unset($dataCondition['tipe']);
+		$dataCondition['tipe'] 		=	'peringatan';
+		$data['peringatan_obat']	=	$this->SO_M->read('karakteristik_obat',$dataCondition)->result();
 
 		// render di karakteristik_obat
 		$this->load->view('html/header');
