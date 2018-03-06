@@ -1,4 +1,3 @@
-<!-- <script type="text/javascript">$(document).ready(function() { $('#kontraindikasi').DataTable({"columnDefs": [{"targets": [1],		"orderable": false	}]	});	}); </script> -->
 <!-- DATATABLE via JAVASCRIPT. menggunakan javascript karena hapus dan edit karakteristik dihandle oleh AJAX. biar live update. kalo PHP harus  refresh dulu-->
 <script type="text/javascript">
 	window.onload=show();
@@ -6,7 +5,6 @@
 	function show(){
 		$.get('<?php echo base_url('Admin_C/dataTable/kontraindikasi/'.$master_obat[0]->id_obat)?>', function(html){
 			window.respon = JSON.parse(html);
-			// console.log('data in : '+window.respon.indikasi);
 			// destroy dulu datatable sebelumnya yang menggunakan json. 
 			$('#kontraindikasi').DataTable().destroy();
 
@@ -22,7 +20,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi">Edit kontraindikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi" data-idobat="<?=$master_obat[0]->id_obat)?>">Edit kontraindikasi</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKontraindikasi" title="hapus kontraindikasi" data-idkarakteristik="'+data+'" >Hapus kontraindikasi</a>'+
 							'</div>';
 						}
@@ -138,6 +136,7 @@
 				</div>
 					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
 					<input type="hidden" name="tipe" id="tipee">
+					<input type="hidden" name="id_obat" id="idObat">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Kontraindikasi</label>
@@ -160,11 +159,13 @@
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
 		$("#detailTipek").attr('value', $(e.relatedTarget).data('detailtipe'));
 		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
+		$("#idObat").attr('value', $(e.relatedTarget).data('idobat'));
 	});
 	$('#ModalEditKontraindikasi').on('hidden.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipek").removeAttr('value');
 		$("#tipee").removeAttr('value');
+		$("#idObat").removeAttr('value');
 	});
 
 </script>

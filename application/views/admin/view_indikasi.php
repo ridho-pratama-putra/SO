@@ -5,7 +5,7 @@
 	function show(){
 		$.get('<?php echo base_url('Admin_C/dataTable/indikasi/'.$master_obat[0]->id_obat)?>', function(html){
 			respon = JSON.parse(html);
-			// console.log('data in : '+window.respon.indikasi);
+			
 			// destroy dulu datatable sebelumnya yang menggunakan json. 
 			$('#indikasi').DataTable().destroy();
 
@@ -21,7 +21,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return	'<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="indikasi">Edit Indikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="indikasi" data-idobat="<?=$master_obat[0]->id_obat ?>"">Edit Indikasi</a>'+
 
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteIndikasi" title="hapus indikasi" data-idkarakteristik="'+data+'" >Hapus Indikasi</a>'+
 							'</div>';
@@ -45,7 +45,6 @@
 	var jmlh_form_input = 0;
 	function addInput(divName){
 		jmlh_form_input++;
-		// console.log(jmlh_form_input);
 		var newdiv = document.createElement('div');
 		newdiv.innerHTML ="<div class='margin-top-15'><input type='text' class='form-control' name='indikasi[]' required></div>";
 		document.getElementById(divName).appendChild(newdiv);
@@ -139,6 +138,7 @@
 				</div>
 					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
 					<input type="hidden" name="tipe" id="tipee">
+					<input type="hidden" name="id_obat" id="idObat">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Indikasi</label>
@@ -161,11 +161,13 @@
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
 		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
 		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
+		$("#idObat").attr('value', $(e.relatedTarget).data('idobat'));
 	});
 	$('#ModalEditIndikasi').on('hide.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipe").removeAttr('value');
 		$("#tipee").removeAttr('value');
+		$("#idObat").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT INDIKASI SEBAGAI ACUAN -->

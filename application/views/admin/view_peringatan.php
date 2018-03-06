@@ -18,7 +18,7 @@
 	function show(){
 		$.get('<?php echo base_url('Admin_C/dataTable/peringatan/'.$master_obat[0]->id_obat)?>', function(html){
 			window.respon = JSON.parse(html);
-			// console.log('data in : '+window.respon.indikasi);
+			
 			// destroy dulu datatable sebelumnya yang menggunakan json. 
 			$('#peringatan').DataTable().destroy();
 
@@ -34,7 +34,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan">Edit peringatan</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan" data-idobat="<?=$master_obat[0]->id_obat)?>">Edit peringatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeletePeringatan" title="hapus PERINGATAN" data-idkarakteristik="'+data+'" >Hapus peringatan</a>'+
 							'</div>';
 						}
@@ -137,6 +137,7 @@
 				</div>
 					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
 					<input type="hidden" name="tipe" id="tipee">
+					<input type="hidden" name="id_obat" id="idObat">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Peringatan</label>
@@ -159,11 +160,13 @@
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
 		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
 		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
+		$("#idObat").attr('value', $(e.relatedTarget).data('idobat'));
 	});
 	$('#ModalEditPeringatan').on('hide.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipe").removeAttr('value');
 		$("#tipee").removeAttr('value');
+		$("#idObat").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT PERINGATAN SEBAGAI ACUAN -->
