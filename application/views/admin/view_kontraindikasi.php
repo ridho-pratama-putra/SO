@@ -20,7 +20,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi" data-idobat="<?=$master_obat[0]->id_obat)?>">Edit kontraindikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi" data-idobat="<?=$master_obat[0]->id_obat?>">Edit kontraindikasi</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKontraindikasi" title="hapus kontraindikasi" data-idkarakteristik="'+data+'" >Hapus kontraindikasi</a>'+
 							'</div>';
 						}

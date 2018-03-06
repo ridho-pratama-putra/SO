@@ -34,7 +34,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan" data-idobat="<?=$master_obat[0]->id_obat)?>">Edit peringatan</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan" data-idobat="<?=$master_obat[0]->id_obat?>">Edit peringatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeletePeringatan" title="hapus PERINGATAN" data-idkarakteristik="'+data+'" >Hapus peringatan</a>'+
 							'</div>';
 						}
