@@ -22,7 +22,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'">Edit kontraindikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi">Edit kontraindikasi</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKontraindikasi" title="hapus kontraindikasi" data-idkarakteristik="'+data+'" >Hapus kontraindikasi</a>'+
 							'</div>';
 						}
@@ -136,7 +136,8 @@
 					<h4 class="modal-title" id="myModalLabel">Form Edit Kontraindikasi</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
-					<input type="hidden" name="id_karakteristik" id="123">
+					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
+					<input type="hidden" name="tipe" id="tipee">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Kontraindikasi</label>
@@ -158,10 +159,12 @@
 	$('#ModalEditKontraindikasi').on('show.bs.modal', function(e) {
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
 		$("#detailTipek").attr('value', $(e.relatedTarget).data('detailtipe'));
+		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
 	});
 	$('#ModalEditKontraindikasi').on('hidden.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipek").removeAttr('value');
+		$("#tipee").removeAttr('value');
 	});
 
 </script>

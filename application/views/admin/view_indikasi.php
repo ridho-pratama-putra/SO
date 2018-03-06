@@ -21,7 +21,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return	'<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'">Edit Indikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="indikasi">Edit Indikasi</a>'+
 
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteIndikasi" title="hapus indikasi" data-idkarakteristik="'+data+'" >Hapus Indikasi</a>'+
 							'</div>';
@@ -138,6 +138,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
+					<input type="hidden" name="tipe" id="tipee">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Indikasi</label>
@@ -159,10 +160,12 @@
 	$('#ModalEditIndikasi').on('show.bs.modal', function(e) {
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
 		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
+		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
 	});
 	$('#ModalEditIndikasi').on('hide.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipe").removeAttr('value');
+		$("#tipee").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT INDIKASI SEBAGAI ACUAN -->

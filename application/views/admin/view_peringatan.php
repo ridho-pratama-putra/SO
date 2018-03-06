@@ -34,7 +34,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'">Edit peringatan</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan">Edit peringatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeletePeringatan" title="hapus PERINGATAN" data-idkarakteristik="'+data+'" >Hapus peringatan</a>'+
 							'</div>';
 						}
@@ -136,6 +136,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
+					<input type="hidden" name="tipe" id="tipee">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Peringatan</label>
@@ -156,11 +157,13 @@
 <script type="text/javascript">
 	$('#ModalEditPeringatan').on('show.bs.modal', function(e) {
 		$("#idKarakteristike").attr('value', $(e.relatedTarget).data('idkarakteristik'));
-		$("#detailTipek").attr('value', $(e.relatedTarget).data('detailtipe'));
+		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
+		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
 	});
 	$('#ModalEditPeringatan').on('hide.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipe").removeAttr('value');
+		$("#tipee").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT PERINGATAN SEBAGAI ACUAN -->

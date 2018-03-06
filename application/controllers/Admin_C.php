@@ -388,7 +388,12 @@ class Admin_C extends CI_Controller {
 					);
 					$kondisi_db[$key]		=	array(	'detail_kondisi'=>	$karakteristik_dari_form[$key]);
 
-					$result = $this->SO_M->read('karakteristik_obat',$karakteristik_db[$key]['detail_tipe']);
+					$where	=	array(	'tipe'=> $karakteristik,
+										'detail_tipe' => $karakteristik_dari_form[$key]
+								);
+
+					// cek apakah data detail tipe tersebut sudah ada. jika ada, maka hapus array pada elemen tersbut agar tidak masuk ke database
+					$result = $this->SO_M->read('karakteristik_obat',$where);
 					if ($result->num_rows() != 0) {
 						unset($karakteristik_db[$key],$kondisi_db[$key]);
 					}
@@ -406,7 +411,9 @@ class Admin_C extends CI_Controller {
 					);
 					$gejala_db[$key]		=	array(	'detail_gejala' =>	$karakteristik_dari_form[$key]);
 
-					$where = array('detail_tipe' => $karakteristik_dari_form[$key]);
+					$where	=	array(	'tipe'=> $karakteristik,
+										'detail_tipe' => $karakteristik_dari_form[$key]
+								);
 
 					$result = $this->SO_M->read('karakteristik_obat',$where);
 					if ($result->num_rows() != 0) {
@@ -416,7 +423,7 @@ class Admin_C extends CI_Controller {
 			}
 
 			// kuerikan batch input
-			$result 	= $this->SO_M->createS('karakteristik_obat',$karakteristik_db);
+			$result 	=	$this->SO_M->createS('karakteristik_obat',$karakteristik_db);
 			$results	=	json_decode($result,true);
 
 			if ($results['status'] != false) {
@@ -479,18 +486,11 @@ class Admin_C extends CI_Controller {
 			else{
 				$this->session->set_flashdata(
 										"alert_".$karakteristik."_obat",
-										"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Insert ".$karakteristik." ke karakteristik_obat<strong> gagal!</strong></div>"
+										"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Insert ".$karakteristik." ke karakteristik_obat<strong> gagal!</strong> Array karakterisitk_db kosong</div>"
 				);
 			}
 			
-			if (($karakteristik == 'indikasi') OR ($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
-				redirect('Admin_C/view_karakteristik/'.$karakteristik.'/'.$id_obat);
-			}
-			else{
-				$data['heading']= "Karakteristik tidak didefinisikan";
-				$data['message']= "<p>Coba lihat <a href='".base_url()."Admin_C/view_create_obat'>Create obat</a> </p>";
-				$this->load->view('errors/html/error_general',$data);
-			}
+			redirect('Admin_C/view_karakteristik/'.$karakteristik.'/'.$id_obat);
 		}
 	}
 
@@ -521,23 +521,48 @@ class Admin_C extends CI_Controller {
 	{
 		$dataCondition 	=	array(	'id_karakteristik'	=>	$this->input->post('id_karakteristik'));
 		$dataUpdate		= 	array(	'detail_tipe'		=>	$this->input->post('detail_tipe'));
+		$dataKarakteristik	=	$this->input->post('tipe');
 
 		$result 		=	$this->SO_M->read('karakteristik_obat',$dataUpdate);
-
+		
 		// akan diupdate jika data tidak mengalami duplikasi
 		if ($result->num_rows() == 0) {
 			$result 		=	$this->SO_M->update('karakteristik_obat',$dataCondition,$dataUpdate);
-			// var_dump($result);
 			$results 		=	json_decode($result, true);
 			if ($results['status']) {
 				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> berhasil!</strong></div>";
+
+				// tambahkan data kondisi(peringatan dan kontraindikasi) atau gejala (indikasi) apabila di tabel kondisi | gejala belum ada
+				if ($dataKarakteristik =='kontraindikasi' OR $dataKarakteristik =='peringatan') {
+					$tabel_cari = 'master_kondisi';
+					$where_cari = array('detail_kondisi' => $dataUpdate['detail_tipe']);
+				}else{
+					$tabel_cari = 'master_gejala';
+					$where_cari = array('detail_gejala' => $dataUpdate['detail_tipe']);
+				}
+
+				$result = $this->SO_M->read($tabel_cari,$where_cari);
+
+				// jika belum ada data (gejala -> indikasi || kondisi -> kontraindikasi dan peringatan)
+				if ($result->num_rows() == 0) {
+					$result 	=	$this->SO_M->create($tabel_cari,$where_cari);
+					$results 	=	json_decode($result,true);
+					if ($results['status']) {
+						echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Terjadi penambahan data pada tabel ".$tabel_cari."</div>";
+					}
+					else{
+						echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan kegagalan insert :</strong> Tidak ada data yang masuk ke tabel ".$tabel_cari."</div>";
+					}
+				}else{
+					echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan duplikasi :</strong> Tidak ada data yang masuk ke tabel ".$tabel_cari."</div>";
+				}
 			}
 			else{
 				echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> gagal!</strong></div>";
 			}
 		}
 		else{
-			echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> gagal!</strong></div>";
+			echo "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Edit karakteristik obat ke tabel karakteristik_obat<strong> gagal!. Data sudah ada</strong></div>";
 		}
 	}
 }
