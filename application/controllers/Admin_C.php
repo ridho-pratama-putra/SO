@@ -1,8 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin_C extends CI_Controller {
-	
+class Admin_C extends CI_Controller {	
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('SO_M');
@@ -10,7 +9,6 @@ class Admin_C extends CI_Controller {
 			redirect();
 		}
 	}
-
 	// tampikan seluruh obat yang ada di database
 	public function view_read_obat()
 	{
@@ -68,10 +66,11 @@ class Admin_C extends CI_Controller {
 	public function view_kondisi()
 	{
 		// tampilkan isi tabel kondisi
-		$data['master_kondisi'] 	=	$this->SO_M->readS('master_kondisi')->result();
+		// $data['master_kondisi'] 	=	$this->SO_M->readS('master_kondisi')->result();
 
 		$this->load->view('html/header');
-		$this->load->view('admin/view_kondisi',$data);
+		// $this->load->view('admin/view_kondisi',$data);
+		$this->load->view('admin/view_kondisi');
 		$this->load->view('html/footer');
 	}
 
@@ -91,10 +90,10 @@ class Admin_C extends CI_Controller {
 	}
 
 	// halaman menampilkan dan CRUD gejala yang ada. nantinya inputan nini akan dijadikan prameter dropdown
-	public function view_CRUD_gejala()
+	public function view_gejala()
 	{
 		$this->load->view('html/header');
-		$this->load->view('admin/view_CRUD_gejala');
+		$this->load->view('admin/view_gejala');
 		$this->load->view('html/footer');
 	}
 
@@ -142,7 +141,7 @@ class Admin_C extends CI_Controller {
 												"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Gagal!</strong> Tidak ada data yang di Insert ke master_gejala</div>"
 				);
 			}
-			redirect('Admin_C/view_CRUD_gejala');
+			redirect('Admin_C/view_gejala');
 		}else{
 			$data['heading']= "Tidak ada form data yang di POST";
 			$data['message']= "<p>Coba lagi <a href='".base_url()."Admin_C/view_create_gejala'>Create gejala</a> </p>";
@@ -150,10 +149,11 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
-	/*digunakan oleh datatable untuk menampilkan data pada view_CRUD gejala*/
-	public function dataTable_gejala()
+	// override_function('dataTable', '$tabel', '$data["master_data"]=$this->SO_M->readS($tabel)->result();echo json_encode($data);');
+	/*digunakan oleh datatable untuk menampilkan data pada view_CRUD gejala dan kondisi*/
+	public function dataTable_($tabel)
 	{
-		$data['master_gejala']	=	$this->SO_M->readS('master_gejala')->result();
+		$data['master_data']	=	$this->SO_M->readS($tabel)->result();
 		echo json_encode($data);
 	}
 
@@ -172,7 +172,7 @@ class Admin_C extends CI_Controller {
 		else{
 			unset($dataCondition);
 			$dataCondition['id_gejala'] = $this->input->post('id_gejala');
-			$dataCondition['detail_gejala'] = $this->input->post('detail_gejala');
+			// $dataCondition['detail_gejala'] = $this->input->post('detail_gejala');
 			$result = $this->SO_M->delete('master_gejala',$dataCondition);
 			if ($result) {
 				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus gejala  <strong>berhasil!</strong></div>";
@@ -182,22 +182,33 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
-	// dari ajax untuk gdelete gejala
+	// dari ajax untuk gdelete kondisi
 	public function handle_delete_kondisi()
 	{
-		$dataCondition['id_master_kondisi'] = $this->input->post('id_master_kondisi');
-		$result = $this->SO_M->read('master_kondisi',$dataCondition)->result();
-		var_dump("<pre>".$result."</pre>");
-		// $result = $this->SO_M->delete('master_kondisi',$dataCondition);
-		// if ($result) {
-		// 	$alert_CRUD_kondisi = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus kondisi<strong>berhasil!</strong></div>";
-		// }else{
-		// 	$alert_CRUD_kondisi = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus kondisi <strong> gagal! </strong></div>";
-		// }
-		// echo $alert_CRUD_kondisi;
+		// cek apakah data gejala tersebut dimiliiki oleh suatu obat. jika iya maka jangan dihapus. jika tidak ada satupun obat yang memmilki gejal tersebut maka penghapusan dapat dilakukan
+
+		// ambil yang isinya perongatan dan kontraindikasi
+		$dataCondition['tipe !='] = 'indikasi';
+		$dataCondition['detail_tipe'] = $this->input->post('detail_kondisi');
+		$result = $this->SO_M->read('karakteristik_obat',$dataCondition);
+		// jika data gejala dimilki suatu obat
+		if ($result->num_rows() != null) {
+			echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Gagal! </strong>Data tersebut dimiliki oleh suatu obat!</div>";
+		}
+		else{
+			unset($dataCondition);
+			$dataCondition['id_master_kondisi'] =	$this->input->post('id_master_kondisi');
+			// $dataCondition['detail_gejala'] 	=	$this->input->post('detail_gejala');
+			$result = $this->SO_M->delete('master_kondisi',$dataCondition);
+			if ($result) {
+				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus kondisi  <strong>berhasil!</strong></div>";
+			}else{
+				echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus kondisi <strong> gagal! </strong></div>";
+			}
+		}
 	}
 
-	// dari javaskrip untuk get data nama karakteristik obat melalui id_gejala pada halaman view_crud_gejala (MODAL)
+	// dari javaskrip untuk get data nama karakteristik obat melalui id_gejala pada halaman view_gejala (MODAL)
 	public function handle_nama_gejala($id_gejala)
 	{
 		$dataCol['detail_gejala']		=	'detail_gejala';

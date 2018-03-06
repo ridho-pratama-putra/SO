@@ -4,7 +4,7 @@
 	window.onload=show();
 	var respon;
 	function show(){
-		$.get('<?php echo base_url('Admin_C/dataTable_gejala/')?>', function(html){
+		$.get('<?php echo base_url('Admin_C/dataTable_/master_gejala/')?>', function(html){
 			respon = JSON.parse(html);
 			// console.log('data in : '+window.respon.master_gejala);
 			// destroy dulu datatable sebelumnya yang menggunakan json. 
@@ -14,7 +14,7 @@
 			$('#master-gejala').DataTable({
 
 				// ambil data yang dikirim dari kontroler. nama dikontroler data[$master_gejala]
-				data : (respon.master_gejala),
+				data : (respon.master_data),
 
 				// decalare isi format urutan kolom
 				columns: [
@@ -111,9 +111,6 @@
 			{
 				// buat notif sukses
 				$("#notif").html(data);
-
-				// reset value form yang telah diset, agar tidak nyangkut di refresh
-				$("#idGejala").attr('value');
 				
 				// kembalikan elemen html modal ke default
 				$('#btn-hapus-gejala').text('Ya!'); //change button text
