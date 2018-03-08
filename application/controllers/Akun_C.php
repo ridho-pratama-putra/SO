@@ -11,11 +11,7 @@ class Akun_C extends CI_Controller {
 	public function view_login()
 	{
 		if(isset($this->session->userdata['logged_in'])){
-			// set alert gagal login
-			$this->session->set_flashdata(
-				"alert_login",
-				"<div class='alert alert-warning' role='alert'><strong>Sudah login !</strong></div> "
-			);
+			alert('alert_login','warning','Warning','Sudah Login');
 			if ($this->session->userdata['logged_in']['akses'] == 'admin') {
 				redirect('Admin_C/view_read_obat');
 			}
@@ -34,7 +30,6 @@ class Akun_C extends CI_Controller {
 		}
 	}
 
-	// function untuk admin
 	public function view_register_user()
 	{
 		if($this->session->userdata['logged_in']['akses'] == 'admin'){
@@ -87,11 +82,7 @@ class Akun_C extends CI_Controller {
 		if ($this->form_validation->run() == FALSE) { 
 			
 			// buat alert eror login pada bagian form validation. beritahu pengguna format inputan yang benar
-			$this->session->set_flashdata(
-				"alert_login",
-				"<div class='alert alert-danger' role='alert'><strong>Login gagal!</strong></div> "
-			);
-		
+			alert('alert_login','danger','Gagal','Cek inputan form login');
 			// arahkan ke halaman login lagi
 			redirect();
 		}
@@ -125,11 +116,7 @@ class Akun_C extends CI_Controller {
 				);
 				
 				// buat pesan sukses login
-				$this->session->set_flashdata(
-					"alert_login",
-					"<div class='alert alert-success alert-dismissible fade show' role='alert'> <img src='".base_url()."".$session_data['foto']."'class='img-thumbnail rounded' style='width:100px;'></img> Selamat datang ". $session_data['akses']." ".$session_data['nama_user'] ."! <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div> "
-				);
-				
+				alert('alert_login','success','Berhasil','Selamat datang '.$session_data['akses'].' '.$session_data['nama_user']);
 				// set session user berdasarkan variabel session_data
 				$this->session->set_userdata('logged_in', $session_data);
 
@@ -148,11 +135,7 @@ class Akun_C extends CI_Controller {
 			//username password tidak ditemukan
 			else {
 				// set alert not found
-				$this->session->set_flashdata(
-					"alert_login",
-					"<div class='alert alert-danger' role='alert'><strong>Akun anda tidak terdaftar!</strong></div> "
-				);
-
+				alert('alert_login','danger','Gagal','Akun anda tidak terdaftar');
 				// arahkan ke login lagi
 				redirect();
 			}
@@ -169,7 +152,7 @@ class Akun_C extends CI_Controller {
 
 		// hapus session
 		$hapus_session = $this->session->unset_userdata('logged_in', $sess_array);
-
+		alert('alert_login','success','Berhasil','Anda berhasil logout');
 		// arahkan ke halaman login lagi
 		redirect();
 	}
@@ -187,12 +170,7 @@ class Akun_C extends CI_Controller {
 		$this->form_validation->set_rules('alamat','Alamat','trim|required');
 
 		if ($this->form_validation->run() == FALSE) {
-
-			$this->session->set_flashdata(
-				"alert_register_user",
-				"<div class='alert alert-danger' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Register <strong>gagal!</strong> Kesalahan pada form validation codeigniter</div> "
-			);
-
+			alert('alert_register_user','danger','Gagal','Kesalahan pada form validation codeigniter');
 			redirect('Akun_C/view_register_user');
 		}
 		else {
@@ -208,11 +186,7 @@ class Akun_C extends CI_Controller {
 				$datax = $this->upload->data();	
 
 				// buat alert kalau insert pp di direktori berhasil (link belum masuk db)
-				$this->session->set_flashdata(
-												"alert_register_foto",
-												"<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Upload foto profil ke DIR berhasil!</strong></div>"
-				);
-
+				alert('alert_register_foto','success','Berhasil','Foto profil telah ditambahkan');
 
 				// setelah upload foto ke direktori berhasil, ambil semua inputan pengguna
 				$data = array(	
@@ -230,27 +204,16 @@ class Akun_C extends CI_Controller {
 				$results	=	json_decode($result,true);
 				// jika berhasil memasukkan ke database
 				if ($results['status']) {
-					$this->session->set_flashdata(
-													"alert_register_user",
-													"<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Registrasi berhasil!</strong></div>"
-					);
+					alert('alert_register_user','success','Berhasil','Registrasi berhasil');
 				}
 
 				// jika gagal masuk ke database
 				else{
-					$this->session->set_flashdata(
-													"alert_register_user",
-													"<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Registrasi gagal!</strong> Gagal saat di database <br>".$results['error_message']."</div>"
-					);
+					alert('alert_register_user','success','Gagal','Kegagalan database');
 				}
 			}
 			else{
-
-				// alert gagal upload foto ke direktori
-				$this->session->set_flashdata(
-												"alert_register_foto",
-												"<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Upload foto profil ke DIR gagal!</strong></div>"
-				);
+				alert('alert_register_foto','warning','Gagal','Upload foto profil gagal');
 			}
 
 			redirect('Akun_C/view_register_user');
@@ -264,13 +227,8 @@ class Akun_C extends CI_Controller {
 		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|is_unique[user.nomor_identitas]');
 		$this->form_validation->set_rules('no_hp','No HP','trim|required|min_length[12]');
 		$this->form_validation->set_rules('alamat','Alamat','trim|required');
-
 		if ($this->form_validation->run() == FALSE) {
-
-			$this->session->set_flashdata(
-				"alert_register_user",
-				"<div class='alert alert-danger' role='alert'><strong>Register gagal!</strong></div> "
-			);
+			alert('alert_register_user','danger','Gagal','Cek lagi form inputan');
 			if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
 				redirect('Akun_C/view_register_user_ppk');
 			}else{
@@ -278,24 +236,17 @@ class Akun_C extends CI_Controller {
 			}
 		}
 		else {
-
 			// settingan uplod gambar
 			$config['upload_path']          = FCPATH."assets/images/users_photo/";
 			$config['allowed_types']        = 'jpg|png|jpeg';
 			$this->load->library('upload',$config);
-			
 			// coba upload foto
 			if($this->upload->do_upload('link_foto')){
 				// dapatkan informasi gambar yang diupload. datax digunakan untuk ambil nama foto biar disimpan di database
 				$datax = $this->upload->data();	
-
 				// buat alert kalau insert pp di direktori berhasil (link belum masuk db)
-				$this->session->set_flashdata(
-												"alert_register_foto",
-												"<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Upload foto profil ke DIR berhasil!</strong></div>"
-				);
-
-
+				alert('alert_register_foto','success','Berhasil','Upload foto profil berhasil');
+				
 				// setelah upload foto ke direktori berhasil, ambil semua inputan pengguna
 				$data = array(	
 								'nama_user'			=>	$this->input->post('nama_user'),
@@ -312,33 +263,41 @@ class Akun_C extends CI_Controller {
 
 				// jika berhasil memasukkan ke database
 				if ($result) {
-					$this->session->set_flashdata(
-													"alert_register_user",
-													"<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Registrasi berhasil!</strong></div>"
-					);
+					alert('alert_register_user','success','Berhasil','Registrasi berhasil');
 				}
 
 				// jika gagal masuk ke database
 				else{
-					$this->session->set_flashdata(
-													"alert_register_user",
-													"<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Registrasi gagal!</strong> Gagal saat di database</div>"
-					);
+					alert('alert_register_user','warning','Gagal','Kesalahan kueri');
 				}
 			}
 			else{
-
 				// alert gagal upload foto ke direktori
-				$this->session->set_flashdata(
-												"alert_register_foto",
-												"<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong>Upload foto profil ke DIR gagal!</strong></div>"
-				);
+				alert('alert_register_foto','warning','Gagal','upload foto profil gagal');
 			}
 			if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
 				redirect('Akun_C/view_register_user_ppk');
 			}else{
 				redirect('');
 			}
+		}
+	}
+
+	public function reset_password($id_user)
+	{
+		if ($this->session->userdata['logged_in']['akses'] == 'admin') {
+			$dataWhere	=	array("id_user" => $id_user);
+			$dataUpdate =	array("password" => hash("sha256", "SO"));
+
+			$result = $this->SO_M->update('user',$dataWhere,$dataUpdate);
+			$results = json_decode($result);
+			if ($results->status) {
+				alert('alert_reset_password','success','Berhasil','Reset password berhasil');
+			}
+			else{
+				alert('alert_reset_password','danger','Gagal','Reset password gagal');
+			}
+			redirect('Akun_C/view_registered_user');
 		}
 	}
 }

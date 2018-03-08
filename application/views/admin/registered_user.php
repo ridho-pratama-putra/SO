@@ -11,7 +11,8 @@
 
 <div class="container-fluid margin-top-15  padding-bottom-15">
 	<div class="col">
-		<?=$this->session->flashdata("alert_rename_obat");?>
+		<?=$this->session->flashdata("alert_register_user");?>
+		<?=$this->session->flashdata("alert_reset_password");?>
 		<h3>Daftar Registered User (Not admin)</h3>
 		<a class="btn btn-primary" href="<?=base_url()?>Akun_C/view_register_user">Register User</a>
 	</div>
@@ -44,7 +45,7 @@
 </div> -->
 							<div class="btn-group" role="group">
 								<a href="<?=base_url()?>Admin_C/view_detail_user/<?=$value->id_user?>" class="btn btn-secondary bg-dark">Detail User</a>
-								<a href="" class="btn btn-secondary bg-dark">Reset Password</a>
+								<a href="<?=base_url()?>Akun_C/reset_password/<?=$value->id_user?>" class="btn btn-secondary bg-dark">Reset Password</a>
 								<a href="" class="btn btn-secondary bg-dark">Hapus</a>
 							</div>
 						</td>
