@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 class Admin_C extends CI_Controller {	
 	public function __construct(){
 		parent::__construct();
@@ -9,7 +8,6 @@ class Admin_C extends CI_Controller {
 			redirect();
 		}
 	}
-
 	// tampikan seluruh obat yang ada di database
 	public function view_read_obat()
 	{
@@ -66,11 +64,7 @@ class Admin_C extends CI_Controller {
 	// untuk view apa saja kondisi yang ada dalam database
 	public function view_kondisi()
 	{
-		// tampilkan isi tabel kondisi
-		// $data['master_kondisi'] 	=	$this->SO_M->readS('master_kondisi')->result();
-
 		$this->load->view('html/header');
-		// $this->load->view('admin/view_kondisi',$data);
 		$this->load->view('admin/view_kondisi');
 		$this->load->view('html/footer');
 	}
@@ -113,44 +107,6 @@ class Admin_C extends CI_Controller {
 		$this->load->view('html/footer');
 	}
 
-	// sebagai action="" pada form create obat
-	// public function handle_create_gejala()
-	// {
-	// 	if ($this->input->post() != NULL) {
-	// 		// ambil array gejala
-	// 		$gejala_dari_form 	=$this->input->post('gejala[]');
-
-	// 		// array kosong untuk masuk db
-	// 		$gejala_db = array();
-
-	// 		foreach ($gejala_dari_form as $key => $value) {
-	// 			$gejala_db[$key] = array('detail_gejala' => $gejala_dari_form[$key]);
-	// 		}
-
-	// 		$result 	= 	$this->SO_M->createS('master_gejala',$gejala_db);
-	// 		$results	=	json_decode($result,true);
-
-	// 		if ($results['status'] != false) {
-	// 			$this->session->set_flashdata(
-	// 											"alert_CRUD_gejala",
-	// 											"<div class='alert alert-success alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Berhasil!</strong>Insert gejala</div>"
-	// 			);
-	// 		}
-	// 		else{
-	// 			$this->session->set_flashdata(
-	// 											"alert_CRUD_gejala",
-	// 											"<div class='alert alert-danger alert-dismissible margin-top-15' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Gagal!</strong> Tidak ada data yang di Insert ke master_gejala</div>"
-	// 			);
-	// 		}
-	// 		redirect('Admin_C/view_gejala');
-	// 	}else{
-	// 		$data['heading']= "Tidak ada form data yang di POST";
-	// 		$data['message']= "<p>Coba lagi <a href='".base_url()."Admin_C/view_create_gejala'>Create gejala</a> </p>";
-	// 		$this->load->view('errors/html/error_general',$data);
-	// 	}
-	// }
-
-	// override_function('dataTable', '$tabel', '$data["master_data"]=$this->SO_M->readS($tabel)->result();echo json_encode($data);');
 	// digunakan oleh datatable untuk menampilkan data pada view_CRUD gejala dan kondisi
 	public function dataTable_($tabel)
 	{
@@ -457,14 +413,14 @@ class Admin_C extends CI_Controller {
 	/*untuk merespon panggilan AJAX pada halaman view $karakteristik*/
 	public function handle_delete_karakteristik()
 	{
-    	$dataCondition['id_karakteristik'] = $this->input->post('id_karakteristik');
-    	$result = $this->SO_M->delete('karakteristik_obat',$dataCondition);
-    	if ($result) {
+		$dataCondition['id_karakteristik'] = $this->input->post('id_karakteristik');
+		$result = $this->SO_M->delete('karakteristik_obat',$dataCondition);
+		if ($result) {
 			alert('','success','Berhasil','Data tersebut telah dihapus',false);
-    	}else{
+		}else{
 			alert('','danger','Gagal','Data tidak terhapus',false);
 		}
-        
+		
 	}
 
 	/*dipanggil via get pada view indikasi untuk button edit indikasi*/

@@ -61,7 +61,7 @@
 					{ "data": "id_log" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="<?=base_url()?>Ppk_C/view_detail_per_log/'+data+'/<?=$user[0]->id_user?>" class="btn btn-primary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>'+
+								'<a href="<?=base_url()?>Ppk_C/view_detail_per_log/'+data+'/<?=$user[0]->nomor_identitas?>" class="btn btn-primary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" data-target="#ModalDeleteLog" title="hapus log pengobatan ini" data-idlog="'+data+'"  class="btn btn-danger" data-toggle="tooltip" title="hapus log pengobatan di tanggal ini"><i class="icon ion-android-delete"></i> </a>'+
 							'</div>';
 						}
@@ -88,6 +88,7 @@
 </script>
 <!-- JAVASCRIP TOOLTIP -->
 
+<!-- KONTEN KANAN -->
 <div class="col-md-10 konten-kanan" id="style-1">
 	<div class="row">
 
@@ -97,7 +98,7 @@
 			<?= $this->session->flashdata('alert_log_pengobatan'); ?>
 			<br>
 			<h1 class="text-center">Log Pemberian Obat</h1>
-			<a class="btn btn-primary float-right" href="#" role="button">Ke Menu Pemeriksaan</a>
+			<a class="btn btn-primary float-right" href="<?=base_url()?>Ppk_C/view_gejala" role="button">Ke Menu Pemeriksaan</a>
 			<br>
 			<br>
 			<table id="log_pengobatan" class="table table-striped table-hover" cellspacing="0" width="100%" style="width: 100%">
@@ -249,15 +250,18 @@
 			</div>
 		</div>
 		<!-- END MODAL ADD KONDISI PASIEN -->
-
+		
 		<!-- JAVASCRIPT UNTUK SELECT KONDISI. MEMANFAATKAN DATA BIAR NGGK MUBADZIR -->
 		<script type="text/javascript">
-				// convert array to json biar mudah assignnya dari id_kondisi  ke detail kondisi
+				// convert array to json biar mudah assignnya dari id_kondisi ke detail kondisi
 				var json_select = <?=json_encode($master_kondisi)?>;
 				$('#selectedidkondisi').select2({
+					dropdownParent	: $('#ModalTambahKondisi'),
 					data 			:	json_select,
-					width			:	'100%'
+					width			:	'100%',
+					placeholder		:	'Pilih Kondisi'
 				});
+
 				var convert_json_select = new Array();
 				for (var i = 0; i < json_select.length; i++) {
 					convert_json_select[json_select[i]['id']]	=	json_select[i]['text'];
@@ -323,7 +327,7 @@
 						// reset value form yang telah diset, agar tidak nyangkut di refresh dan klik modal baru
 						// $("#selectedidkondisi").select2("val","");
 						// $("#selectedidkondisi").select2("val", "");
-						$('#selectedidkondisi').val('').trigger('change'); //set button enable 
+						// $('#selectedidkondisi').val('').trigger('change'); //set button enable 
 						document.getElementById('formtambahkondisi').reset();
 						
 						// kembalikan elemen html modal ke default
@@ -537,6 +541,7 @@
 
 	</div>
 </div>
+<!-- KONTEN KANAN -->
 
 
 <!-- SIDE NAAV HERE -->

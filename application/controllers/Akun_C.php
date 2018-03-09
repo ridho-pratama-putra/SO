@@ -52,18 +52,16 @@ class Akun_C extends CI_Controller {
 	public function view_registered_user()
 	{
 		/*tampilkan data-data siapa saja pasien yang telah terdaftar*/
-		$dataCol						= array('id_user','nama_user', 'akses', 'no_hp');
-		
 		if($this->session->userdata['logged_in']['akses'] == 'admin'){
 			$dataCondition				= array('akses !='=>'admin');
-			$data['registered_user']	=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+			$data['registered_user']	=	$this->SO_M->read('user',$dataCondition)->result();
 			$this->load->view('html/header');
 			$this->load->view('admin/registered_user',$data);
 			$this->load->view('html/footer');
 		}
 		elseif($this->session->userdata['logged_in']['akses'] == 'ppk'){
-			$dataCondition				= array('akses '=>'pasien');
-			$data['registered_user']	=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+			$dataCondition				=	array('akses '=>'pasien');
+			$data['registered_user']	=	$this->SO_M->read('user',$dataCondition)->result();
 			$this->load->view('html/header');
 			$this->load->view('ppk/registered_user',$data);
 			$this->load->view('html/footer');
@@ -80,10 +78,8 @@ class Akun_C extends CI_Controller {
 
 		// jika form validation gagal
 		if ($this->form_validation->run() == FALSE) { 
-			
 			// buat alert eror login pada bagian form validation. beritahu pengguna format inputan yang benar
 			alert('alert_login','danger','Gagal','Cek inputan form login');
-			// arahkan ke halaman login lagi
 			redirect();
 		}
 
@@ -170,7 +166,7 @@ class Akun_C extends CI_Controller {
 		$this->form_validation->set_rules('alamat','Alamat','trim|required');
 
 		if ($this->form_validation->run() == FALSE) {
-			alert('alert_register_user','danger','Gagal','Kesalahan pada form validation codeigniter');
+			alert('alert_register_user','danger','Gagal','Kesalahan pada form validation');
 			redirect('Akun_C/view_register_user');
 		}
 		else {

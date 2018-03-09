@@ -14,28 +14,28 @@
 		});
 		$('#tooltip-gejala').tooltip();
 	</script>
-	<div class="row">
+	<div class="margin-top-15">
 		<div class="col-12 rounded-bottom" style="background-color: #cfd1d3">
 			<br>
 			<h4 class="text-center">Detail gejala untuk pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
-			<br>
-			<br>
-			<h3>
-				<?php foreach ($gejala_per_log as $key => $value) {	?>
-					<span class="badge badge-primary"><?= $value->nama_gejala ?></span>
-				<?php } ?>
-			</h3>
+			<div class="margin-top-15 padding-bottom-10">
+				<h3>
+					<?php foreach ($gejala_per_log as $key => $value) {	?>
+						<span class="badge badge-primary"><?= $value->detail_gejala ?></span>
+					<?php } ?>
+				</h3>
+			</div>
 		</div>
 		<div class="col-12 margin-top-15 rounded" style="background-color: #cfd1d3">
 			<br>
 			<h4 class="text-center">Daftar obat yang diberikan untuk pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
-			<br>
-			<br>
-			<h3>
-				<?php foreach ($obat_per_log as $key => $value) {	?>
-					<a class="btn text-white badge badge-primary" href="<?=base_url()?>Ppk_C/view_karakteristik_obat/<?=$value->id_obat?>" role='button'><?= $value->nama_obat ?></a>
-				<?php } ?>
-			</h3>
+			<div class="margin-top-15 padding-bottom-10">
+				<h3>
+					<?php foreach ($obat_per_log as $key => $value) {	?>
+						<a class="btn text-white badge badge-primary" href="<?=base_url()?>Ppk_C/view_karakteristik_obat/<?=$value->id_obat?>" role='button'><?= $value->nama_obat ?></a>
+					<?php } ?>
+				</h3>
+			</div>
 		</div>
 		<!-- SIDE NAAV HERE -->
 	</div>

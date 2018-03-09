@@ -30,29 +30,28 @@ class Ppk_C extends CI_Controller {
 	}
 
 	/*detai per user dari menu registered user. untuk yang dari halaman pemeriksaan di handle oleh function handle_form_id pada kontroller ini. beda function, fungsinya sama*/
-	public function view_detail_log_per_user($id_user)
-	{
-		/*untuk aksi pada tombol detail user dari datatable registered user pada halaman registered user*/
-		$dataCondition['id_user']	=	$id_user;
-		$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
+	// public function view_detail_log_per_user($id_user)
+	// {
+	// 	/*untuk aksi pada tombol detail user dari datatable registered user pada halaman registered user*/
+	// 	$dataCondition['id_user']	=	$id_user;
+	// 	$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
 		
-		// cari informasi identitas user
-		$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+	// 	// cari informasi identitas user
+	// 	$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
 
-		// cari log pengobatan
-		$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataCondition)->result();
+	// 	// cari log pengobatan
+	// 	$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataCondition)->result();
 
-		// dapatkan seluruh data pada master_kondisi untuk dijadikan selcet elemen'
-		unset($dataCol,$dataCondition);
-		$dataCondition				=	array();
-		$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
-		$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
-		// $data['master_kondisi_array']		=	$this->SO_M->readS('master_kondisi')->result_array();
+	// 	// dapatkan seluruh data pada master_kondisi untuk dijadikan selcet elemen'
+	// 	unset($dataCol,$dataCondition);
+	// 	$dataCondition				=	array();
+	// 	$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
+	// 	$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
 
-		$this->load->view('html/header');
-		$this->load->view('ppk/log_pengobatan',$data);
-		$this->load->view('html/footer');	
-	}
+	// 	$this->load->view('html/header');
+	// 	$this->load->view('ppk/log_pengobatan',$data);
+	// 	$this->load->view('html/footer');	
+	// }
 
 	/*function ini digunakan untuk dipanggil oleh ajax saat render data kondisi seorang pasien*/
 	public function dataTable_kondisi($id_user)
@@ -71,13 +70,13 @@ class Ppk_C extends CI_Controller {
 	}
 
 	// detail untuk setiap log pengobatan. detailnya yakni gejalanya apa saja, obatnya apa saja. obat bisa diklik untuk melihat karakteristiknya
-	public function view_detail_per_log($id_log,$id_user)
+	public function view_detail_per_log($id_log,$nomor_identitas)
 	{
 		$dataCondition['id_log'] 	=	$id_log;
 		$data['gejala_per_log']		=	$this->SO_M->rawQuery("	SELECT
 																gejala_log.id_log_gejala,
 																gejala_log.id_log,
-																master_gejala.nama_gejala
+																master_gejala.detail_gejala
 
 																FROM
 																gejala_log
@@ -99,7 +98,7 @@ class Ppk_C extends CI_Controller {
 		unset($dataCondition['id_log']);
 
 		// data user didapatkan untuk menu side bar :D
-		$dataCondition['id_user']	=	$id_user;
+		$dataCondition['nomor_identitas']	=	$nomor_identitas;
 		$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
 
 		// cari informasi identitas user
@@ -173,13 +172,58 @@ class Ppk_C extends CI_Controller {
 	public function handle_view_id()
 	{
 		if ($this->input->get() != NULL) {
-			$id_user			= 	$this->input->post('id_user');
-			redirect('Ppk_C/view_detail_per_user/'.$id_user);
+			$nomor_identitas	= 	$this->input->get('nomor_identitas');
+			$dataWhere			=	array('nomor_identitas' => $nomor_identitas);
+			$query				=	$this->SO_M->read('user',$dataWhere);
+			$results			=	$query->result();
+			if($query->num_rows() != 0){
+				$data['user']				=	$results;
+				unset($dataWhere);
+				$dataWhere					=	array('id_user' => $results[0]->id_user);
+				$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataWhere)->result();
+
+				$dataCondition				=	array();
+				$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
+				$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
+
+				$this->load->view('html/header');
+				$this->load->view('ppk/log_pengobatan',$data);
+				$this->load->view('html/footer');
+				
+				// echo "<pre>";
+				// var_dump($data);
+				// echo "</pre>";
+			}else{
+				$data['heading']	= "Data tidak ditemukan";
+				$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_id'>Input id pasien</a> </p>";
+				$this->load->view('errors/html/error_general',$data);
+			}
+			// redirect('Ppk_C/view_detail_per_user/'.$id_user);
 		}
 		else{
-			$data['heading']	= "Tidak ada form data yang di POST";
+			$data['heading']	= "Tidak ada form data yang di GET";
 			$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_id'>Input id pasien</a> </p>";
 			$this->load->view('errors/html/error_general',$data);
+		}
+	}
+
+	// dapatkan suatu kondisi seseorang. fungsi ini diguankan saat modal edit kondisi dipanggil
+	public function get_kondisi($id_kondisi)
+	{
+		$dataCondition['id_kondisi']	= 	$id_kondisi;
+		$result 						=	$this->SO_M->read('kondisi',$dataCondition)->result();
+		echo json_encode($result);
+	}
+
+	// untuk handle delete log pengobatan seorang user pada halam log pengobatan setiap user. dipanggil oleh ajax pada halaman tersebut
+	public function handle_delete_log()
+	{
+		$dataCondition['id_log'] 	= 	$this->input->post('id_log');
+		$result						= 	$this->SO_M->delete('log_pengobatan',$dataCondition);
+		if ($result == true) {
+			alert('','success','Berhasil','Data telah dihapus dari tabel log_pengobatan',false);
+		}else{
+			alert('','danger','Gagal','Data gagal dihapus dari tabel log_pengobatan',false);
 		}
 	}
 
@@ -199,21 +243,20 @@ class Ppk_C extends CI_Controller {
 									"detail_kondisi"	=> $dataAdd['detail_kondisi']
 							);
 		$result 		= 	$this->SO_M->read('kondisi',$dataCondition);
-
 		// var_dump($result);
 		// jika belum ada di tabel kondisi
 		if ($result->num_rows() == 0) {
 			$result 	=	$this->SO_M->create('kondisi',$dataAdd);
 			$results	=	json_decode($result,true);
 			if ($results['status']) {
-				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Create kondisi <strong>berhasil!</strong></div>";
+				alert('','success','Berhasil','Data telah dimasukkan ke tabel kondisi',false);
 			}
 			else{
-				echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Gagal! </strong> Tidak ada data yang masuk pada tabel kondisi</div>";
+				alert('','danger','Gagal','Tidak ada data yang masuk pada tabel kondisi',false);
 			}
 		}
 		else{
-			echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Duplikasi! </strong> Tidak ada data yang masuk pada tabel kondisi</div>";
+			alert('','danger','Gagal','Tidak ada data yang masuk pada tabel kondisi',false);
 		}
 	}
 
@@ -221,12 +264,11 @@ class Ppk_C extends CI_Controller {
 	public function handle_delete_kondisi()
 	{
 		$dataCondition['id_kondisi'] 	=	 $this->input->post('id_kondisi');
-
 		$result 						=	$this->SO_M->delete('kondisi',$dataCondition);
 		if ($result) {
-			echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Data berhasil dihapus</div>";
+			alert('','success','Berhasil','Data telah dihapus dari tabel kondisi',false);
 		}else{
-			echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Gagal! </strong> Tidak ada data yang dihapus pada tabel kondisi</div>";
+			alert('','danger','Gagal','Tidak ada data yang dihapus pada tabel kondisi',false);
 		}
 	}
 
@@ -235,61 +277,34 @@ class Ppk_C extends CI_Controller {
 	{
 		$dataCondition			=	array(
 										"id_user"				=>	$this->input->post('id_user'),
-										"detail_kondisi"		=>	$this->input->post('detail_kondisi'),
-										'id_kondisi !='			=>	$this->input->post('id_kondisi')
+										"detail_kondisi"		=>	$this->input->post('detail_kondisi')
+										// 'id_kondisi'			=>	$this->input->post('id_kondisi')
 									);
-
 		// var_dump($dataCondition);
-		$result 				= 	$this->SO_M->read('kondisi',$dataCondition)->result();
+		$result 				= 	$this->SO_M->read('kondisi',$dataCondition);
 		// cek apakah seorang pasien telah memiliki kondisi tersebut
 		// jika belum, maka ambil inputan tadi, lalu tambahkan ke tabel kondisi
-		if ($result == array()) {
+		if ($result->num_rows() == 0) {
 			$dataUpdate			=	array(
 											"id_master_kondisi" 	=>$this->input->post('id_master_kondisi'),
 											"detail_kondisi"		=>$dataCondition['detail_kondisi'],
 											"tanggal_ditambahkan"	=>$this->input->post("tanggal"),
 											"status"				=>$this->input->post("status")
 									);
-
 			unset($dataCondition);
 			$dataCondition['id_kondisi']	=	$this->input->post('id_kondisi');
 			$result 		=	$this->SO_M->update('kondisi',$dataCondition,$dataUpdate);
 			$results		=	json_decode($result,true);
 			if ($results['status']) {
-				echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Data kondisi pasien telah ditambhakan</div>";
+				alert('','success','Berhasil','Data telah ditambahkan ke tabel kondisi',false);
 			}
 			else{
+				alert('','danger','Gagal','Tidak ada data yang diperbarui pada tabel kondisi',false);
 				var_dump($results);
-				echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Data kondisi gagal dimasukkan ke database</div>";
 			}
 		}
 		else{
-		// 	echo "stringo";
-			echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> <strong> Duplikasi! </strong> Kondisi seorang pasien tersebut telah telah didefinisikan</div>";
-		}
-		// echo "<pre>";
-		// var_dump($dataCondition);
-		// var_dump($dataUpdate);
-		// echo "</pre>";
-	}
-
-	// dapatkan suatu kondisi seseorang. fungsi ini diguankan saat modal edit kondisi dipanggil
-	public function get_kondisi($id_kondisi)
-	{
-		$dataCondition['id_kondisi']	= 	$id_kondisi;
-		$result 						=	$this->SO_M->read('kondisi',$dataCondition)->result();
-		echo json_encode($result);
-	}
-
-	// untuk handle delete log pengobatan seorang user pada halam log pengobatan setiap user. dipanggil oleh ajax pada halaman tersebut
-	public function handle_delete_log()
-	{
-		$dataCondition['id_log'] 	= 	$this->input->post('id_log');
-		$result						= 	$this->SO_M->delete('log_pengobatan',$dataCondition);
-		if ($result == true) {
-			echo "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus data pada log_pengobatan <strong>berhasil!</strong></div>";
-		}else{
-			echo "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> Hapus data pada log_pengobatan<strong> gagal! </strong></div>";
+			alert('','warning','Peringatan','Data tersebut mengalami duplikasi',false);
 		}
 	}
 }
