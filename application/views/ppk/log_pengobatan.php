@@ -61,7 +61,7 @@
 					{ "data": "id_log" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="<?=base_url()?>Ppk_C/view_detail_per_log/'+data+'/<?=$user[0]->nomor_identitas?>" class="btn btn-primary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>'+
+								'<a href="<?=base_url()?>Ppk_C/view_detail_per_log/<?=$user[0]->nomor_identitas?>/'+data+'" class="btn btn-primary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" data-target="#ModalDeleteLog" title="hapus log pengobatan ini" data-idlog="'+data+'"  class="btn btn-danger" data-toggle="tooltip" title="hapus log pengobatan di tanggal ini"><i class="icon ion-android-delete"></i> </a>'+
 							'</div>';
 						}
@@ -98,7 +98,7 @@
 			<?= $this->session->flashdata('alert_log_pengobatan'); ?>
 			<br>
 			<h1 class="text-center">Log Pemberian Obat</h1>
-			<a class="btn btn-primary float-right" href="<?=base_url()?>Ppk_C/view_gejala" role="button">Ke Menu Pemeriksaan</a>
+			<a class="btn btn-primary float-right" href="<?=base_url()?>Ppk_C/view_gejala/<?=$user[0]->nomor_identitas?>" role="button">Ke Menu Pemeriksaan</a>
 			<br>
 			<br>
 			<table id="log_pengobatan" class="table table-striped table-hover" cellspacing="0" width="100%" style="width: 100%">

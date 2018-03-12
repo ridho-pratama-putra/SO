@@ -33,7 +33,7 @@
 						<td><?=$value->no_hp?></td>
 						<td class="text-center">
 							<div class="btn-group" role="group">
-								<a href="<?=base_url()?>Ppk_C/handle_view_id?nomor_identitas=<?=$value->nomor_identitas?>" class="btn btn-secondary bg-dark">Detail User</a>
+								<a href="<?=base_url()?>Ppk_C/view_detail_user/<?=$value->nomor_identitas?>" class="btn btn-secondary bg-dark">Detail User</a>
 								<!-- <a href="" class="btn btn-secondary bg-dark">Reset Password</a> -->
 								<!-- <a href="" class="btn btn-secondary bg-dark">Hapus</a> -->
 							</div>

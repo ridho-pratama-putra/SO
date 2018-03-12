@@ -1,3 +1,9 @@
+<script type="text/javascript">
+	function cariID(){
+		var id =	$('#nomor_identitas').val();
+		$('#btn-cari-id').attr('href','<?=base_url()?>Ppk_C/view_detail_user/'+$('#nomor_identitas').val());
+	}
+</script>
 <div class="col">
 	<br>
 	<div class="col-lg-6 offset-lg-3 center-block" id="alert">
@@ -6,7 +12,7 @@
 	</div>
 	<br>
 	<div class="jumbotron col-lg-6 offset-lg-3">
-		<form action="<?=base_url()?>Ppk_C/handle_view_id" method="GET">
+		<!-- <form action="<?=base_url()?>Ppk_C/handle_view_id" method="GET"> -->
 			<div class="row">
 				<div class="col-sm-12">
 					<h2 class="text-center">Form Identitas Pasien</h2>
@@ -21,9 +27,9 @@
 				<br>
 				</div>
 				<div class="col-sm-12">
-					<button class="btn btn-primary btn-block bg-dark" type="submit">Kirim</button>
+					<a id="btn-cari-id" onclick="cariID()" class="btn btn-primary btn-block bg-dark text-white" role='button'>Kirim</a> 
 				</div>
 			</div>
-		</form>
+		<!-- </form> -->
 	</div>
 </div>

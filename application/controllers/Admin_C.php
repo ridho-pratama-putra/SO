@@ -93,12 +93,12 @@ class Admin_C extends CI_Controller {
 	}
 
 	// halaman tampilkan informasi seorang pasien
-	public function view_detail_user($id_user)
+	public function view_detail_user($nomor_identitas)
 	{
 		/*dapatkan informasi identitas*/
-		$dataCondition['id_user'] 	=	$id_user;
-		$dataCol					=	array('id_user','nama_user', 'nomor_identitas','alamat','akses','no_hp','link_foto');
-		$data['detailed_user'] 		=	$this->SO_M->read('user',$dataCondition)->result();
+		$dataCondition['nomor_identitas'] 	=	$nomor_identitas;
+		$dataCol							=	array('id_user','nama_user', 'nomor_identitas','alamat','akses','no_hp','link_foto');
+		$data['detailed_user'] 				=	$this->SO_M->read('user',$dataCondition)->result();
 		unset($dataCondition,$dataCol);
 
 		/*dapatkan informasi rekam medis(kondisi) dapatkan informasi log pemberian obat*/

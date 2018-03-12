@@ -1,6 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
+// defined('BASEPATH') OR exit('No direct script access allowed');
 class Ppk_C extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
@@ -29,30 +28,6 @@ class Ppk_C extends CI_Controller {
 		$this->load->view('html/footer');	
 	}
 
-	/*detai per user dari menu registered user. untuk yang dari halaman pemeriksaan di handle oleh function handle_form_id pada kontroller ini. beda function, fungsinya sama*/
-	// public function view_detail_log_per_user($id_user)
-	// {
-	// 	/*untuk aksi pada tombol detail user dari datatable registered user pada halaman registered user*/
-	// 	$dataCondition['id_user']	=	$id_user;
-	// 	$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
-		
-	// 	// cari informasi identitas user
-	// 	$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
-
-	// 	// cari log pengobatan
-	// 	$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataCondition)->result();
-
-	// 	// dapatkan seluruh data pada master_kondisi untuk dijadikan selcet elemen'
-	// 	unset($dataCol,$dataCondition);
-	// 	$dataCondition				=	array();
-	// 	$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
-	// 	$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
-
-	// 	$this->load->view('html/header');
-	// 	$this->load->view('ppk/log_pengobatan',$data);
-	// 	$this->load->view('html/footer');	
-	// }
-
 	/*function ini digunakan untuk dipanggil oleh ajax saat render data kondisi seorang pasien*/
 	public function dataTable_kondisi($id_user)
 	{
@@ -70,7 +45,7 @@ class Ppk_C extends CI_Controller {
 	}
 
 	// detail untuk setiap log pengobatan. detailnya yakni gejalanya apa saja, obatnya apa saja. obat bisa diklik untuk melihat karakteristiknya
-	public function view_detail_per_log($id_log,$nomor_identitas)
+	public function view_detail_per_log($nomor_identitas,$id_log)
 	{
 		$dataCondition['id_log'] 	=	$id_log;
 		$data['gejala_per_log']		=	$this->SO_M->rawQuery("	SELECT
@@ -139,21 +114,129 @@ class Ppk_C extends CI_Controller {
 	}
 
 	// URL untuk masuk ke input gejala yang dialami oleh pasien
-	public function view_gejala()
+	public function view_gejala($nomor_identitas)
 	{
-		$this->load->view('html/header');
-		$this->load->view('ppk/form_gejala');
-		$this->load->view('html/sidebar-kanan');
-		$this->load->view('html/footer');
+		$dataWhere			=	array('nomor_identitas' => $nomor_identitas);
+		$query				=	$this->SO_M->read('user',$dataWhere);
+		$results			=	$query->result();
+		if($query->num_rows() != 0){
+			$data['user'] 	=	$results;
+			$data['gejala']	=	$this->SO_M->readS('master_gejala')->result();
+			$this->load->view('html/header');
+			$this->load->view('ppk/form_gejala',$data);
+			$this->load->view('html/sidebar-kanan',$data);
+			$this->load->view('html/footer');
+		}else{
+			$data['heading']	= "Data tidak ditemukan";
+			$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_id'>Input id pasien</a> </p>";
+			$this->load->view('errors/html/error_general',$data);
+		}
 	}
 
 	// halaman untuk menampilkan hasil inputan gejala. disini ditampilkan obat-obat beserta karakteristiknya dan kecocokannya dengan seorang pasien
-	public function view_hasil()
+	public function view_hasil($nomor_identitas)
 	{
-		$this->load->view('html/header');
-		$this->load->view('ppk/hasil');
-		$this->load->view('html/sidebar-kanan');
-		$this->load->view('html/footer');
+		$dataWhere	=	array('nomor_identitas' => $nomor_identitas);
+		$query		=	$this->SO_M->read('user',$dataWhere);
+		if ($query->num_rows() != 0) {
+			$data['user']	=	$query->result();
+			if ($this->input->post() != null) {
+				/*1 buat query obat id berapa saja yang mengandung gejala yang sesuai dengan gejala inputan*/
+				
+				/*FORWARD CHAINING*/
+				/*dapatkan gejala yang diinputkan*/
+				$gejalas	=	$this->input->post('gejala[]');
+				$where = "tipe = 'indikasi' AND (detail_tipe = ";
+				$i = 1;
+				foreach ($gejalas as $key => $value) {
+					if ($i < sizeof($gejalas)) {
+						$where .= "'".$value."' OR detail_tipe =";
+					}else{
+						$where .= "'".$value."')";
+					}
+					$i++;
+				}
+				$this->db->select('id_obat');
+				$this->db->distinct();
+				$this->db->where($where);
+				$querys = $this->db->get('karakteristik_obat');
+				unset($where);
+				/*END OF FORWARD CHAINING*/
+
+				/*dapatkan kondisi user*/
+				$dataWhere = array('id_user' => $data['user'][0]->id_user);
+				$kondisiPasien = $this->SO_M->read('kondisi',$dataWhere)->result();
+				unset($dataWhere);
+
+				/*BACKWARD CHAINING*/
+				$query = $querys->result();
+				
+				/*2 dari id obat diatas, koreksi karakteristik yang dikandung*/
+				for ($i=0; $i < ($querys->num_rows()) ; $i++) { 
+
+					/*2.1 koreksi indikasi*/
+					/*2.1.1 daptkan indikasi pada masing2 obat*/
+					$dataWhere			=	array(
+													'tipe' => 'indikasi',
+													'id_obat' => $query[$i]->id_obat
+											);
+					$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
+					/*buat array untuk memetakan masing2 karakteristik*/
+					foreach ($dataIndikasi as $key => $value) {
+						$cocokIndikasi[$key] = array(
+														'id_obat'	=> $dataIndikasi[$key]->id_obat, 
+														'id_karakteristik' => $dataIndikasi[$key]->id_karakteristik
+													);
+						if (in_array($dataIndikasi[$key]->detail_tipe,$gejalas)) {
+							$cocokIndikasi[$key]['cocok'] = "ion-checkmark-circled text-success";
+						}else{
+							$cocokIndikasi[$key]['cocok'] = "ion-help";
+						}
+					}
+					echo "<pre>";
+					var_dump($cocokIndikasi);
+					unset($cocokIndikasi);
+					// die();
+
+					/*2.2 koreksi kontraindikasi*/
+					/*2.2.1 daptkan indikasi pada masing2 obat*/
+					$dataWhere			=	array(
+													'tipe' => 'kontraindikasi',
+													'id_obat' => $query[0]->id_obat
+											);
+					$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
+					/*2.3 koreksi peringatan*/
+					/*2.3.1 daptkan indikasi pada masing2 obat*/
+					$dataWhere			=	array(
+													'tipe' => 'peringatan',
+													'id_obat' => $query[0]->id_obat
+											);
+					$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
+				}
+				/*END OF BACKWARD CHAINING*/
+				/*3 kirimkan hasil koreksi*/
+				
+				echo "<pre>";
+				// var_dump($dataIndikasi);
+				echo "</pre>";
+				die();
+				$this->load->view('html/header');
+				$this->load->view('ppk/hasil',$data);
+				$this->load->view('html/sidebar-kanan');
+				$this->load->view('html/footer');
+			}else{
+				$data['heading']	= "Data tidak ditemukan";
+				$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_gejala/".$data['user'][0]->nomor_identitas."'>Masukkan gejala yang dirasakan pasien</a> </p>";
+				$this->load->view('errors/html/error_general',$data);
+			}
+		}else{
+			$data['heading']	= "Data tidak ditemukan";
+			$data['message']	= "<p>Coba lagi <a href='".base_url()."Akun_C/view_registered_user'>Cari identitas pasien</a> </p>";
+			$this->load->view('errors/html/error_general',$data);
+		}
 	}
 
 	// halaman untuk "checkout" keranjang obat
@@ -165,43 +248,27 @@ class Ppk_C extends CI_Controller {
 		$this->load->view('html/footer');
 	}
 
-	/*
-	untuk menangani submit form pada view_id yang berisi nomor identitas pasien
-	function ini menghasilkan daftar kondisi yang dimiliki oleh seorang pasien
-	*/
-	public function handle_view_id()
+	// untuk menangani submit form pada view_id yang berisi nomor identitas pasien. function ini menghasilkan daftar kondisi yang dimiliki oleh seorang pasien
+	public function view_detail_user($nomor_identitas)
 	{
-		if ($this->input->get() != NULL) {
-			$nomor_identitas	= 	$this->input->get('nomor_identitas');
-			$dataWhere			=	array('nomor_identitas' => $nomor_identitas);
-			$query				=	$this->SO_M->read('user',$dataWhere);
-			$results			=	$query->result();
-			if($query->num_rows() != 0){
-				$data['user']				=	$results;
-				unset($dataWhere);
-				$dataWhere					=	array('id_user' => $results[0]->id_user);
-				$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataWhere)->result();
+		$dataWhere			=	array('nomor_identitas' => $nomor_identitas);
+		$query				=	$this->SO_M->read('user',$dataWhere);
+		$results			=	$query->result();
+		if($query->num_rows() != 0){
+			$data['user']				=	$results;
+			unset($dataWhere);
+			$dataWhere					=	array('id_user' => $results[0]->id_user);
+			$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataWhere)->result();
 
-				$dataCondition				=	array();
-				$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
-				$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
+			$dataCondition				=	array();
+			$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
+			$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
 
-				$this->load->view('html/header');
-				$this->load->view('ppk/log_pengobatan',$data);
-				$this->load->view('html/footer');
-				
-				// echo "<pre>";
-				// var_dump($data);
-				// echo "</pre>";
-			}else{
-				$data['heading']	= "Data tidak ditemukan";
-				$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_id'>Input id pasien</a> </p>";
-				$this->load->view('errors/html/error_general',$data);
-			}
-			// redirect('Ppk_C/view_detail_per_user/'.$id_user);
-		}
-		else{
-			$data['heading']	= "Tidak ada form data yang di GET";
+			$this->load->view('html/header');
+			$this->load->view('ppk/log_pengobatan',$data);
+			$this->load->view('html/footer');
+		}else{
+			$data['heading']	= "Data tidak ditemukan";
 			$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_id'>Input id pasien</a> </p>";
 			$this->load->view('errors/html/error_general',$data);
 		}
@@ -308,3 +375,29 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 }
+
+
+
+	/*detai per user dari menu registered user. untuk yang dari halaman pemeriksaan di handle oleh function handle_form_id pada kontroller ini. beda function, fungsinya sama*/
+	// public function view_detail_log_per_user($id_user)
+	// {
+	// 	/*untuk aksi pada tombol detail user dari datatable registered user pada halaman registered user*/
+	// 	$dataCondition['id_user']	=	$id_user;
+	// 	$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
+		
+	// 	// cari informasi identitas user
+	// 	$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+
+	// 	// cari log pengobatan
+	// 	$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataCondition)->result();
+
+	// 	// dapatkan seluruh data pada master_kondisi untuk dijadikan selcet elemen'
+	// 	unset($dataCol,$dataCondition);
+	// 	$dataCondition				=	array();
+	// 	$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
+	// 	$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
+
+	// 	$this->load->view('html/header');
+	// 	$this->load->view('ppk/log_pengobatan',$data);
+	// 	$this->load->view('html/footer');	
+	// }
