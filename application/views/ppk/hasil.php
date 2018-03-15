@@ -1,3 +1,7 @@
+<?php
+
+die();
+?>
 <div class="col-md-10 konten-kanan" id="style-1">
 	<div class="row" id="indikasi-yang-dicari">
 		<div class="col">
@@ -106,9 +110,82 @@
 					</div>
 				</div>
 			</div> -->
-
+			<div class="margin-top-20"></div>
 			<div id="accordion" role="tablist">
-				
+				<?php foreach ($obat as $key => $value) { ?>
+					<div class="card">
+						<div class="card-header" role="tab" id="heading<?= $value->id_obat?>">
+							<div class="row">
+								<div class="col">
+									<h5><a data-toggle="collapse" href="#collapse<?= $value->id_obat?>" aria-expanded="true" aria-controls="collapse<?= $value->id_obat?>"><?= $value->nama_obat?></a></h5>
+								</div>
+								<div class="col-3 ditemukan rounded">
+									<h6 class="text-center">Indikasi/Obat ditemukan</h6>
+									<h6 class="text-center">2/3</h6>
+								</div>
+								<div class="col-3 ditemukan rounded">
+									<h6 class="text-center">Kontraindikasi/Obat ditemukan</h6>
+									<h6 class="text-center">2/3</h6>
+								</div>
+								<div class="col-3 ditemukan rounded">
+									<h6 class="text-center">Peringatan/Obat ditemukan</h6>
+									<h6 class="text-center">2/3</h6>
+								</div>
+							</div>
+						</div>
+						<div id="collapse<?= $value->id_obat?>" class="collapse show" role="tabpanel" aria-labelledby="heading<?= $value->id_obat?>" data-parent="#accordion">
+							<div class="card-body">
+								<div class="row">
+									<div class="col">
+										<div class="row">
+											<div class="col informasi rounded hijau">
+												<h6>Indikasi</h6>
+												<ul>
+													<li>demam <i class="icon ion-checkmark-circled text-success"></i> </li>
+													<li>pusing <i class="icon ion-checkmark-circled text-success"></i></li>
+													<li>mual</li>
+													<li>mabuk perjalanan</li>
+												</ul>
+											</div>
+											<div class="col informasi rounded merah">
+												<h6>Kontraindikasi</h6>
+												<ul>
+													<li>hipertensi <i class="icon ion-android-alert text-danger"></i></li>
+													<li>mabuk perjalanan <i class="icon ion-android-alert text-danger"></i></li>
+												</ul>
+											</div>
+											<div class="col informasi rounded kuning">
+												<h6>Peringatan</h6>
+												<ul>
+													<li>demam <i class="icon ion-android-alert text-warning"></i></li>
+													<li>pusing <i class="icon ion-android-alert text-warning"></i></li>
+													<li>mual</li>
+													<li>mabuk perjalanan</li>
+												</ul>
+											</div>
+										</div>
+										<div class="row margin-top-5">
+											<div class="col informasi rounded biru">
+												<h6>Dosis</h6>
+												<ul>
+													<li>demam</li>
+													<li>pusing</li>
+													<li>mual</li>
+													<li>mabuk perjalanan</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row padding-top-10">
+									<button type="button" class="btn btn-primary btn-lg btn-block" title="Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan"><i class="icon ion-ios-plus-outline"></i> Masukkan obat ini ke daftar obat yang akan diberikan</button>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				<?php }	?>
+<!-- 				
 				<div class="card">
 					<div class="card-header" role="tab" id="headingOne">
 						<div class="row">
@@ -324,7 +401,7 @@
 						</div>
 					</div>
 				</div>
-
+				 -->
 			</div>
 		</div>
 

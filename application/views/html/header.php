@@ -65,10 +65,7 @@
 								<a class="dropdown-item" href="#" title="DORONG MARI">Setting</a>
 								<a class="dropdown-item" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
 							<?php } else{ ?>
-								<a class="dropdown-item" href="<?=base_url()?>Pasien_C/view_log_pengobatan/">Log Pengobatan</a>
-								<a class="dropdown-item" href="<?=base_url()?>Pasien_C/view_lihat_data_rekam_medis/">Lihat Rekam Medis Pasien</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#" title="DORONG MARI">Setting</a>
+								<a class="dropdown-item" href="#" title="DORONG MARI">Account Setting</a>
 								<a class="dropdown-item" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
 							<?php } ?>
 

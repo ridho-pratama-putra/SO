@@ -32,12 +32,12 @@ class Akun_C extends CI_Controller {
 
 	public function view_register_user()
 	{
-		if($this->session->userdata['logged_in']['akses'] == 'admin'){
+		if($this->session->userdata('logged_in')['akses'] == 'admin'){
 			$this->load->view('html/header');
 			$this->load->view('admin/register_user');
 			$this->load->view('html/footer');
 		}
-		elseif($this->session->userdata['logged_in']['akses'] == 'ppk'){
+		elseif($this->session->userdata('logged_in')['akses'] == 'ppk'){
 			$this->load->view('html/header');
 			$this->load->view('ppk/register_user_ppk');
 			$this->load->view('html/footer');
@@ -153,7 +153,6 @@ class Akun_C extends CI_Controller {
 		redirect();
 	}
 
-	
 	/*
 	function dibawah ini digunakan oleh admin saat akan mendaftarkan pengguna baru.
 	bisa admin, ppk, atau pengguna

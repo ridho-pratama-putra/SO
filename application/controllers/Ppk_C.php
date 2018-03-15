@@ -5,9 +5,9 @@ class Ppk_C extends CI_Controller {
 		parent::__construct();
 		$this->load->model('SO_M');
 		date_default_timezone_set("Asia/Jakarta");
-		if ($this->session->userdata('logged_in')['akses'] !== 'ppk' ){
-			redirect();
-		}
+		// if ($this->session->userdata('logged_in')['akses'] !== 'ppk' ){
+		// 	redirect();
+		// }
 	}
 	
 	// masukkan id user untuk pencarian rekam medis seorang pasien
@@ -141,9 +141,9 @@ class Ppk_C extends CI_Controller {
 		if ($query->num_rows() != 0) {
 			$data['user']	=	$query->result();
 			if ($this->input->post() != null) {
-				/*1 buat query obat id berapa saja yang mengandung gejala yang sesuai dengan gejala inputan*/
 				
 				/*FORWARD CHAINING*/
+				/*1 buat query obat id berapa saja yang mengandung gejala yang sesuai dengan gejala inputan*/
 				/*dapatkan gejala yang diinputkan*/
 				$gejalas	=	$this->input->post('gejala[]');
 				$where = "tipe = 'indikasi' AND (detail_tipe = ";
@@ -156,21 +156,32 @@ class Ppk_C extends CI_Controller {
 					}
 					$i++;
 				}
-				$this->db->select('id_obat');
+				// cari obat (id_obat dan nama obatnya nya) yang sesuai gejala
+				$this->db->select('karakteristik_obat.id_obat , master_obat.nama_obat');
 				$this->db->distinct();
 				$this->db->where($where);
+				$this->db->join('master_obat','karakteristik_obat.id_obat = master_obat.id_obat','inner');
 				$querys = $this->db->get('karakteristik_obat');
+				// $querys = $this->db->get_compiled_select('karakteristik_obat');
+				// var_dump($querys);
+				// var_dump($querys->result());
 				unset($where);
+				// die();
 				/*END OF FORWARD CHAINING*/
 
 				/*dapatkan kondisi user*/
 				$dataWhere = array('id_user' => $data['user'][0]->id_user);
-				$kondisiPasien = $this->SO_M->read('kondisi',$dataWhere)->result();
+				$kondisiPasien = $this->SO_M->read('kondisi',$dataWhere)->result_array();
 				unset($dataWhere);
+
 
 				/*BACKWARD CHAINING*/
 				$query = $querys->result();
-				
+				$data['obat'] = $query;
+				echo "<pre>";
+				// var_dump($data);
+				// var_dump($data['obat'][0]->karakteristik = 'rusa');
+				// die();
 				/*2 dari id obat diatas, koreksi karakteristik yang dikandung*/
 				for ($i=0; $i < ($querys->num_rows()) ; $i++) { 
 
@@ -183,49 +194,67 @@ class Ppk_C extends CI_Controller {
 					$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 
 					/*buat array untuk memetakan masing2 karakteristik*/
+					
 					foreach ($dataIndikasi as $key => $value) {
-						$cocokIndikasi[$key] = array(
-														'id_obat'	=> $dataIndikasi[$key]->id_obat, 
-														'id_karakteristik' => $dataIndikasi[$key]->id_karakteristik
-													);
+						$data['obat'][$i]->karakteristik['indikasi'][$key]['id_karakteristik'] = $dataIndikasi[$key]->id_karakteristik;
 						if (in_array($dataIndikasi[$key]->detail_tipe,$gejalas)) {
-							$cocokIndikasi[$key]['cocok'] = "ion-checkmark-circled text-success";
+							$data['obat'][$i]->karakteristik['indikasi'][$key]['cocok'] = "ion-checkmark-circled text-success";
 						}else{
-							$cocokIndikasi[$key]['cocok'] = "ion-help";
+							$data['obat'][$i]->karakteristik['indikasi'][$key]['cocok'] = "ion-help";
 						}
 					}
-					echo "<pre>";
-					var_dump($cocokIndikasi);
-					unset($cocokIndikasi);
-					// die();
 
 					/*2.2 koreksi kontraindikasi*/
 					/*2.2.1 daptkan indikasi pada masing2 obat*/
 					$dataWhere			=	array(
 													'tipe' => 'kontraindikasi',
-													'id_obat' => $query[0]->id_obat
+													'id_obat' => $query[$i]->id_obat
 											);
 					$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
+					/*buat array untuk memetakan masing2 karakteristik*/
+					foreach ($dataKontraindikasi as $key => $value) {
+						$data['obat'][$i]->karakteristik['kontraindikasi'][$key]['id_karakteristik'] = $dataKontraindikasi[$key]->id_karakteristik;
+						$data['obat'][$i]->karakteristik['kontraindikasi'][$key]['detail_tipe'] = $dataKontraindikasi[$key]->detail_tipe;
+						if ($this->in_array_r($dataKontraindikasi[$key]->detail_tipe,$kondisiPasien)) {
+							$data['obat'][$i]->karakteristik['kontraindikasi'][$key]['cocok'] = "ion-android-warning text-warning";
+						}else{
+							$data['obat'][$i]->karakteristik['kontraindikasi'][$key]['cocok'] = "ion-help";
+						}
+					}
+
 
 					/*2.3 koreksi peringatan*/
 					/*2.3.1 daptkan indikasi pada masing2 obat*/
 					$dataWhere			=	array(
 													'tipe' => 'peringatan',
-													'id_obat' => $query[0]->id_obat
+													'id_obat' => $query[$i]->id_obat
 											);
 					$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 
+					/*buat array untuk memetakan masing2 karakteristik*/
+					foreach ($dataPeringatan as $key => $value) {
+						$data['obat'][$i]->karakteristik['peringatan'][$key]['id_karakteristik'] = $dataPeringatan[$key]->id_karakteristik;
+						$data['obat'][$i]->karakteristik['peringatan'][$key]['detail_tipe'] = $dataPeringatan[$key]->detail_tipe;
+						if ($this->in_array_r($dataPeringatan[$key]->detail_tipe,$kondisiPasien)) {
+							$data['obat'][$i]->karakteristik['peringatan'][$key]['cocok'] = "ion-android-warning text-warning";
+						}else{
+							$data['obat'][$i]->karakteristik['peringatan'][$key]['cocok'] = "ion-help";
+						}
+					}
+
 				}
 				/*END OF BACKWARD CHAINING*/
+
+
 				/*3 kirimkan hasil koreksi*/
-				
-				echo "<pre>";
-				// var_dump($dataIndikasi);
-				echo "</pre>";
-				die();
+				// $data = json_encode($data,JSON_PRETTY_PRINT);
+				$data = json_encode($data);
+				// var_dump($data);
+				// die();
 				$this->load->view('html/header');
 				$this->load->view('ppk/hasil',$data);
-				$this->load->view('html/sidebar-kanan');
+				// $this->load->view('html/sidebar-kanan');
 				$this->load->view('html/footer');
 			}else{
 				$data['heading']	= "Data tidak ditemukan";
@@ -373,6 +402,22 @@ class Ppk_C extends CI_Controller {
 		else{
 			alert('','warning','Peringatan','Data tersebut mengalami duplikasi',false);
 		}
+	}
+
+	// finding values between multidimensional array. paste from https://stackoverflow.com/questions/4128323/in-array-and-multidimensional-array
+	// usage :
+	// $b = array(array("Mac", "NT"), array("Irix", "Linux"));
+	// echo in_array_r("Irix", $b) ? 'found' : 'not found';
+	public function in_array_r($needle, $haystack, $strict = false) {
+		foreach ($haystack as $item) {
+			// echo "<br>|---------------| <br>";
+			// var_dump($item);
+			// echo "-----<br>";
+			if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && $this->in_array_r($needle, $item, $strict))) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
