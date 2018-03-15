@@ -1,6 +1,6 @@
 <?php
-
-die();
+// tangkap data dari kontrol
+$data = json_decode($data,false);
 ?>
 <div class="col-md-10 konten-kanan" id="style-1">
 	<div class="row" id="indikasi-yang-dicari">
@@ -36,83 +36,9 @@ die();
 	</div>
 	<div class="row padding-top-10" >
 		<div class="col">
-			<!-- <div id="accordion">
-
-				<div class="card">
-
-					<div class="card-header" id="head1">
-						<div class="row">
-							<div class="col">
-								<h5 class="tombol-collapse">
-									<button class="btn btn-link" data-toggle="collapse" data-target="#1" aria-expanded="true" aria-controls="1">OBAT Z</button>
-								</h5>
-							</div>
-							<div class="col-3 ditemukan hijau">
-								<h6 class="text-center">Indikasi/Obat ditemukan</h6>
-								<h4 class="text-center">2/3</h4>
-							</div>
-							<div class="col-3 ditemukan merah">
-								<h6 class="text-center">Kontraindikasi/Obat ditemukan</h6>
-								<h4 class="text-center">2/3</h4>
-							</div>
-							<div class="col-3 ditemukan kuning">
-								<h6 class="text-center">Peringatan/Obat ditemukan</h6>
-								<h4 class="text-center">2/3</h4>
-							</div>
-						</div>
-					</div>
-
-					<div id="1" class="collapse show" aria-labelledby="head1" data-parent="#accordion">
-						<div class="card-body">
-							<div class="row">
-								<div class="col">
-									<div class="row">
-										<div class="col informasi rounded hijau">
-											<h6>Indikasi</h6>
-											<ul>
-												<li>demam <i class="icon ion-checkmark-circled text-success"></i> </li>
-												<li>pusing <i class="icon ion-checkmark-circled text-success"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-										<div class="col informasi rounded merah">
-											<h6>Kontraindikasi</h6>
-											<ul>
-												<li>hipertensi <i class="icon ion-android-alert text-danger"></i></li>
-												<li>mabuk perjalanan <i class="icon ion-android-alert text-danger"></i></li>
-											</ul>
-										</div>
-										<div class="col informasi rounded kuning">
-											<h6>Peringatan</h6>
-											<ul>
-												<li>demam <i class="icon ion-android-alert text-warning"></i></li>
-												<li>pusing <i class="icon ion-android-alert text-warning"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-									<div class="row margin-top-5">
-										<div class="col informasi rounded biru">
-											<h6>Dosis</h6>
-											<ul>
-												<li>demam</li>
-												<li>pusing</li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div> -->
 			<div class="margin-top-20"></div>
 			<div id="accordion" role="tablist">
-				<?php foreach ($obat as $key => $value) { ?>
+				<?php foreach ($data->obat as $key => $value) { /*var_dump($value->id_obat);*/?>
 					<div class="card">
 						<div class="card-header" role="tab" id="heading<?= $value->id_obat?>">
 							<div class="row">
@@ -121,15 +47,15 @@ die();
 								</div>
 								<div class="col-3 ditemukan rounded">
 									<h6 class="text-center">Indikasi/Obat ditemukan</h6>
-									<h6 class="text-center">2/3</h6>
+									<h6 class="text-center"><?php echo sizeof($value->karakteristik->indikasi->ada)."/".sizeof($data->obat)?></h6>
 								</div>
 								<div class="col-3 ditemukan rounded">
 									<h6 class="text-center">Kontraindikasi/Obat ditemukan</h6>
-									<h6 class="text-center">2/3</h6>
+									<h6 class="text-center"><?=sizeof($value->karakteristik->kontraindikasi->ada)."/".sizeof($data->obat)?></h6>
 								</div>
 								<div class="col-3 ditemukan rounded">
 									<h6 class="text-center">Peringatan/Obat ditemukan</h6>
-									<h6 class="text-center">2/3</h6>
+									<h6 class="text-center"><?=sizeof($value->karakteristik->peringatan->ada)."/".sizeof($data->obat)?></h6>
 								</div>
 							</div>
 						</div>
@@ -141,26 +67,53 @@ die();
 											<div class="col informasi rounded hijau">
 												<h6>Indikasi</h6>
 												<ul>
-													<li>demam <i class="icon ion-checkmark-circled text-success"></i> </li>
-													<li>pusing <i class="icon ion-checkmark-circled text-success"></i></li>
-													<li>mual</li>
-													<li>mabuk perjalanan</li>
+													<?php 
+													if (isset($value->karakteristik->indikasi->ada)) {
+														foreach ($value->karakteristik->indikasi->ada as $keyK => $valueK) { ?>
+															<li><?=$valueK->detail_tipe?> <i class="icon ion-checkmark-circled text-success"></i></li>
+													<?php 
+														}
+													}
+													if (isset($value->karakteristik->indikasi->tanya)) {
+														foreach ($value->karakteristik->indikasi->tanya as $keyK => $valueK) { ?>
+															<li><?=$valueK->detail_tipe?> <i class="icon ion-help-circled text-primary"></i></li>
+													<?php 
+														}
+													}?>
 												</ul>
 											</div>
 											<div class="col informasi rounded merah">
 												<h6>Kontraindikasi</h6>
 												<ul>
-													<li>hipertensi <i class="icon ion-android-alert text-danger"></i></li>
-													<li>mabuk perjalanan <i class="icon ion-android-alert text-danger"></i></li>
+													<?php 
+													if (isset($value->karakteristik->kontraindikasi->ada)) {
+														foreach ($value->karakteristik->kontraindikasi->ada as $keyK => $valueK) { ?>
+															<li><?=$valueK->detail_tipe?> <i class="icon ion-android-alert text-danger"></i></li>												
+													<?php 
+														}
+													}
+													if (isset($value->karakteristik->kontraindikasi->tanya)) {
+														foreach ($value->karakteristik->kontraindikasi->tanya as $keyK => $valueK) { ?>
+															<li><?=$valueK->detail_tipe?> <i class="icon ion-help-circled text-primary"></i></li>
+													<?php 
+														}
+													}?>
 												</ul>
 											</div>
 											<div class="col informasi rounded kuning">
 												<h6>Peringatan</h6>
 												<ul>
-													<li>demam <i class="icon ion-android-alert text-warning"></i></li>
-													<li>pusing <i class="icon ion-android-alert text-warning"></i></li>
-													<li>mual</li>
-													<li>mabuk perjalanan</li>
+													<?php 
+													if (isset($value->karakteristik->peringatan->ada)) {
+														foreach ($value->karakteristik->peringatan->ada as $keyK => $valueK) { ?>
+															<li><?=$valueK->detail_tipe?> <i class="icon ion-android-alert text-warning"></i></li>
+													<?php }
+													}
+													if (isset($value->karakteristik->peringatan->tanya)) {
+														foreach ($value->karakteristik->peringatan->tanya as $keyK => $valueK) { ?>
+															<li><?=$valueK->detail_tipe?> <i class="icon ion-help-circled text-primary"></i></li>
+													<?php }
+													}?>
 												</ul>
 											</div>
 										</div>
@@ -401,16 +354,15 @@ die();
 						</div>
 					</div>
 				</div>
-				 -->
+-->
 			</div>
 		</div>
-
-
 	</div>
 	<div class="margin-top-15">
 		<button type="button" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button>
 	</div>
 </div>
+
 <!-- 
 ion-ios-help TANYA
 ion-social-whatsapp-outline WA
