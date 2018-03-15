@@ -138,223 +138,6 @@ $data = json_decode($data,false);
 						</div>
 					</div>
 				<?php }	?>
-<!-- 				
-				<div class="card">
-					<div class="card-header" role="tab" id="headingOne">
-						<div class="row">
-							<div class="col">
-								<h5><a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> OBAT #1</a></h5>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Indikasi/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Kontraindikasi/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Peringatan/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-						</div>
-					</div>
-					<div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-						<div class="card-body">
-							<div class="row">
-								<div class="col">
-									<div class="row">
-										<div class="col informasi rounded hijau">
-											<h6>Indikasi</h6>
-											<ul>
-												<li>demam <i class="icon ion-checkmark-circled text-success"></i> </li>
-												<li>pusing <i class="icon ion-checkmark-circled text-success"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-										<div class="col informasi rounded merah">
-											<h6>Kontraindikasi</h6>
-											<ul>
-												<li>hipertensi <i class="icon ion-android-alert text-danger"></i></li>
-												<li>mabuk perjalanan <i class="icon ion-android-alert text-danger"></i></li>
-											</ul>
-										</div>
-										<div class="col informasi rounded kuning">
-											<h6>Peringatan</h6>
-											<ul>
-												<li>demam <i class="icon ion-android-alert text-warning"></i></li>
-												<li>pusing <i class="icon ion-android-alert text-warning"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-									<div class="row margin-top-5">
-										<div class="col informasi rounded biru">
-											<h6>Dosis</h6>
-											<ul>
-												<li>demam</li>
-												<li>pusing</li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row padding-top-10">
-								<button type="button" class="btn btn-primary btn-lg btn-block" title="Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan"><i class="icon ion-ios-plus-outline"></i> Masukkan obat ini ke daftar obat yang akan diberikan</button>
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-				<div class="card">
-					<div class="card-header" role="tab" id="headingTwo">
-						<div class="row">
-							<div class="col">
-								<h5><a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">OBAT #2</a></h5>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Indikasi/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Kontraindikasi/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Peringatan/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-						</div>
-
-						
-					</div>
-					<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-						<div class="card-body">
-							<div class="row">
-								<div class="col">
-									<div class="row">
-										<div class="col informasi rounded hijau">
-											<h6>Indikasi</h6>
-											<ul>
-												<li>demam <i class="icon ion-checkmark-circled text-success"></i> </li>
-												<li>pusing <i class="icon ion-checkmark-circled text-success"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-										<div class="col informasi rounded merah">
-											<h6>Kontraindikasi</h6>
-											<ul>
-												<li>hipertensi <i class="icon ion-android-alert text-danger"></i></li>
-												<li>mabuk perjalanan <i class="icon ion-android-alert text-danger"></i></li>
-											</ul>
-										</div>
-										<div class="col informasi rounded kuning">
-											<h6>Peringatan</h6>
-											<ul>
-												<li>demam <i class="icon ion-android-alert text-warning"></i></li>
-												<li>pusing <i class="icon ion-android-alert text-warning"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-									<div class="row margin-top-5">
-										<div class="col informasi rounded biru">
-											<h6>Dosis</h6>
-											<ul>
-												<li>demam</li>
-												<li>pusing</li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row padding-top-10">
-								<button type="button" class="btn btn-primary btn-lg btn-block" title="Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan"><i class="icon ion-ios-plus-outline"></i> Masukkan obat ini ke daftar obat yang akan diberikan</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="card">
-					<div class="card-header" role="tab" id="headingThree">
-						<div class="row">
-							<div class="col">
-								<h5><a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">OBAT #3</a></h5>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Indikasi/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Kontraindikasi/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-							<div class="col-3 ditemukan rounded">
-								<h6 class="text-center">Peringatan/Obat ditemukan</h6>
-								<h6 class="text-center">2/3</h6>
-							</div>
-						</div>
-					</div>
-					<div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-						<div class="card-body">
-							<div class="row">
-								<div class="col">
-									<div class="row">
-										<div class="col informasi rounded hijau">
-											<h6>Indikasi</h6>
-											<ul>
-												<li>demam <i class="icon ion-checkmark-circled text-success"></i> </li>
-												<li>pusing <i class="icon ion-checkmark-circled text-success"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-										<div class="col informasi rounded merah">
-											<h6>Kontraindikasi</h6>
-											<ul>
-												<li>hipertensi <i class="icon ion-android-alert text-danger"></i></li>
-												<li>mabuk perjalanan <i class="icon ion-android-alert text-danger"></i></li>
-											</ul>
-										</div>
-										<div class="col informasi rounded kuning">
-											<h6>Peringatan</h6>
-											<ul>
-												<li>demam <i class="icon ion-android-alert text-warning"></i></li>
-												<li>pusing <i class="icon ion-android-alert text-warning"></i></li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-									<div class="row margin-top-5">
-										<div class="col informasi rounded biru">
-											<h6>Dosis</h6>
-											<ul>
-												<li>demam</li>
-												<li>pusing</li>
-												<li>mual</li>
-												<li>mabuk perjalanan</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row padding-top-10">
-								<button type="button" class="btn btn-primary btn-lg btn-block" title="Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan"><i class="icon ion-ios-plus-outline"></i> Masukkan obat ini ke daftar obat yang akan diberikan</button>
-							</div>
-						</div>
-					</div>
-				</div>
--->
 			</div>
 		</div>
 	</div>
@@ -362,6 +145,53 @@ $data = json_decode($data,false);
 		<button type="button" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button>
 	</div>
 </div>
+
+
+<!-- SIDE NAAV HERE -->
+<nav class="col-md-2 d-none d-sm-block bg-light sidebar" id="style-1">
+	<ul class="nav nav-pills flex-column">
+		<li class="nav-item">
+			<div>
+				<img src="<?php echo base_url().$data->user[0]->link_foto?>" alt="foto-profil" class="img-thumbnail rounded">
+			</div>
+		</li>
+
+		<li class="nav-item">
+			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?></i></span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> 19 Februari 1997 / 20Thn</i></span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">Note Kondisi
+				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
+				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
+				<a class="nav-link disabled text-white badge badge-danger">...</a>
+			</span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjd haskjdnas</i></span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjdha skjdnas</i></span>
+		</li>
+	</ul>
+</nav>
+
 
 <!-- 
 ion-ios-help TANYA
