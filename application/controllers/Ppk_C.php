@@ -197,15 +197,13 @@ class Ppk_C extends CI_Controller {
 					
 					foreach ($dataIndikasi as $key => $value) {
 						if (in_array($dataIndikasi[$key]->detail_tipe,$gejalas)) {
-							$data['obat'][$i]->karakteristik['indikasi']['ada'][] = array(	
-																								'id_karakteristik'	=>	$dataIndikasi[$key]->id_karakteristik,
-																								'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe
-																							);
+							$data['obat'][$i]->karakteristik['indikasi']['ada'][$key]['id_karakteristik'] = $dataIndikasi[$key]->id_karakteristik;
+							$data['obat'][$i]->karakteristik['indikasi']['ada'][$key]['detail_tipe'] = $dataIndikasi[$key]->detail_tipe;
+							// $data['obat'][$i]->karakteristik['indikasi'][$key]['cocok']['cocok'] = "ion-checkmark-circled text-success";
 						}else{
-							$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array(	
-																								'id_karakteristik'	=>	$dataIndikasi[$key]->id_karakteristik,
-																								'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe
-																							);
+							$data['obat'][$i]->karakteristik['indikasi']['tanya'][$key]['id_karakteristik'] = $dataIndikasi[$key]->id_karakteristik;
+							$data['obat'][$i]->karakteristik['indikasi']['tanya'][$key]['detail_tipe'] = $dataIndikasi[$key]->detail_tipe;
+							// $data['obat'][$i]->karakteristik['indikasi'][$key]['cocok'] = "ion-help-circled text-primary";
 						}
 					}
 
@@ -220,15 +218,13 @@ class Ppk_C extends CI_Controller {
 					/*buat array untuk memetakan masing2 karakteristik*/
 					foreach ($dataKontraindikasi as $key => $value) {
 						if ($this->in_array_r($dataKontraindikasi[$key]->detail_tipe,$kondisiPasien)) {
-							$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	
-																								'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,
-																								'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe
-																							);
+							$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][$key]['id_karakteristik'] = $dataKontraindikasi[$key]->id_karakteristik;
+							$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][$key]['detail_tipe'] = $dataKontraindikasi[$key]->detail_tipe;
+							// $data['obat'][$i]->karakteristik['kontraindikasi'][$key]['cocok'] = "ion-android-warning text-danger";
 						}else{
-							$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][] = array(	
-																								'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,
-																								'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe
-																							);
+							$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][$key]['id_karakteristik'] = $dataKontraindikasi[$key]->id_karakteristik;
+							$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][$key]['detail_tipe'] = $dataKontraindikasi[$key]->detail_tipe;
+							// $data['obat'][$i]->karakteristik['kontraindikasi'][$key]['cocok'] = "ion-help-circled text-primary";
 						}
 					}
 
@@ -244,15 +240,13 @@ class Ppk_C extends CI_Controller {
 					/*buat array untuk memetakan masing2 karakteristik*/
 					foreach ($dataPeringatan as $key => $value) {
 						if ($this->in_array_r($dataPeringatan[$key]->detail_tipe,$kondisiPasien)) {
-							$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array(	
-																								'id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,
-																								'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe
-																							);
+							$data['obat'][$i]->karakteristik['peringatan']['ada'][$key]['id_karakteristik'] = $dataPeringatan[$key]->id_karakteristik;
+							$data['obat'][$i]->karakteristik['peringatan']['ada'][$key]['detail_tipe'] = $dataPeringatan[$key]->detail_tipe;
+							// $data['obat'][$i]->karakteristik['peringatan']['cocok'][$key]['cocok'] = "ion-android-warning text-warning";
 						}else{
-							$data['obat'][$i]->karakteristik['peringatan']['tanya'][] = array(	
-																								'id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,
-																								'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe
-																							);
+							$data['obat'][$i]->karakteristik['peringatan']['tanya'][$key]['id_karakteristik'] = $dataPeringatan[$key]->id_karakteristik;
+							$data['obat'][$i]->karakteristik['peringatan']['tanya'][$key]['detail_tipe'] = $dataPeringatan[$key]->detail_tipe;
+							// $data['obat'][$i]->karakteristik['peringatan']['cocok'][$key]['cocok'] = "ion-help-circled text-primary";
 						}
 					}
 
@@ -261,11 +255,11 @@ class Ppk_C extends CI_Controller {
 
 
 				/*3 kirimkan hasil koreksi*/
-				// echo "<pre>";
-				// $data = json_encode($data,JSON_PRETTY_PRINT);
-				$kirim['data'] = json_encode($data);
-				// var_dump($data);
-				// die();
+				echo "<pre>";
+				$data = json_encode($data,JSON_PRETTY_PRINT);
+				// $kirim['data'] = json_encode($data);
+				var_dump($data);
+				die();
 				$this->load->view('html/header');
 				$this->load->view('ppk/hasil',$kirim);
 				$this->load->view('html/footer');
