@@ -50,7 +50,7 @@
 									});
 								});
 							</script>
-							<select class="js-example-basic-multiple col" id="gejala_id" name="gejala[]" multiple="multiple" title="masukkan gejala-gejala yang dirasakan pasien">
+							<select class="js-example-basic-multiple col" id="gejala_id" name="gejala[]" multiple="multiple" title="masukkan gejala-gejala yang dirasakan pasien" required>
 								<?php
 								foreach ($gejala as $key => $value) {
 								?>
