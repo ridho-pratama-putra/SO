@@ -40,14 +40,14 @@
 
 <!-- JAVASKRIP TAMBAH ELEMEN INPUT PADA FORM -->
 <script type="text/javascript">
-	var jmlh_form_input = 0;
-	function addInput(divName){
-		jmlh_form_input++;
-		var newdiv = document.createElement('div');
-		newdiv.innerHTML ="<div class='margin-top-15'><input type='text' class='form-control' name='kontraindikasi[]' required></div>";
-		document.getElementById(divName).appendChild(newdiv);
-		document.getElementById('jmlh-form-input').innerHTML = "<strong>Total form input yang akan dimasukkan sejumlah : " +jmlh_form_input+" input<strong>";
-	}
+	// var jmlh_form_input = 0;
+	// function addInput(divName){
+	// 	jmlh_form_input++;
+	// 	var newdiv = document.createElement('div');
+	// 	newdiv.innerHTML ="<div class='margin-top-15'><input type='text' class='form-control' name='kontraindikasi[]' required></div>";
+	// 	document.getElementById(divName).appendChild(newdiv);
+	// 	document.getElementById('jmlh-form-input').innerHTML = "<strong>Total form input yang akan dimasukkan sejumlah : " +jmlh_form_input+" input<strong>";
+	// }
 </script>
 <!-- END JAVASKRIP TAMBAH ELEMEN INPUT PADA FORM -->
 
@@ -220,15 +220,15 @@
 						<div id="dynamicInputkontraIndikasi">
 							<input type="hidden" name="id_obat" value="<?=$master_obat[0]->id_obat?>" >
 							<div class="row">
-								<!-- <div class="margin-top-15 col">
-									<input type="text" class="form-control" id="kontraindikasi" name="kontraindikasi[]">
-								</div> -->
+								<div class="margin-top-15 col">
+									<input type="text" class="form-control" id="karakteristik_kontraindikasi" name="kontraindikasi">
+								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col margin-top-15">
 						<div id="jmlh-form-input"></div>
-						<button type="button" class="btn btn-primary btn-block" onClick="addInput('dynamicInputkontraIndikasi');"> <i class="icons ion-ios-plus-empty"></i> Add Input</button>
+						<!-- <button type="button" class="btn btn-primary btn-block" onClick="addInput('dynamicInputkontraIndikasi');"> <i class="icons ion-ios-plus-empty"></i> Add Input</button> -->
 					</div>
 				</div>	
 				<div class="col margin-top-15">
@@ -241,7 +241,7 @@
 
 	<div class="container" id="notif">
 		<?=$this->session->flashdata("alert_kontraindikasi_obat");?>
-		<?=$this->session->flashdata("alert_kondisi");?>
+		<?=$this->session->flashdata("alert_tipe_master");?>
 	</div>
 	<div class="container margin-top-15">
 		<br>

@@ -17,64 +17,62 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.js"></script>
 <script type="text/javascript" src="<?php echo base_url()?>assets/DataTables/DataTables-1.10.16/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="<?php echo base_url()?>assets/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.js"></script>
+
 <script type="text/javascript" src="<?php echo base_url()?>assets/select2/js/select2.min.js"></script>
 <!-- <script type="text/javascript" src="<?php echo base_url()?>assets/sweetalert/src/sweetalert.js"></script> -->
 
 <body>
 	<header>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-			<a class="navbar-brand text-white">Sistem Pemberian Saran Obat</a>
-		  	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<!-- <ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-			        	<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="#">Sign Out</a>
-							<a class="dropdown-item" href="#">Setting</a>
-						</div>
-					</li>
-				</ul> -->
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+			<a href="<?=base_url()?>" class="navbar-brand text-white">Sistem Pemberian Saran Obat</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
 				<?php if ($this->session->userdata('logged_in') != NULL) { ?>
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item dropdown" style="margin-right: 150px;">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<?php if ($this->session->userdata('logged_in')['akses'] == 'admin') { ?>
-								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_read_obat">Lihat KB Obat</a>
-								<!-- <a class="dropdown-item" href="<?=base_url()?>Admin_C/view_CRUD_gejala">CRUD Gejala</a> -->
-								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_gejala">Lihat Gejala</a>
-								<a class="dropdown-item" href="<?=base_url()?>Admin_C/view_kondisi">Lihat Kondisi</a>
-								<a class="dropdown-item" href="<?=base_url()?>Akun_C/view_registered_user">Registered User</a>
-								<!-- <a class="dropdown-item" href="#" title="DORONG MARI">Lihat Rekam Medis Pasien</a> -->
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#" title="DORONG MARI">Setting</a>
-								<a class="dropdown-item" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
-							<?php }
+					<ul class="navbar-nav ml-auto">
+						<?php if ($this->session->userdata('logged_in')['akses'] == 'admin') { ?>
+							<li class="nav-item">
+								<a class="nav-link" href="index.html#">Home <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Admin_C/view_read_obat">Lihat KB Obat</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Admin_C/view_gejala">Lihat Gejala</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Admin_C/view_kondisi">Lihat Kondisi</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Akun_C/view_registered_user">Registered User</a>
+							</li>
+							<div class="dropdown-divider"></div>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
+							</li>
+						<?php }
 							elseif ($this->session->userdata('logged_in')['akses'] == 'ppk') {?>
-								<a class="dropdown-item" href="<?=base_url()?>Ppk_C/view_read_obat">Lihat KB Obat</a>
-								<a class="dropdown-item" href="<?=base_url()?>Akun_C/view_registered_user">Registered user</a>
-								<!-- <a class="dropdown-item" href="<?=base_url()?>Akun_C/view_form_kondisi_user">Input kondisi Pasien</a> -->
-								<!-- <a class="dropdown-item" href="#">Lihat kondisi Pasien</a> -->
-								<a class="dropdown-item" href="<?=base_url()?>Ppk_C/view_id">Pemeriksaan</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#" title="DORONG MARI">Setting</a>
-								<a class="dropdown-item" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
-							<?php } else{ ?>
-								<a class="dropdown-item" href="#" title="DORONG MARI">Account Setting</a>
-								<a class="dropdown-item" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
-							<?php } ?>
-
-						</div>
-					</li>
-				</ul>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Ppk_C/view_read_obat">Lihat KB Obat</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Akun_C/view_registered_user">Registered user</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Ppk_C/view_id">Pemeriksaan</a>
+							</li>
+							<div class="dropdown-divider"></div>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
+							</li>
+						<?php } else{ ?>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
+							</li>
+						<?php } ?>
+					</ul>
 				<?php } ?>
 			</div>
 		</nav>
 	</header>
-
-

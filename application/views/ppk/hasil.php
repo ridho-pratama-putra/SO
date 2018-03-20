@@ -1,34 +1,65 @@
 <?php
-// tangkap data dari kontrol
 $data = json_decode($data,false);
 ?>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var selected_gejala = <?php echo $data->gejala_pasien?>;
+		console.log('ready');
+		$('#select_gejala').val(selected_gejala).select2();
+		update();
+	});
+	function update(){
+		$('#kirim-ulang').text('MOHON TUNGGU..');
+		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
+		var formData = new FormData($('#cari_gejala')[0])
+		$.ajax({
+			url : url,
+			type: "POST", 
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function(data){
+				var response = JSON.parse(data);
+				console.log(response);
+			},error: function (jqXHR, textStatus, errorThrown)
+			{
+				console.log(jqXHR, textStatus, errorThrown);
+				$('#kirim-ulang').text('eror');
+				$('#kirim-ulang').attr('disabled',false);
+			}
+		});
+	}
+
+
+</script>
+
 <div class="col-md-10 konten-kanan" id="style-1">
 	<div class="row" id="indikasi-yang-dicari">
 		<div class="col">
 			<h3>Indikasi yang dicari:</h3>
-			<form method="POST" action="">
-				<script type="text/javascript">
-					$(document).ready(function() {
-						$('#gejala_id').select2({
-							placeholder: 'ketikkan gejala-gejala',
-							
-						});
-					});
-				</script>
-					<select class="js-example-basic-multiple col" id="gejala_id" name="gejala[]" multiple="multiple" title="klik untuk menambah atau mengganti gejala">
+			<form method="POST" id="cari_gejala">	
+					<select class="js-example-basic-multiple col" id="select_gejala" name="gejala[]" multiple title="klik untuk menambah atau mengganti gejala">
+						<?php
+							foreach ($data->gejala_master as $key => $value) {
+								echo "<option value='$value->id_gejala'>$value->detail_gejala</option>";
+							}
+						?>
 					</select>
 				<br>
 				<br>
 				<div class="row">
 					<div class="col">
-						<a class="btn btn-primary btn-block bg-dark" href="#" role="button">Kirim ulang</a>
+						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">Kirim ulang</a>
 					</div>
 				</div>
 			</form>
-			<span class="badge badge-success" style="margin-top: 15px;"><?=sizeof($data->obat)?> Obat ditemukan</span>
+			<span class="badge badge-success" style="margin-top: 15px;"><?=isset($data->obat)? sizeof($data->obat) : '0'?> Obat ditemukan</span>
 		</div>
 	</div>
-	<!-- collapsible ajax -->
+	<!-- collapsible ajax HERE-->
+	<div id="hasil">
+		
+	</div>
 </div>
 
 

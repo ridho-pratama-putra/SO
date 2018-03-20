@@ -39,6 +39,23 @@ class SO_M extends CI_Model {
 		}
 		//return $this->db->set($data)->get_compiled_insert($table);
 	}
+
+	public function create_id($table,$data)
+	{
+		$query = $this->db->insert($table, $data);
+		if (!$query) {
+			return json_encode(array(
+										'status' => false,
+										'error_message' => $this->db->error()
+			));
+		}
+		else{
+			return json_encode(array(
+										'status' => true,
+										'message' => $this->db->insert_id()
+			));
+		}
+	}
 	public function createS($table,$data){
 		$query = $this->db->insert_batch($table,$data);
 		if (!$query) {

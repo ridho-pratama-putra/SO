@@ -140,13 +140,19 @@ class Ppk_C extends CI_Controller {
 		if ($query->num_rows() != 0) {
 			if ($this->input->post() !== NULL) {
 				$gejalas = $this->input->post('gejala[]');
+				$data['gejala_master']	=	$this->SO_M->readS('master_gejala')->result();
+				$data['user']			=	$query->result();
+				$data['gejala_pasien']	=	json_encode($gejalas);
+				$kirim['data'] 			=	json_encode($data);
+				$this->load->view('html/header');
+				$this->load->view('ppk/hasil',$kirim);
+				$this->load->view('html/footer');
 			}
-			$data['user']	=	$query->result();
-			$data['gejalas']=	$gejalas;
-			$kirim = json_encode($data);
-			$this->load->view('html/header');
-			$this->load->view('ppk/hasil',$kirim);
-			$this->load->view('html/footer');
+			else{
+				$data['heading']	= "Tidak ada form data yang di POST";
+				$data['message']	= "<p>Coba inputkan gejala <a href='".base_url()."Ppk_C/view_gejala/$nomor_identitas'>lagi</a> </p>";
+				$this->load->view('errors/html/error_general',$data);
+			}
 		}else{
 			$data['heading']	= "Data tidak ditemukan";
 			$data['message']	= "<p>Coba lagi <a href='".base_url()."Akun_C/view_registered_user'>Cari identitas pasien</a> </p>";
@@ -154,10 +160,14 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
-	public function get_hasil($nomor_identitas)
+	public function cari_hasil($nomor_identitas)
 	{
-		if ($this->input->post() != null) {
+		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
+		$data['user']	=	$this->SO_M->read('user',$dataWhere)->result();
+		if ($this->input->post()!= NULL) {
 			$gejalas	=	$this->input->post('gejala[]');
+			$data['gejala'] = $gejalas;
+
 			$where = "tipe = 'indikasi' AND (detail_tipe = ";
 			$i = 1;
 			foreach ($gejalas as $key => $value) {
@@ -168,17 +178,27 @@ class Ppk_C extends CI_Controller {
 				}
 				$i++;
 			}
+
+			// cari obat (id_obat dan nama obatnya nya) yang sesuai gejala
 			$this->db->select('karakteristik_obat.id_obat , master_obat.nama_obat');
 			$this->db->distinct();
 			$this->db->where($where);
 			$this->db->join('master_obat','karakteristik_obat.id_obat = master_obat.id_obat','inner');
 			$querys = $this->db->get('karakteristik_obat');
-			unset($where);
+			unset($where,$dataWhere);
+
+			$data['vardump'] = $querys;
+			echo json_encode($data);die();
+			
 			$dataWhere = array('id_user' => $data['user'][0]->id_user);
 			$kondisiPasien = $this->SO_M->read('kondisi',$dataWhere)->result_array();
 			unset($dataWhere);
+
+			
 			$query = $querys->result();
 			$data['obat'] = $query;
+
+			/*perlu revisi karena nilai select gejala ganti, otomatis nilai yang jadi acuan ditabel juga ganti. baik acuan indikasi masupun kontraindikasi beserta peringatnnya*/
 			for ($i=0; $i < ($querys->num_rows()) ; $i++) { 
 				$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 				$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
@@ -189,8 +209,10 @@ class Ppk_C extends CI_Controller {
 						$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array('id_karakteristik'	=>	$dataIndikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
 					}
 				}
+				
 				$dataWhere			=	array(	'tipe' => 'kontraindikasi',	'id_obat' => $query[$i]->id_obat);
 				$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
 				foreach ($dataKontraindikasi as $key => $value) {
 					if ($this->in_array_r($dataKontraindikasi[$key]->detail_tipe,$kondisiPasien)) {
 						$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
@@ -198,6 +220,7 @@ class Ppk_C extends CI_Controller {
 						$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][] = array( 'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe);
 					}
 				}
+
 				$dataWhere			=	array('tipe' => 'peringatan','id_obat' => $query[$i]->id_obat);
 				$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 				foreach ($dataPeringatan as $key => $value) {
@@ -209,13 +232,13 @@ class Ppk_C extends CI_Controller {
 				}
 			}
 			echo json_encode($data);
-			return true;
-			
 		}else{
-			$data['heading']	= "Data tidak ditemukan";
-			$data['message']	= "<p>Coba lagi <a href='".base_url()."Ppk_C/view_gejala/".$data['user'][0]->nomor_identitas."'>Masukkan gejala yang dirasakan pasien</a> </p>";
-			$this->load->view('errors/html/error_general',$data);
+			$data = array('status' => false,'message' => 'tidak ada data yang di post');
+			echo json_encode($data);
 		}
+			
+		
+		
 	}
 
 	// halaman untuk "checkout" keranjang obat

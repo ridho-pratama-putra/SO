@@ -8,7 +8,7 @@
 	 	<br>
 	 	<br>
 	 	<div class="col">
-			<form method="POST" class="form-group" action="<?=base_url()?>Ppk_C/View_hasil/<?=$user[0]->nomor_identitas?>">
+			<form method="POST" class="form-group" action="<?=base_url()?>Ppk_C/view_hasil/<?=$user[0]->nomor_identitas?>">
 				<div class="col-12">
 					<!-- <div class="row">
 						<div class="col-3 offset-2 bg-primary rounded">
@@ -45,16 +45,16 @@
 						<div class="col">
 							<script type="text/javascript">
 								$(document).ready(function() {
-									$('#gejala_id').select2({
+									$('#select_gejala').select2({
 										placeholder: 'ketikkan gejala-gejala'
 									});
 								});
 							</script>
-							<select class="js-example-basic-multiple col" id="gejala_id" name="gejala[]" multiple="multiple" title="masukkan gejala-gejala yang dirasakan pasien" required>
+							<select class="js-example-basic-multiple col" id="select_gejala" name="gejala[]" multiple="multiple" title="masukkan gejala-gejala yang dirasakan pasien" required>
 								<?php
 								foreach ($gejala as $key => $value) {
 								?>
-									<option><?=$value->detail_gejala?></option>
+									<option value="<?=$value->id_gejala?>"><?=$value->detail_gejala?></option>
 								<?php
 								}
 								?>

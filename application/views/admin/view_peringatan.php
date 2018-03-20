@@ -1,13 +1,13 @@
 <!-- JAVASKRIP ADD INPUT ELEMEN PADA FORM -->
 <script type="text/javascript">
-	var jmlh_form_input = 0;
-	function addInput(divName){
-		jmlh_form_input++;
-		var newdiv = document.createElement('div');
-		newdiv.innerHTML ="<div class='margin-top-15'><input type='text' class='form-control' name='peringatan[]' required></div>";
-		document.getElementById(divName).appendChild(newdiv);
-		document.getElementById('jmlh-form-input').innerHTML = "<strong>Total form input yang akan dimasukkan sejumlah : " +jmlh_form_input+" input<strong>";
-	}
+	// var jmlh_form_input = 0;
+	// function addInput(divName){
+	// 	jmlh_form_input++;
+	// 	var newdiv = document.createElement('div');
+	// 	newdiv.innerHTML ="<div class='margin-top-15'><input type='text' class='form-control' name='peringatan[]' required></div>";
+	// 	document.getElementById(divName).appendChild(newdiv);
+	// 	document.getElementById('jmlh-form-input').innerHTML = "<strong>Total form input yang akan dimasukkan sejumlah : " +jmlh_form_input+" input<strong>";
+	// }
 </script>
 <!-- END JAVASKRIP ADD INPUT ELEMEN PADA FORM -->
 
@@ -228,7 +228,7 @@
 					</div>
 					<div class="col margin-top-15">
 						<div id="jmlh-form-input"></div>
-						<button type="button" class="btn btn-primary btn-block" onClick="addInput('dynamicInputperingatan');"> <i class="icons ion-ios-plus-empty"></i> Add Input</button>
+						<!-- <button type="button" class="btn btn-primary btn-block" onClick="addInput('dynamicInputperingatan');"> <i class="icons ion-ios-plus-empty"></i> Add Input</button> -->
 					</div>
 				</div>	
 				<div class="col margin-top-15">
