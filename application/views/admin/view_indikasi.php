@@ -222,7 +222,7 @@
 							<input type="hidden" name="id_obat" value="<?=$master_obat[0]->id_obat?>">
 							<div class="row">
 								<div class="margin-top-15 col">
-									<input type="text" class="form-control" id="karakteristik_indikasi" name="indikasi">
+									<input type="text" class="form-control" id="karakteristik_indikasi" name="indikasi" required>
 								</div>
 							</div>
 						</div>
@@ -241,6 +241,7 @@
 	<hr>
 	<div class="container" id="notif"><!-- id="notif digunakan untuk memuat alert sukses/ gagal dari aksi ajax" -->
 		<?=$this->session->flashdata("alert_indikasi_obat");?>
+		<?=$this->session->flashdata("alert_tipe_master");?>
 		<?=$this->session->flashdata("alert_gejala");?>
 	</div>
 	<div class="container margin-top-15">

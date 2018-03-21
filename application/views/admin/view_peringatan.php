@@ -220,9 +220,9 @@
 						<div id="dynamicInputperingatan">
 							<input type="hidden" name="id_obat" value="<?=$master_obat[0]->id_obat?>" >
 							<div class="row">
-								<!-- <div class="margin-top-15 col">
-									<input type="text" class="form-control" id="peringatan" name="peringatan[]">
-								</div> -->
+								<div class="margin-top-15 col">
+									<input type="text" class="form-control" id="karakteristik_peringatan" name="peringatan" required>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -240,6 +240,7 @@
 	<hr>
 	<div class="container" id="notif">
 		<?=$this->session->flashdata("alert_kondisi");?>
+		<?=$this->session->flashdata("alert_tipe_master");?>
 		<?=$this->session->flashdata("alert_peringatan_obat");?>
 	</div>
 	<div class="container margin-top-15">

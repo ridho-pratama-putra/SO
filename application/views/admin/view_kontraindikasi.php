@@ -221,7 +221,7 @@
 							<input type="hidden" name="id_obat" value="<?=$master_obat[0]->id_obat?>" >
 							<div class="row">
 								<div class="margin-top-15 col">
-									<input type="text" class="form-control" id="karakteristik_kontraindikasi" name="kontraindikasi">
+									<input type="text" class="form-control" id="karakteristik_kontraindikasi" name="kontraindikasi" required>
 								</div>
 							</div>
 						</div>

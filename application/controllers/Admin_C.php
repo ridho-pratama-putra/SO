@@ -150,6 +150,7 @@ class Admin_C extends CI_Controller {
 		$result = $this->SO_M->read('karakteristik_obat',$dataCondition);
 		// jika data gejala dimilki suatu obat
 		if ($result->num_rows() != null) {
+			alert('','danger','Gagal','Data tersebut dimiliki oleh suatu obat',false);
 		}
 		else{
 			unset($dataCondition);
@@ -305,63 +306,72 @@ class Admin_C extends CI_Controller {
 			$this->load->view('errors/html/error_general',$data);
 		}
 		else{
-
-			// dapatkan dulu id obat yang akan ditambahkan karakteristiknya
+			$this->form_validation->set_rules($karakteristik,'', 'required|xss_clean');
 			$id_obat			=	$this->input->post('id_obat');
+			if ($this->form_validation->run() == TRUE) {	
+				// dapatkan dulu id obat yang akan ditambahkan karakteristiknya
 
-			// ambil apa saja karakteristik yang telah diinputkan di form
-			$karakteristik_dari_form	=	$this->input->post($karakteristik);
+				// ambil apa saja karakteristik yang telah diinputkan di form
+				$karakteristik_dari_form	=	$this->input->post($karakteristik);
 
-			// definisikan array kosong untuk disiapkan masuk ke database, karena batch input tidak bisa menerima $karakteristik_dari_form. harus ada array di dalam ARRAY sebanyak jumlah input form
-			$karakteristik_db 			=	array();
+				// definisikan array kosong untuk disiapkan masuk ke database, karena batch input tidak bisa menerima $karakteristik_dari_form. harus ada array di dalam ARRAY sebanyak jumlah input form
+				$karakteristik_db 			=	array();
 
-			
-			// manipulasi array yang akan masuk ke database melalui karakteristik dari form
-			$karakteristik_db	=	array(
-												"id_obat"		=>	$id_obat,
-												"tipe"			=>	$karakteristik,
-												"id_tipe_master"=>	'',
-												"detail_tipe"	=>	$karakteristik_dari_form
-			);
-			
-			// cek apakah data detail tipe tersebut sudah ada pada obat tersebut
-			$where			=	array(	'tipe'=> $karakteristik,
-										'detail_tipe' => $karakteristik_dari_form
-								);
-			$result = $this->SO_M->read('karakteristik_obat',$where);
-			if ($result->num_rows() == 0) {
+				
+				// manipulasi array yang akan masuk ke database melalui karakteristik dari form
+				$karakteristik_db	=	array(
+													"id_obat"		=>	$id_obat,
+													"tipe"			=>	$karakteristik,
+													"id_tipe_master"=>	'',
+													"detail_tipe"	=>	$karakteristik_dari_form
+				);
+				
+				// cek apakah data detail tipe tersebut sudah ada pada obat tersebut
+				$where			=	array(	'id_obat'=>$id_obat,
+											'tipe'=> $karakteristik,
+											'detail_tipe' => $karakteristik_dari_form
+									);
+				$result = $this->SO_M->read('karakteristik_obat',$where);
+				if ($result->num_rows() == 0) {
 
-				// golongakan karakteristik yang akan masuk
-				if (($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
-					
-					// definisikan array kosong untuk masuk ke dalam database kondisi, ini sebagai duplikat dan pengisi elemen dropdown input kondisi
-					$kondisi_db		 			=	array();
-					
-					// siapkan data untuk masuk ke tabel master_kondisi
-					$kondisi_db		=	array(	'detail_kondisi'=>	$karakteristik_dari_form);
+					// golongakan karakteristik yang akan masuk
+					if (($karakteristik == 'kontraindikasi') OR ($karakteristik == 'peringatan')) {
+						// jika belum ada di tabel master kondisi, maka buat, kemudian ambil idnya untuk dijadikan nilai pada kolom id_tipe_master
+						$result = $this->SO_M->read('master_kondisi',array('detail_kondisi' => $karakteristik_db['detail_tipe']));
+						if ($result->num_rows() == 0) {
+							// definisikan array kosong untuk masuk ke dalam database kondisi, ini sebagai duplikat dan pengisi elemen dropdown input kondisi
+							$kondisi_db		 			=	array();
+							// siapkan data untuk masuk ke tabel master_kondisi
+							$kondisi_db		=	array(	'detail_kondisi'=>	$karakteristik_dari_form);
+							$result = $this->SO_M->create_id('master_kondisi',$kondisi_db);
+							$results = json_decode($result);
+							$karakteristik_db['id_tipe_master'] = $results->message;
+						}
+						else{
+							$result = $result->result();
+							$karakteristik_db['id_tipe_master'] = $result[0]->id_master_kondisi;
+						}
 
-					// masukkan dulu data ke master kondisi dan dapatkan id nya untuk dimasukkan ke tabel karakteristik
-					$result =$this->SO_M->create_id('master_kondisi',$kondisi_db);
-					$results = json_decode($result);
+						
 
-				}elseif ($karakteristik =='indikasi') {
-					// definisikan array kosong untuk masuk ke dalam database kondisi, ini sebagai duplikat dan pengisi elemen dropdown input gejala
-					$gejala_db		 			=	array();
-					
-					// siapkan data untuk masuk ke tabel master_gejala
-					$gejala_db		=	array(	'detail_gejala'=>	$karakteristik_dari_form);
+					}elseif ($karakteristik =='indikasi') {
+						
+						// jika belum ada di tabel master gejala, maka buat, kemudian ambil idnya untuk dijadikan nilai pada kolom id_tipe_master
+						$result = $this->SO_M->read('master_gejala',array('detail_gejala' => $karakteristik_db['detail_tipe']));
+						if ($result->num_rows() == 0) {
+							// definisikan array kosong untuk masuk ke dalam database kondisi, ini sebagai duplikat dan pengisi elemen dropdown input gejala
+							$gejala_db		 			=	array();
+							// siapkan data untuk masuk ke tabel master_gejala
+							$gejala_db		=	array(	'detail_gejala'=>	$karakteristik_dari_form);
+							$result = $this->SO_M->create_id('master_gejala',$kondisi_db);
+							$results = json_decode($result);
+							$karakteristik_db['id_tipe_master'] = $results->message;
+						}else{
+							$result = $result->result();
+							$karakteristik_db['id_tipe_master'] = $result[0]->id_gejala;
+						}
+					}
 
-					// masukkan dulu data ke master gejala dan dapatkan id nya untuk dimasukkan ke tabel karakteristik
-					$result =$this->SO_M->create_id('master_gejala',$gejala_db);
-					$results = json_decode($result);
-				}
-
-				// jika berhasil memasukkan data ke master gejala|kondisi
-				if ($results->status) {
-					
-					// masukkan id yang direturn oleh create_id ke array untuk masuk ke karakteristik obat
-					$karakteristik_db['id_tipe_master'] = $results->message;
-					
 					// masukkan data yang sudah disusun ke tabel karakteristik obat
 					$result = $this->SO_M->create('karakteristik_obat',$karakteristik_db);
 					$results = json_decode($result);
@@ -372,17 +382,15 @@ class Admin_C extends CI_Controller {
 					else{
 						alert('alert_'.$karakteristik.'_obat','danger','Gagal','Tidak dapat memasukkan data ke karakteristik_obat');
 					}
+				}else{
+					alert('alert_tipe_master','warning','Duplikasi','Tidak ada data yang di Insert ke gejala|kondisi_master dan karakteristik_obat');
 				}
-				
-				// jika gagal memasukkan ke tabel master_gejala|kondisi
-				else{
-					alert('alert_tipe_master','danger','Gagal','Tidak ada data yang di Insert ke gejala|kondisi_master dan karakteristik_obat');
-				}
+				// jika karakterisitk yang masuk adalah indikasi
+				redirect('Admin_C/view_karakteristik/'.$karakteristik.'/'.$id_obat);
 			}else{
-				alert('alert_tipe_master','warning','Duplikasi','Tidak ada data yang di Insert ke gejala|kondisi_master dan karakteristik_obat');
+				alert('alert_tipe_master','danger','Gagal','Form yang disubmit berisi whitespace');
+				redirect('Admin_C/view_karakteristik/'.$karakteristik.'/'.$id_obat);
 			}
-			// jika karakterisitk yang masuk adalah indikasi
-			redirect('Admin_C/view_karakteristik/'.$karakteristik.'/'.$id_obat);
 		}
 	}
 
@@ -411,89 +419,95 @@ class Admin_C extends CI_Controller {
 	/*dipanggil oleh AJAX untuk melakukan edit pada karakteristik*/
 	public function handle_edit_karakteristik()
 	{
-		$dataCondition 		=	array(	'id_karakteristik'	=>	$this->input->post('id_karakteristik'));
-		$dataUpdate			= 	array(	'id_obat'			=>	$this->input->post('id_obat'),
-										'detail_tipe'		=>	$this->input->post('detail_tipe'),
-										'tipe'				=>	$this->input->post('tipe')
-							);
-		$dataKarakteristik	=	$this->input->post('tipe');
+		$this->form_validation->set_rules('detail_tipe','', 'required|xss_clean');
+		if ($this->form_validation->run() == TRUE) {
 
-		// baca data di karakteristik apakah inputan baru ini sudah ada di tabel karakterisstik obat
-		$result 			=	$this->SO_M->read('karakteristik_obat',$dataUpdate);
+			$dataCondition 		=	array(	'id_karakteristik'	=>	$this->input->post('id_karakteristik'));
+			$dataUpdate			= 	array(	'id_obat'			=>	$this->input->post('id_obat'),
+											'detail_tipe'		=>	$this->input->post('detail_tipe'),
+											'tipe'				=>	$this->input->post('tipe')
+								);
+			$dataKarakteristik	=	$this->input->post('tipe');
 
-		// jika belum ada
-		if ($result->num_rows() == 0) {
-			
-			// jika kontraindikasi atau peringatan, maka cek di tabel master_kondisi
-			if ($dataKarakteristik == 'kontraindikasi' || $dataKarakteristik == 'peringatan') {
+			// baca data di karakteristik apakah inputan baru ini sudah ada di tabel karakterisstik obat
+			$result 			=	$this->SO_M->read('karakteristik_obat',$dataUpdate);
+
+			// jika belum ada
+			if ($result->num_rows() == 0) {
 				
-				// cek di master_tipe, apakah data sudah ada atau belum.jika belum maka insert master_tipe baru dan ambil idnya. jika sudah, ambil idnya. kemudian persiapan untuk masuk ke karakteristik obat
-				$result = $this->SO_M->read('master_kondisi',array('detail_kondisi' => $dataUpdate['detail_tipe']));
-
-				// jika belum ada di master kondisi, insert kemudian ambil id nya
-				if ($result->num_rows() == 0) {
-					$result = $this->SO_M->create_id('master_kondisi',array('detail_kondisi' => $dataUpdate['detail_tipe']));
-					$results = json_decode($result);
+				// jika kontraindikasi atau peringatan, maka cek di tabel master_kondisi
+				if ($dataKarakteristik == 'kontraindikasi' || $dataKarakteristik == 'peringatan') {
 					
-					// jika berhasil insert di master_kondisi
-					if ($results->status) {
+					// cek di master_tipe, apakah data sudah ada atau belum.jika belum maka insert master_tipe baru dan ambil idnya. jika sudah, ambil idnya. kemudian persiapan untuk masuk ke karakteristik obat
+					$result = $this->SO_M->read('master_kondisi',array('detail_kondisi' => $dataUpdate['detail_tipe']));
 
-						// ambil idnya
-						$dataupdate['id_tipe_master'] = $results->message;
+					// jika belum ada di master kondisi, insert kemudian ambil id nya
+					if ($result->num_rows() == 0) {
+						$result = $this->SO_M->create_id('master_kondisi',array('detail_kondisi' => $dataUpdate['detail_tipe']));
+						$results = json_decode($result);
+						
+						// jika berhasil insert di master_kondisi
+						if ($results->status) {
+
+							// ambil idnya
+							$dataupdate['id_tipe_master'] = $results->message;
+						}
+
+						// jika gagal insert di master_kondisi
+						else{
+							alert('','danger','Gagal','Tidak ada data yag masuk pada master_kondisi',false);
+						}
 					}
 
-					// jika gagal insert di master_kondisi
+					// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
 					else{
-						alert('','danger','Gagal','Tidak ada data yag masuk pada master_kondisi',false);
+						$result = $result->result();
+						$dataUpdate['id_tipe_master'] =$result[0]->id_master_kondisi;
 					}
 				}
 
-				// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
+				// jika indikasi, maka cek di tabel master_gejala
 				else{
-					$result = $result->result();
-					$dataUpdate['id_tipe_master'] =$result[0]->id_master_kondisi;
+					$result = $this->SO_M->read('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']));
+					if ($result->num_rows() == 0) {
+						$result = $this->SO_M->create_id('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']));
+						$results = json_decode($result);
+						
+						// jika berhasil insert di master_kondisi
+						if ($results->status) {
+
+							// ambil idnya
+							$dataupdate['id_tipe_master'] = $results->message;
+						}
+
+						// jika gagal insert di master_kondisi
+						else{
+							alert('','danger','Gagal','Tidak ada data yag masuk pada master_gejala',false);
+						}
+					}
+					// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
+					else{
+						$result = $result->result();
+						$dataUpdate['id_tipe_master'] =$result[0]->id_gejala;
+					}
+
+				}
+
+				// masukkan data update ke karakteristik obat
+				$result = $this->SO_M->update('karakteristik_obat',$dataCondition,$dataUpdate);
+				$results = json_decode($result);
+				if ($results->status) {
+					alert('','success','Berhasil','Data karakteristik_obat telah di edit',false);
+				}else{
+					alert('','danger','Gagal','Tidak ada data karakteristik obat yang diedit',false);
 				}
 			}
-
-			// jika indikasi, maka cek di tabel master_gejala
+			// jika sudah ada karakteristik tersebut di tabel karakteristik_obat
 			else{
-				$result = $this->SO_M->read('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']));
-				if ($result->num_rows() == 0) {
-					$result = $this->SO_M->create_id('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']));
-					$results = json_decode($result);
-					
-					// jika berhasil insert di master_kondisi
-					if ($results->status) {
-
-						// ambil idnya
-						$dataupdate['id_tipe_master'] = $results->message;
-					}
-
-					// jika gagal insert di master_kondisi
-					else{
-						alert('','danger','Gagal','Tidak ada data yag masuk pada master_gejala',false);
-					}
-				}
-				// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
-				else{
-					$result = $result->result();
-					$dataUpdate['id_tipe_master'] =$result[0]->id_gejala;
-				}
-
+				alert('','danger','Gagal','Duplikasi pada data karakteristik obat yang diedit',false);
 			}
-
-			// masukkan data update ke karakteristik obat
-			$result = $this->SO_M->update('karakteristik_obat',$dataCondition,$dataUpdate);
-			$results = json_decode($result);
-			if ($results->status) {
-				alert('','success','Berhasil','Data karakteristik_obat telah di edit',false);
-			}else{
-				alert('','danger','Gagal','Tidak ada data karakteristik obat yang diedit',false);
-			}
-		}
-		// jika sudah ada karakteristik tersebut di tabel karakteristik_obat
-		else{
-			alert('','danger','Gagal','Duplikasi pada data karakteristik obat yang diedit',false);
+		}else{
+			alert('','danger','Gagal','Form berisi whitespace',false);
 		}
 	}
 }

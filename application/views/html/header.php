@@ -31,36 +31,35 @@
 			<div class="collapse navbar-collapse" id="navbarCollapse">
 				<?php if ($this->session->userdata('logged_in') != NULL) { ?>
 					<ul class="navbar-nav ml-auto">
-						<?php if ($this->session->userdata('logged_in')['akses'] == 'admin') { ?>
+						<?php
+						$method = $this->router->fetch_method();
+						if ($this->session->userdata('logged_in')['akses'] == 'admin') { ?>
 							<li class="nav-item">
-								<a class="nav-link" href="index.html#">Home <span class="sr-only">(current)</span></a>
+								<a class="nav-link <?=($method == 'view_read_obat') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_read_obat">Lihat KB Obat</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Admin_C/view_read_obat">Lihat KB Obat</a>
+								<a class="nav-link <?=($method == 'view_gejala') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_gejala">Lihat Gejala</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Admin_C/view_gejala">Lihat Gejala</a>
+								<a class="nav-link <?=($method == 'view_kondisi') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_kondisi">Lihat Kondisi</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Admin_C/view_kondisi">Lihat Kondisi</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Akun_C/view_registered_user">Registered User</a>
+								<a class="nav-link <?=($method == 'view_registered_user') ? 'active' : ''?>" href="<?=base_url()?>Akun_C/view_registered_user">Registered User</a>
 							</li>
 							<div class="dropdown-divider"></div>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
+								<a class="nav-link " href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>
 							</li>
 						<?php }
 							elseif ($this->session->userdata('logged_in')['akses'] == 'ppk') {?>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Ppk_C/view_read_obat">Lihat KB Obat</a>
+								<a class="nav-link <?=($method == 'view_read_obat') ? 'active' : ''?>" href="<?=base_url()?>Ppk_C/view_read_obat">Lihat KB Obat</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Akun_C/view_registered_user">Registered user</a>
+								<a class="nav-link <?=($method == 'view_registered_user') ? 'active' : ''?>" href="<?=base_url()?>Akun_C/view_registered_user">Registered user</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="<?=base_url()?>Ppk_C/view_id">Pemeriksaan</a>
+								<a class="nav-link <?=($method == 'view_id') ? 'active' : ''?>" href="<?=base_url()?>Ppk_C/view_id">Pemeriksaan</a>
 							</li>
 							<div class="dropdown-divider"></div>
 							<li class="nav-item">

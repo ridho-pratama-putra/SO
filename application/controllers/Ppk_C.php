@@ -168,11 +168,11 @@ class Ppk_C extends CI_Controller {
 			$gejalas	=	$this->input->post('gejala[]');
 			$data['gejala'] = $gejalas;
 
-			$where = "tipe = 'indikasi' AND (detail_tipe = ";
+			$where = "tipe = 'indikasi' AND (id_tipe_master = ";
 			$i = 1;
 			foreach ($gejalas as $key => $value) {
 				if ($i < sizeof($gejalas)) {
-					$where .= "'".$value."' OR detail_tipe =";
+					$where .= "'".$value."' OR id_tipe_master =";
 				}else{
 					$where .= "'".$value."')";
 				}
@@ -187,7 +187,7 @@ class Ppk_C extends CI_Controller {
 			$querys = $this->db->get('karakteristik_obat');
 			unset($where,$dataWhere);
 
-			$data['vardump'] = $querys;
+			$data['vardump'] = $querys->result();
 			echo json_encode($data);die();
 			
 			$dataWhere = array('id_user' => $data['user'][0]->id_user);
@@ -347,7 +347,6 @@ class Ppk_C extends CI_Controller {
 		$dataCondition			=	array(
 										"id_user"				=>	$this->input->post('id_user'),
 										"detail_kondisi"		=>	$this->input->post('detail_kondisi')
-										// 'id_kondisi'			=>	$this->input->post('id_kondisi')
 									);
 		// var_dump($dataCondition);
 		$result 				= 	$this->SO_M->read('kondisi',$dataCondition);
