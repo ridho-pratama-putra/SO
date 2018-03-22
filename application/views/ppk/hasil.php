@@ -4,11 +4,11 @@ $data = json_decode($data,false);
 <script type="text/javascript">
 	$(document).ready(function(){
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
-		console.log('ready');
 		$('#select_gejala').val(selected_gejala).select2();
 		update();
 	});
 	function update(){
+		$("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
 		var formData = new FormData($('#cari_gejala')[0])
@@ -20,7 +20,182 @@ $data = json_decode($data,false);
 			processData: false,
 			success: function(data){
 				var response = JSON.parse(data);
-				console.log(response);
+
+				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
+				
+				var each_obat = document.createElement('div');
+				each_obat.setAttribute("class","row padding-top-10");
+
+				var col = document.createElement('div');
+				col.setAttribute('class', 'col');
+
+				var margin_top_20 = document.createElement('div');
+				margin_top_20.setAttribute('class','margin-top-20');
+
+				var accordion = document.createElement('div');
+				accordion.setAttribute('id','accordion');
+				accordion.setAttribute('role','tablist');
+
+				// console.log(response.obat);
+				for(var k in response.obat){
+
+					var card = document.createElement('div');
+					card.setAttribute('class', 'card');
+
+					var card_header = document.createElement('div');
+					card_header.setAttribute('class', 'card-header');
+					card_header.setAttribute('role', 'tab');
+					card_header.setAttribute('id', 'heading'+response.obat[k].id_obat);
+
+					var row = document.createElement('div');
+					row.setAttribute('class', 'row');
+
+					var col1 = document.createElement('div');
+					col1.setAttribute('class','col');
+					// console.log(response.obat[k].karakteristik.indikasi.ada.length);
+
+					var h5 = document.createElement('h5');
+
+					var link = document.createElement('a');
+					link.setAttribute('href', '#collapse'+response.obat[k].id_obat);
+					link.setAttribute('data-toogle', 'collapse');
+					link.setAttribute('aria-expanded', 'true');
+					link.setAttribute('aria-controls', 'collapse'+response.obat[k].id_obat);
+
+					var nama_obat = document.createTextNode(response.obat[k].nama_obat);
+
+					var Ifound = document.createElement('div');
+					Ifound.setAttribute('class', 'col-3 ditemukan rounded');
+
+					var Icontainer = document.createElement('h6');
+					Icontainer.setAttribute('class', 'text-center');
+
+					var Itext = document.createTextNode('Indikasi Cocok/Obat ditemukan');
+
+					var Ijml = document.createElement('h6');
+					Ijml.setAttribute('class', 'text-center');
+
+					var IjmlText = document.createTextNode(response.obat[k].karakteristik.indikasi.ada.length+ " / " + response.obat.length);
+
+					var Kfound = document.createElement('div');
+					Kfound.setAttribute('class', 'col-3 ditemukan rounded');
+
+					var Kcontainer = document.createElement('h6');
+					Kcontainer.setAttribute('class', 'text-center');
+
+					var Ktext = document.createTextNode('Kandungan Kontraindikasi/Obat ditemukan');
+
+					var Kjml = document.createElement('h6');
+					Kjml.setAttribute('class', 'text-center');
+
+					if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
+						if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
+							var KjmlText = document.createTextNode(response.obat[k].karakteristik.kontraindikasi.ada.length+ "/" + response.obat.length);
+						}else{
+							var KjmlText = document.createTextNode("0 / " + response.obat.length);
+						}
+					}else{
+						var KjmlText = document.createTextNode("0 / " + response.obat.length);
+					}
+
+					var Pfound = document.createElement('div');
+					Pfound.setAttribute('class', 'col-3 ditemukan rounded');
+
+					var Pcontainer = document.createElement('h6');
+					Pcontainer.setAttribute('class', 'text-center');
+
+					var Ptext = document.createTextNode('Kandungan Peringatan/Obat ditemukan');
+
+					var Pjml = document.createElement('h6');
+					Pjml.setAttribute('class', 'text-center');
+					if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
+						if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
+							var PjmlText = document.createTextNode(response.obat[k].karakteristik.peringatan.ada.length+ "/" + response.obat.length);
+						}else{
+							var PjmlText = document.createTextNode("0 / " + response.obat.length);
+						}
+					}else{
+						var PjmlText = document.createTextNode("0 / " + response.obat.length);
+					}
+
+					var collapse = document.createElement('div');
+					collapse.setAttribute('id', response.obat[k].id_obat);
+					collapse.setAttribute('class', 'collapse show');
+					collapse.setAttribute('role', 'tabpanel');
+					collapse.setAttribute('aria-labelledby', 'heading'+ response.obat[k].id_obat);
+					collapse.setAttribute('data-parent', '#accordion');
+
+					var card_body = document.createElement('div');
+					card_body.setAttribute('class', 'card-body');
+
+					var row1 = document.createElement('div');
+					row1.setAttribute('class', 'row');
+
+					var col2 = document.createElement('div');
+					col2.setAttribute('class', 'col');
+
+					var row2 = document.createElement('div');
+					row2.setAttribute('class', 'row');
+
+
+					for(var l in response.obat[k].karakteristik){
+						
+						var col3 = document.createElement('div');
+						col3.setAttribute('class', 'col informasi ditemukan rounded');
+
+						var h6_karakter = document.createElement('h6');
+
+						var h6text = document.createTextNode(l);
+
+						for(var m in response.obat[k].karakteristik[l]){
+							
+						}
+
+						row2.appendChild(col3);
+						col3.appendChild(h6_karakter);
+						h6_karakter.appendChild(h6text);
+					}
+
+					card.appendChild(card_header);
+					accordion.appendChild(card);
+					card_header.appendChild(row);
+
+					row.appendChild(col1);
+					col1.appendChild(h5);
+					h5.appendChild(link);
+					link.appendChild(nama_obat);
+					
+					row.appendChild(Ifound);
+					Ifound.appendChild(Icontainer);
+					Icontainer.appendChild(Itext);
+					Icontainer.appendChild(Ijml);
+					Ijml.appendChild(IjmlText);
+
+					row.appendChild(Kfound);
+					Kfound.appendChild(Kcontainer);
+					Kcontainer.appendChild(Ktext);
+					Kcontainer.appendChild(Kjml);
+					Kjml.appendChild(KjmlText);
+
+					row.appendChild(Pfound);
+					Pfound.appendChild(Pcontainer);
+					Pcontainer.appendChild(Ptext);
+					Pcontainer.appendChild(Pjml);
+					Pjml.appendChild(PjmlText);
+
+					card.appendChild(collapse);
+					collapse.appendChild(card_body);
+					card_body.appendChild(row1);
+					row1.appendChild(col2);
+					col2.appendChild(row2);
+				}
+
+				col.appendChild(margin_top_20);
+				col.appendChild(accordion);
+				each_obat.appendChild(col);
+
+				var currentDiv = document.getElementById("hasil"); 
+				currentDiv.appendChild(each_obat);
 			},error: function (jqXHR, textStatus, errorThrown)
 			{
 				console.log(jqXHR, textStatus, errorThrown);
@@ -53,7 +228,7 @@ $data = json_decode($data,false);
 					</div>
 				</div>
 			</form>
-			<span class="badge badge-success" style="margin-top: 15px;"><?=isset($data->obat)? sizeof($data->obat) : '0'?> Obat ditemukan</span>
+			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan"></span>
 		</div>
 	</div>
 	<!-- collapsible ajax HERE-->

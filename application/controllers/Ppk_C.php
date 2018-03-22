@@ -163,7 +163,10 @@ class Ppk_C extends CI_Controller {
 	public function cari_hasil($nomor_identitas)
 	{
 		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
-		$data['user']	=	$this->SO_M->read('user',$dataWhere)->result();
+		$dataCol		=	array('id_user');
+		// $data['user']	=	$this->SO_M->read('user',$dataWhere)->result();
+
+		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol)->result();
 		if ($this->input->post()!= NULL) {
 			$gejalas	=	$this->input->post('gejala[]');
 			$data['gejala'] = $gejalas;
@@ -187,13 +190,10 @@ class Ppk_C extends CI_Controller {
 			$querys = $this->db->get('karakteristik_obat');
 			unset($where,$dataWhere);
 
-			$data['vardump'] = $querys->result();
-			echo json_encode($data);die();
-			
 			$dataWhere = array('id_user' => $data['user'][0]->id_user);
 			$kondisiPasien = $this->SO_M->read('kondisi',$dataWhere)->result_array();
 			unset($dataWhere);
-
+			// echo json_encode($kondisiPasien);die();
 			
 			$query = $querys->result();
 			$data['obat'] = $query;
@@ -203,10 +203,10 @@ class Ppk_C extends CI_Controller {
 				$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 				$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 				foreach ($dataIndikasi as $key => $value) {
-					if (in_array($dataIndikasi[$key]->detail_tipe,$gejalas)) {
-						$data['obat'][$i]->karakteristik['indikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataIndikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
+					if (in_array($dataIndikasi[$key]->id_tipe_master,$gejalas)) {
+						$data['obat'][$i]->karakteristik['indikasi']['ada'][] = array('id_karakteristik'=>	$dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
 					}else{
-						$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array('id_karakteristik'	=>	$dataIndikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
+						$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array('id_karakteristik'=>	$dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
 					}
 				}
 				
@@ -214,20 +214,20 @@ class Ppk_C extends CI_Controller {
 				$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 
 				foreach ($dataKontraindikasi as $key => $value) {
-					if ($this->in_array_r($dataKontraindikasi[$key]->detail_tipe,$kondisiPasien)) {
-						$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
+					if ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasien)) {
+						$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
 					}else{
-						$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][] = array( 'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe);
+						$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][] = array( 'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe);
 					}
 				}
 
 				$dataWhere			=	array('tipe' => 'peringatan','id_obat' => $query[$i]->id_obat);
 				$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 				foreach ($dataPeringatan as $key => $value) {
-					if ($this->in_array_r($dataPeringatan[$key]->detail_tipe,$kondisiPasien)) {
-						$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
+					if ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasien)) {
+						$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
 					}else{
-						$data['obat'][$i]->karakteristik['peringatan']['tanya'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
+						$data['obat'][$i]->karakteristik['peringatan']['tanya'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
 					}
 				}
 			}
@@ -236,9 +236,6 @@ class Ppk_C extends CI_Controller {
 			$data = array('status' => false,'message' => 'tidak ada data yang di post');
 			echo json_encode($data);
 		}
-			
-		
-		
 	}
 
 	// halaman untuk "checkout" keranjang obat

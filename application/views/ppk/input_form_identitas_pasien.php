@@ -27,7 +27,7 @@
 				<br>
 				</div>
 				<div class="col-sm-12">
-					<a id="btn-cari-id" onclick="cariID()" class="btn btn-primary btn-block bg-dark text-white" role='button'>Kirim</a> 
+					<a id="btn-cari-id" onclick="cariID()" class="btn btn-primary btn-block bg-dark text-white active" role='button'>Kirim</a> 
 				</div>
 			</div>
 		<!-- </form> -->
