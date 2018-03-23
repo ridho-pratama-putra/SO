@@ -21,6 +21,7 @@ $data = json_decode($data,false);
 			success: function(data){
 				var response = JSON.parse(data);
 
+					// console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var each_obat = document.createElement('div');
@@ -34,7 +35,7 @@ $data = json_decode($data,false);
 
 				var accordion = document.createElement('div');
 				accordion.setAttribute('id','accordion');
-				accordion.setAttribute('role','tablist');
+				// accordion.setAttribute('role','tablist');
 
 				// console.log(response.obat);
 				for(var k in response.obat){
@@ -44,7 +45,7 @@ $data = json_decode($data,false);
 
 					var card_header = document.createElement('div');
 					card_header.setAttribute('class', 'card-header');
-					card_header.setAttribute('role', 'tab');
+					// card_header.setAttribute('role', 'tab');
 					card_header.setAttribute('id', 'heading'+response.obat[k].id_obat);
 
 					var row = document.createElement('div');
@@ -52,13 +53,12 @@ $data = json_decode($data,false);
 
 					var col1 = document.createElement('div');
 					col1.setAttribute('class','col');
-					// console.log(response.obat[k].karakteristik.indikasi.ada.length);
 
 					var h5 = document.createElement('h5');
 
 					var link = document.createElement('a');
+					link.setAttribute('data-toggle', 'collapse');
 					link.setAttribute('href', '#collapse'+response.obat[k].id_obat);
-					link.setAttribute('data-toogle', 'collapse');
 					link.setAttribute('aria-expanded', 'true');
 					link.setAttribute('aria-controls', 'collapse'+response.obat[k].id_obat);
 
@@ -119,7 +119,7 @@ $data = json_decode($data,false);
 					}
 
 					var collapse = document.createElement('div');
-					collapse.setAttribute('id', response.obat[k].id_obat);
+					collapse.setAttribute('id', 'collapse'+response.obat[k].id_obat);
 					collapse.setAttribute('class', 'collapse show');
 					collapse.setAttribute('role', 'tabpanel');
 					collapse.setAttribute('aria-labelledby', 'heading'+ response.obat[k].id_obat);
@@ -145,15 +145,36 @@ $data = json_decode($data,false);
 
 						var h6_karakter = document.createElement('h6');
 
+						// karakteristik
 						var h6text = document.createTextNode(l);
 
+						var ul = document.createElement('ul');
+
+						// ada dan tanya
 						for(var m in response.obat[k].karakteristik[l]){
-							
+							// console.log(response.obat[k].karakteristik[l]);
+							// console.log(m);
+
+							/*
+							obat[k]				=	index obat yang didapat
+							karakteristik[l]	=	index karakteristik yang didapat
+
+							*/
+							for(var n in response.obat[k].karakteristik[l][m]){
+								// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);
+
+								var li = document.createElement('li');
+								var li_text = document.createTextNode(response.obat[k].karakteristik[l][m][n].detail_tipe);
+								
+								ul.appendChild(li);
+								li.appendChild(li_text);
+							}
 						}
 
 						row2.appendChild(col3);
 						col3.appendChild(h6_karakter);
 						h6_karakter.appendChild(h6text);
+						col3.appendChild(ul);
 					}
 
 					card.appendChild(card_header);
