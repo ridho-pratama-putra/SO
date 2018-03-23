@@ -1,12 +1,27 @@
 <?php
 $data = json_decode($data,false);
 ?>
+<style type="text/css">
+	/*chevron onok animasine*/
+.card-header .icon {
+  transition: .3s transform ease-in-out;
+}
+.card-header .collapsed .icon {
+  transform: rotate(90deg);
+}
+</style>
 <script type="text/javascript">
+	$('.ditemukan').tooltip();
 	$(document).ready(function(){
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
 		update();
 	});
+
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip();
+	})
+
 	function update(){
 		$("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
@@ -41,7 +56,7 @@ $data = json_decode($data,false);
 				for(var k in response.obat){
 
 					var card = document.createElement('div');
-					card.setAttribute('class', 'card');
+					card.setAttribute('class', 'card margin-top-20');
 
 					var card_header = document.createElement('div');
 					card_header.setAttribute('class', 'card-header');
@@ -59,8 +74,12 @@ $data = json_decode($data,false);
 					var link = document.createElement('a');
 					link.setAttribute('data-toggle', 'collapse');
 					link.setAttribute('href', '#collapse'+response.obat[k].id_obat);
-					link.setAttribute('aria-expanded', 'true');
+					link.setAttribute('class', 'collapsed');
+					link.setAttribute('aria-expanded', 'false');
 					link.setAttribute('aria-controls', 'collapse'+response.obat[k].id_obat);
+
+					var chevron = document. createElement('i');
+					chevron.setAttribute('class','icon ion-chevron-down float-right');
 
 					var nama_obat = document.createTextNode(response.obat[k].nama_obat);
 
@@ -72,6 +91,12 @@ $data = json_decode($data,false);
 
 					var Itext = document.createTextNode('Indikasi Cocok/Obat ditemukan');
 
+					// data-toggle="tooltip" data-placement="left" title="Tooltip on left"
+					var ItextHelp = document.createElement('i');
+					ItextHelp.setAttribute('class', 'icon ion-ios-help float-right');
+					ItextHelp.setAttribute('style', 'padding-bottom:0px;');
+					ItextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien');
+
 					var Ijml = document.createElement('h6');
 					Ijml.setAttribute('class', 'text-center');
 
@@ -80,10 +105,15 @@ $data = json_decode($data,false);
 					var Kfound = document.createElement('div');
 					Kfound.setAttribute('class', 'col-3 ditemukan rounded');
 
+
 					var Kcontainer = document.createElement('h6');
 					Kcontainer.setAttribute('class', 'text-center');
 
 					var Ktext = document.createTextNode('Kandungan Kontraindikasi/Obat ditemukan');
+
+					var KtextHelp = document.createElement('i');
+					KtextHelp.setAttribute('class', 'icon ion-ios-help float-right');
+					KtextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis');
 
 					var Kjml = document.createElement('h6');
 					Kjml.setAttribute('class', 'text-center');
@@ -106,6 +136,10 @@ $data = json_decode($data,false);
 
 					var Ptext = document.createTextNode('Kandungan Peringatan/Obat ditemukan');
 
+					var PtextHelp = document.createElement('i');
+					PtextHelp.setAttribute('class', 'icon ion-ios-help float-right');
+					PtextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik peringatan pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis');
+
 					var Pjml = document.createElement('h6');
 					Pjml.setAttribute('class', 'text-center');
 					if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
@@ -120,7 +154,7 @@ $data = json_decode($data,false);
 
 					var collapse = document.createElement('div');
 					collapse.setAttribute('id', 'collapse'+response.obat[k].id_obat);
-					collapse.setAttribute('class', 'collapse show');
+					collapse.setAttribute('class', 'collapse');
 					collapse.setAttribute('role', 'tabpanel');
 					collapse.setAttribute('aria-labelledby', 'heading'+ response.obat[k].id_obat);
 					collapse.setAttribute('data-parent', '#accordion');
@@ -141,7 +175,14 @@ $data = json_decode($data,false);
 					for(var l in response.obat[k].karakteristik){
 						
 						var col3 = document.createElement('div');
-						col3.setAttribute('class', 'col informasi ditemukan rounded');
+						if (l == 'indikasi') {
+							col3.setAttribute('class', 'col informasi hijau rounded');
+
+						}else if (l == 'kontraindikasi') {
+							col3.setAttribute('class', 'col informasi merah rounded');
+						}else{
+							col3.setAttribute('class', 'col informasi kuning rounded');
+						}
 
 						var h6_karakter = document.createElement('h6');
 
@@ -162,12 +203,36 @@ $data = json_decode($data,false);
 							*/
 							for(var n in response.obat[k].karakteristik[l][m]){
 								// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);
+								// console.log(m);
 
 								var li = document.createElement('li');
 								var li_text = document.createTextNode(response.obat[k].karakteristik[l][m][n].detail_tipe);
-								
+
+								var li_icons = document.createElement('i');
+								if (l == 'indikasi') {
+									if (m == 'ada') {
+										li_icons.setAttribute('class', 'icon ion-checkmark-circled text-success');
+									}
+									else{
+										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
+									}
+								}else if (l =='kontraindikasi') {
+									if (m == 'ada') {
+										li_icons.setAttribute('class', 'icon ion-android-alert text-danger');
+									}else{
+										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
+									}
+								}else{
+									if (m == 'ada') {
+										li_icons.setAttribute('class', 'icon ion-android-alert text-warning');
+									}else{
+										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
+									}
+								}
+
 								ul.appendChild(li);
 								li.appendChild(li_text);
+								li.appendChild(li_icons);
 							}
 						}
 
@@ -185,23 +250,28 @@ $data = json_decode($data,false);
 					col1.appendChild(h5);
 					h5.appendChild(link);
 					link.appendChild(nama_obat);
+					link.appendChild(chevron);
 					
 					row.appendChild(Ifound);
+					Ifound.appendChild(ItextHelp);
 					Ifound.appendChild(Icontainer);
 					Icontainer.appendChild(Itext);
-					Icontainer.appendChild(Ijml);
+					Ifound.appendChild(Ijml);
 					Ijml.appendChild(IjmlText);
 
+
 					row.appendChild(Kfound);
+					Kfound.appendChild(KtextHelp);
 					Kfound.appendChild(Kcontainer);
 					Kcontainer.appendChild(Ktext);
-					Kcontainer.appendChild(Kjml);
+					Kfound.appendChild(Kjml);
 					Kjml.appendChild(KjmlText);
 
 					row.appendChild(Pfound);
+					Pfound.appendChild(PtextHelp);
 					Pfound.appendChild(Pcontainer);
 					Pcontainer.appendChild(Ptext);
-					Pcontainer.appendChild(Pjml);
+					Pfound.appendChild(Pjml);
 					Pjml.appendChild(PjmlText);
 
 					card.appendChild(collapse);
@@ -244,12 +314,12 @@ $data = json_decode($data,false);
 				<br>
 				<br>
 				<div class="row">
-					<div class="col">
+					<div class="col" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
 						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">Kirim ulang</a>
 					</div>
 				</div>
-			</form>
-			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan"></span>
+			</form>					
+			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></span>
 		</div>
 	</div>
 	<!-- collapsible ajax HERE-->
