@@ -21,6 +21,7 @@
 				<tr>
 				<th>Nama User</th>
 				<th>Akses</th>
+				<th>Nomor Identitas</th>
 				<th>No HP</th>
 				<th class="text-center" width="10px"></th>
 				</tr>
@@ -30,6 +31,7 @@
 					<tr>
 						<td><?=$value->nama_user?></td>
 						<td><?=$value->akses?></td>
+						<td><?=$value->nomor_identitas?></td>
 						<td><?=$value->no_hp?></td>
 						<td class="text-center">
 							<div class="btn-group" role="group">

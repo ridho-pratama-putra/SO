@@ -11,16 +11,15 @@ $data = json_decode($data,false);
 }
 </style>
 <script type="text/javascript">
-	$('.ditemukan').tooltip();
+	// $('.ditemukan').tooltip();
+	// $(function () {
+	// 	$('[data-toggle="tooltip"]').tooltip();
+	// });
 	$(document).ready(function(){
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
 		update();
 	});
-
-	$(function () {
-	  $('[data-toggle="tooltip"]').tooltip();
-	})
 
 	function update(){
 		$("#hasil").empty();
@@ -34,6 +33,8 @@ $data = json_decode($data,false);
 			contentType: false,
 			processData: false,
 			success: function(data){
+				// console.log(data);
+				
 				var response = JSON.parse(data);
 
 					// console.log(response);
@@ -94,13 +95,14 @@ $data = json_decode($data,false);
 					// data-toggle="tooltip" data-placement="left" title="Tooltip on left"
 					var ItextHelp = document.createElement('i');
 					ItextHelp.setAttribute('class', 'icon ion-ios-help float-right');
-					ItextHelp.setAttribute('style', 'padding-bottom:0px;');
+					// ItextHelp.setAttribute('data-toggle', 'tooltip');
+					// ItextHelp.setAttribute('data-placement', 'left');
 					ItextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien');
 
 					var Ijml = document.createElement('h6');
 					Ijml.setAttribute('class', 'text-center');
 
-					var IjmlText = document.createTextNode(response.obat[k].karakteristik.indikasi.ada.length+ " / " + response.obat.length);
+					var IjmlText = document.createTextNode(response.obat[k].Iada+ " / " + response.obat.length);
 
 					var Kfound = document.createElement('div');
 					Kfound.setAttribute('class', 'col-3 ditemukan rounded');
@@ -109,7 +111,7 @@ $data = json_decode($data,false);
 					var Kcontainer = document.createElement('h6');
 					Kcontainer.setAttribute('class', 'text-center');
 
-					var Ktext = document.createTextNode('Kandungan Kontraindikasi/Obat ditemukan');
+					var Ktext = document.createTextNode('Kandungan Kontra/Obat ditemukan');
 
 					var KtextHelp = document.createElement('i');
 					KtextHelp.setAttribute('class', 'icon ion-ios-help float-right');
@@ -120,7 +122,7 @@ $data = json_decode($data,false);
 
 					if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
 						if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
-							var KjmlText = document.createTextNode(response.obat[k].karakteristik.kontraindikasi.ada.length+ "/" + response.obat.length);
+							var KjmlText = document.createTextNode(response.obat[k].Kada+ "/" + response.obat.length);
 						}else{
 							var KjmlText = document.createTextNode("0 / " + response.obat.length);
 						}
@@ -144,7 +146,7 @@ $data = json_decode($data,false);
 					Pjml.setAttribute('class', 'text-center');
 					if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
 						if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
-							var PjmlText = document.createTextNode(response.obat[k].karakteristik.peringatan.ada.length+ "/" + response.obat.length);
+							var PjmlText = document.createTextNode(response.obat[k].Pada+ "/" + response.obat.length);
 						}else{
 							var PjmlText = document.createTextNode("0 / " + response.obat.length);
 						}
@@ -259,6 +261,12 @@ $data = json_decode($data,false);
 					Ifound.appendChild(Ijml);
 					Ijml.appendChild(IjmlText);
 
+					row.appendChild(Pfound);
+					Pfound.appendChild(PtextHelp);
+					Pfound.appendChild(Pcontainer);
+					Pcontainer.appendChild(Ptext);
+					Pfound.appendChild(Pjml);
+					Pjml.appendChild(PjmlText);
 
 					row.appendChild(Kfound);
 					Kfound.appendChild(KtextHelp);
@@ -266,13 +274,6 @@ $data = json_decode($data,false);
 					Kcontainer.appendChild(Ktext);
 					Kfound.appendChild(Kjml);
 					Kjml.appendChild(KjmlText);
-
-					row.appendChild(Pfound);
-					Pfound.appendChild(PtextHelp);
-					Pfound.appendChild(Pcontainer);
-					Pcontainer.appendChild(Ptext);
-					Pfound.appendChild(Pjml);
-					Pjml.appendChild(PjmlText);
 
 					card.appendChild(collapse);
 					collapse.appendChild(card_body);
@@ -287,6 +288,9 @@ $data = json_decode($data,false);
 
 				var currentDiv = document.getElementById("hasil"); 
 				currentDiv.appendChild(each_obat);
+
+				$('#kirim-ulang').text('KIRIM ULANG');
+
 			},error: function (jqXHR, textStatus, errorThrown)
 			{
 				console.log(jqXHR, textStatus, errorThrown);
