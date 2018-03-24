@@ -37,7 +37,7 @@ $data = json_decode($data,false);
 				
 				var response = JSON.parse(data);
 
-					// console.log(response);
+					console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var each_obat = document.createElement('div');
@@ -318,12 +318,12 @@ $data = json_decode($data,false);
 				<br>
 				<br>
 				<div class="row">
-					<div class="col" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+					<div class="col">
 						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">Kirim ulang</a>
 					</div>
 				</div>
 			</form>					
-			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></span>
+			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan"></span>
 		</div>
 	</div>
 	<!-- collapsible ajax HERE-->

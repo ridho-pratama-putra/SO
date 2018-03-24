@@ -249,6 +249,7 @@ class Ppk_C extends CI_Controller {
 
 			}
 
+
 			// sorting indikasi dari tinggi ke rendah
 			$maxIfounded;
 			for ($i=0; $i < sizeof($data['obat']); $i++) {
@@ -279,12 +280,14 @@ class Ppk_C extends CI_Controller {
 			$minPfounded = $data['obat'][0]->Pada;
 
 			for ($i=0; $i < sizeof($data['obat']); $i++) { 
-				if ($data['obat'][$i]->Pada == $minPfounded) {
-					for ($j=0; $j < $i ; $j++) { 
-						if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
-							$temp = $data['obat'][$j];
-							$data['obat'][$j] = $data['obat'][$j+1];
-							$data['obat'][$j+1] = $temp;
+				if ($data['obat'][$i]->Iada == $maxIfounded) {
+					if ($data['obat'][$i]->Pada == $minPfounded) {
+						for ($j=0; $j < $i ; $j++) { 
+							if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
+								$temp = $data['obat'][$j];
+								$data['obat'][$j] = $data['obat'][$j+1];
+								$data['obat'][$j+1] = $temp;
+							}
 						}
 					}
 				}
