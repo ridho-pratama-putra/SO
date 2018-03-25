@@ -21,7 +21,15 @@
 				columns: [
 					{ "data": "detail_kondisi"},
 					{ "data": "tanggal_ditambahkan"},
-					{ "data": "status"},
+					{ "data": "status",
+						render: function ( data, type, full, meta ) {
+							if (data == 1) {
+								return 'Aman';
+							}else{
+								return 'Mengidap';
+							}
+						}
+					},
 					{ "data": "id_kondisi" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
@@ -167,9 +175,6 @@
 				{
 					// buat notif sukses
 					$("#notif_log").html(data);
-
-					// reset value form yang telah diset, agar tidak nyangkut di refresh
-					document.getElementById('formdeletelog').reset();
 					
 					// kembalikan elemen html modal ke default
 					$('#btn-hapus-log').text('Ya!'); //change button text
@@ -238,7 +243,11 @@
 								</div>
 								<div class="form-group">
 									<label>Status</label>
-									<input type="text" class="form-control" placeholder="Status" name="status" id="status">
+									<select class="form-control" name="status" id="status">
+										<option selected disabled>Pilih Status</option>
+										<option value="1">Aman</option>
+										<option value="0">Mengidap</option>
+									</select>
 								</div>
 							</div>
 						<div class="modal-footer">
@@ -256,7 +265,7 @@
 				// convert array to json biar mudah assignnya dari id_kondisi ke detail kondisi
 				var json_select = <?=json_encode($master_kondisi)?>;
 				$('#selectedidkondisi').select2({
-					dropdownParent	: $('#ModalTambahKondisi'),
+					dropdownParent	:	$('#ModalTambahKondisi'),
 					data 			:	json_select,
 					width			:	'100%',
 					placeholder		:	'Pilih Kondisi'
@@ -274,6 +283,10 @@
 		<script type="text/javascript">
 			$('#ModalTambahKondisi').on('show.bs.modal', function(e) {
 				$("#idUser").attr('value', $(e.relatedTarget).data('iduser'));
+			});
+			$('#ModalTambahKondisi').on('hidden.bs.modal', function (e) {
+				$("#selectedidkondisi").val('').trigger('change');
+
 			});
 		</script>
 		<!-- END JAVASKRIP UNTUK AMBIL ELEMEN a SEBAGAI ACUAN MODAL -->
@@ -325,10 +338,9 @@
 						$("#notif_kondisi").html(data);
 
 						// reset value form yang telah diset, agar tidak nyangkut di refresh dan klik modal baru
-						// $("#selectedidkondisi").select2("val","");
-						// $("#selectedidkondisi").select2("val", "");
-						// $('#selectedidkondisi').val('').trigger('change'); //set button enable 
-						document.getElementById('formtambahkondisi').reset();
+						$("#selectedidkondisi").select2("val","");
+						$("#selectedidkondisi").select2("val", "");
+						$('#selectedidkondisi').val('').trigger('change'); //set button enable 
 						
 						// kembalikan elemen html modal ke default
 						$('#btn-tambah-kondisi').text('Ya!'); //change button text
@@ -429,21 +441,22 @@
 						</div>
 							<input type="hidden" name="id_user" value="<?=$user[0]->id_user?>">
 							<input type="hidden" name="id_kondisi" id="idKondisiE">
+							<input type="text" name="id_master_kondisi" id="idMasterKondisiE">
 							<div class="modal-body">
 								<div class="form-group">
 									<label>Kondisi</label>
-									<select class="form-control" name="id_master_kondisi" id="selectedidkondisiE" onchange="assignDetailKondisiE()" >
-										<option selected="" disabled="">Pilih Kondisi</option>
-									</select>
+									<input type="text" class="form-control" name="detail_kondisi" id="detailKondisiE" readonly>
 								</div>
-								<input type="hidden" name="detail_kondisi" id="detailKondisiE">
 								<div class="form-group">
 									<label>Tanggal</label>
-									<input type="date" class="form-control" title="tanggal sekarang" name="tanggal" id="tanggalE">
+									<input type="date" class="form-control" title="tanggal sekarang" name="tanggal" id="tanggalE" readonly>
 								</div>
 								<div class="form-group">
 									<label>Status</label>
-									<input type="text" class="form-control" placeholder="Status" name="status" id="statusE">
+									<select class="form-control" name="status" id="statusE">
+										<option value="1">Aman</option>
+										<option value="0">Mengidap</option>
+									</select>
 								</div>
 							</div>
 						<div class="modal-footer">
@@ -480,7 +493,8 @@
 				$.get('<?=base_url()?>Ppk_C/get_kondisi/' + $(e.relatedTarget).data('idkondisi'),function(html){
 					var responE = JSON.parse(html);
 					// console.log(responE[0].id_master_kondisi);
-					$("#selectedidkondisiE").val(responE[0].id_master_kondisi).trigger('change');
+					// $("#selectedidkondisiE").val(responE[0].id_master_kondisi).trigger('change');
+					$("#idMasterKondisiE").val(responE[0].id_master_kondisi);
 					$("#detailKondisiE").val(responE[0].detail_kondisi);
 					$("#tanggalE").val(responE[0].tanggal_ditambahkan);
 					$("#statusE").val(responE[0].status);
@@ -509,14 +523,6 @@
 						// buat notif sukses
 						$("#notif_kondisi").html(data);
 
-						// reset value form yang telah diset, agar tidak nyangkut di refresh
-						$('#selectedidkondisiE').val('').trigger('change'); //set button enable 
-						document.getElementById('formtambahkondisi').reset();
-						// $("#idKondisiE").attr('value');
-						// $("#detailKondisiE").attr('value');
-						// $("#tanggalE").attr('value');
-						// $("#statusE").attr('value');
-						
 						// kembalikan elemen html modal ke default
 						$('#btn-edit-kondisi').text('Ya!'); //change button text
 						$('#btn-edit-kondisi').attr('disabled',false); //set button enable 

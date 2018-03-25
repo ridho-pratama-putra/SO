@@ -190,11 +190,18 @@ class Ppk_C extends CI_Controller {
 			$querys = $this->db->get('karakteristik_obat');
 			unset($where,$dataWhere);
 
-			$dataWhere = array('id_user' => $data['user'][0]->id_user);
-			$kondisiPasien = $this->SO_M->read('kondisi',$dataWhere)->result_array();
-			unset($dataWhere);
-			// echo json_encode($kondisiPasien);die();
+			$dataWhere = array(
+								'id_user'	=>	$data['user'][0]->id_user,
+								'status'	=>	'0'
+							);
+			$kondisiPasienMengidap = $this->SO_M->read('kondisi',$dataWhere)->result_array();
 			
+			$dataWhere['status'] = '1';
+
+			$kondisiPasienAman = $this->SO_M->read('kondisi',$dataWhere)->result_array();
+			unset($dataWhere);
+
+
 			$query = $querys->result();
 			$data['obat'] = $query;
 			
@@ -225,10 +232,13 @@ class Ppk_C extends CI_Controller {
 				$dataWhere			=	array('tipe' => 'peringatan','id_obat' => $query[$i]->id_obat);
 				$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 				foreach ($dataPeringatan as $key => $value) {
-					if ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasien)) {
+					if ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasienMengidap)) {
 						$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
 						$data['obat'][$i]->Pada += 1;
-					}else{
+					}elseif ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasienAman)) {
+						$data['obat'][$i]->karakteristik['peringatan']['aman'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
+					}
+					else{
 						$data['obat'][$i]->karakteristik['peringatan']['tanya'][] = array('id_karakteristik'=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
 						$data['obat'][$i]->Ptanya += 1;
 					}
@@ -238,9 +248,11 @@ class Ppk_C extends CI_Controller {
 				$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 
 				foreach ($dataKontraindikasi as $key => $value) {
-					if ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasien)) {
+					if ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasienMengidap)) {
 						$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
 						$data['obat'][$i]->Kada += 1;
+					}elseif ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasienAman)) {
+						$data['obat'][$i]->karakteristik['kontraindikasi']['aman'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
 					}else{
 						$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][] = array( 'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe);
 						$data['obat'][$i]->Ktanya += 1;
@@ -264,10 +276,9 @@ class Ppk_C extends CI_Controller {
 			}
 			
 			$maxIfounded = $data['obat'][0]->Iada;
-
 			for ($i=0; $i < sizeof($data['obat']); $i++) { 
 				if ($data['obat'][$i]->Iada == $maxIfounded) {
-					for ($j=0; $j < $i ; $j++) { 
+					for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
 						if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada ) {
 							$temp = $data['obat'][$j];
 							$data['obat'][$j] = $data['obat'][$j+1];
@@ -278,12 +289,12 @@ class Ppk_C extends CI_Controller {
 			}
 			
 			$minPfounded = $data['obat'][0]->Pada;
-
 			for ($i=0; $i < sizeof($data['obat']); $i++) { 
 				if ($data['obat'][$i]->Iada == $maxIfounded) {
 					if ($data['obat'][$i]->Pada == $minPfounded) {
-						for ($j=0; $j < $i ; $j++) { 
+						for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
 							if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
+								// echo $data['obat'][$j]->Kada." | ";
 								$temp = $data['obat'][$j];
 								$data['obat'][$j] = $data['obat'][$j+1];
 								$data['obat'][$j+1] = $temp;
@@ -402,35 +413,21 @@ class Ppk_C extends CI_Controller {
 	// digunakan untuk handle ajax form eddit kondisi
 	public function handle_update_kondisi()
 	{
-		$dataCondition			=	array(
-										"id_user"				=>	$this->input->post('id_user'),
-										"detail_kondisi"		=>	$this->input->post('detail_kondisi')
-									);
-		// var_dump($dataCondition);
-		$result 				= 	$this->SO_M->read('kondisi',$dataCondition);
-		// cek apakah seorang pasien telah memiliki kondisi tersebut
-		// jika belum, maka ambil inputan tadi, lalu tambahkan ke tabel kondisi
-		if ($result->num_rows() == 0) {
-			$dataUpdate			=	array(
-											"id_master_kondisi" 	=>$this->input->post('id_master_kondisi'),
-											"detail_kondisi"		=>$dataCondition['detail_kondisi'],
-											"tanggal_ditambahkan"	=>$this->input->post("tanggal"),
-											"status"				=>$this->input->post("status")
-									);
-			unset($dataCondition);
-			$dataCondition['id_kondisi']	=	$this->input->post('id_kondisi');
-			$result 		=	$this->SO_M->update('kondisi',$dataCondition,$dataUpdate);
-			$results		=	json_decode($result,true);
-			if ($results['status']) {
-				alert('','success','Berhasil','Data telah ditambahkan ke tabel kondisi',false);
-			}
-			else{
-				alert('','danger','Gagal','Tidak ada data yang diperbarui pada tabel kondisi',false);
-				var_dump($results);
-			}
+		$dataUpdate			=	array(
+										"id_master_kondisi" 	=>$this->input->post('id_master_kondisi'),
+										"detail_kondisi"		=>$this->input->post('detail_kondisi'),
+										"tanggal_ditambahkan"	=>$this->input->post("tanggal"),
+										"status"				=>$this->input->post("status")
+								);
+		unset($dataCondition);
+		$dataCondition['id_kondisi']	=	$this->input->post('id_kondisi');
+		$result 		=	$this->SO_M->update('kondisi',$dataCondition,$dataUpdate);
+		$results		=	json_decode($result,true);
+		if ($results['status']) {
+			alert('','success','Berhasil','Data telah ditambahkan ke tabel kondisi',false);
 		}
 		else{
-			alert('','warning','Peringatan','Data tersebut mengalami duplikasi',false);
+			alert('','danger','Gagal','Tidak ada data yang diperbarui pada tabel kondisi',false);
 		}
 	}
 

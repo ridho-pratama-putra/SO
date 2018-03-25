@@ -11,11 +11,14 @@ $data = json_decode($data,false);
 }
 </style>
 <script type="text/javascript">
+</script>
+<script type="text/javascript">
 	// $('.ditemukan').tooltip();
 	// $(function () {
 	// 	$('[data-toggle="tooltip"]').tooltip();
 	// });
 	$(document).ready(function(){
+	
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
 		update();
@@ -24,6 +27,8 @@ $data = json_decode($data,false);
 	function update(){
 		$("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
+		// $('[data-toggle="tooltip"]').tooltip();
+
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
 		var formData = new FormData($('#cari_gejala')[0])
 		$.ajax({
@@ -37,7 +42,7 @@ $data = json_decode($data,false);
 				
 				var response = JSON.parse(data);
 
-					console.log(response);
+					// console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var each_obat = document.createElement('div');
@@ -61,7 +66,6 @@ $data = json_decode($data,false);
 
 					var card_header = document.createElement('div');
 					card_header.setAttribute('class', 'card-header');
-					// card_header.setAttribute('role', 'tab');
 					card_header.setAttribute('id', 'heading'+response.obat[k].id_obat);
 
 					var row = document.createElement('div');
@@ -95,8 +99,9 @@ $data = json_decode($data,false);
 					// data-toggle="tooltip" data-placement="left" title="Tooltip on left"
 					var ItextHelp = document.createElement('i');
 					ItextHelp.setAttribute('class', 'icon ion-ios-help float-right');
-					// ItextHelp.setAttribute('data-toggle', 'tooltip');
-					// ItextHelp.setAttribute('data-placement', 'left');
+
+					ItextHelp.setAttribute('data-toggle', 'tooltip');
+					ItextHelp.setAttribute('data-placement', 'top');
 					ItextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien');
 
 					var Ijml = document.createElement('h6');
@@ -179,7 +184,6 @@ $data = json_decode($data,false);
 						var col3 = document.createElement('div');
 						if (l == 'indikasi') {
 							col3.setAttribute('class', 'col informasi hijau rounded');
-
 						}else if (l == 'kontraindikasi') {
 							col3.setAttribute('class', 'col informasi merah rounded');
 						}else{
@@ -221,13 +225,14 @@ $data = json_decode($data,false);
 								}else if (l =='kontraindikasi') {
 									if (m == 'ada') {
 										li_icons.setAttribute('class', 'icon ion-android-alert text-danger');
-									}else{
+									}
+									else if(m =='tanya'){
 										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
 									}
 								}else{
 									if (m == 'ada') {
 										li_icons.setAttribute('class', 'icon ion-android-alert text-warning');
-									}else{
+									}else if( m == 'tanya'){
 										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
 									}
 								}
@@ -323,7 +328,8 @@ $data = json_decode($data,false);
 					</div>
 				</div>
 			</form>					
-			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan"></span>
+			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan" data-toggle="tooltip" data-placement="left" title="Tooltip on left"></span>
+			<i class="icon ion-ios-help float-right" data-toggle="tooltip" data-placement="left" title="Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien"></i>
 		</div>
 	</div>
 	<!-- collapsible ajax HERE-->
