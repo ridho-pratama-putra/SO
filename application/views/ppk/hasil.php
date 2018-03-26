@@ -10,24 +10,78 @@ $data = json_decode($data,false);
   transform: rotate(90deg);
 }
 </style>
+<!-- funstion tampilkan hasil collapsible -->
 <script type="text/javascript">
-</script>
-<script type="text/javascript">
-	// $('.ditemukan').tooltip();
-	// $(function () {
-	// 	$('[data-toggle="tooltip"]').tooltip();
-	// });
+	
 	$(document).ready(function(){
 	
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
 		update();
+		$('#ModalEditKondisi').on('show.bs.modal', function(e) {
+			$("#idMasterKondisiE").attr('value', $(e.relatedTarget).data('idtipemaster'));
+			$("#idUser").attr('value', $(e.relatedTarget).data('iduser'));
+			$.get('<?=base_url()?>Ppk_C/cek_kondisi/'+$(e.relatedTarget).data('idtipemaster'),function(html){
+				var responE = JSON.parse(html);
+				document.getElementById('apakah').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+responE[0].detail_kondisi+"</h6>";
+				$("#idKondisi").attr('value',responE[0].detail_kondisi);
+			});
+		});
+		$("#btn-ya-kondisi" ).click(function() {
+			var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/0')?>";
+			var formData = new FormData($('#formeditkondisi')[0]);
+			$('#btn-ya-kondisi').text('MOHON TUNGGU..');
+			$.ajax({
+				url : url,
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function(data)
+				{
+					$("#notif").html(data);
+					update();
+					$('#ModalEditKondisi').modal('hide');
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					console.log(jqXHR, textStatus, errorThrown);
+					$('#btn-edit-kondisi').text('Eror'); //change button text
+					$('#btn-edit-kondisi').attr('disabled',false); //set button enable 
+				}
+			});
+		});
+
+		$("#btn-tidak-kondisi" ).click(function() {
+			var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/1')?>";
+			var formData = new FormData($('#formeditkondisi')[0]);
+			$('#btn-tidak-kondisi').text('MOHON TUNGGU..');
+			$.ajax({
+				url : url,
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function(data)
+				{
+					$("#notif").html(data);
+					update();
+					$('#ModalEditKondisi').modal('hide');
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					console.log(jqXHR, textStatus, errorThrown);
+					$('#btn-edit-kondisi').text('Eror'); //change button text
+					$('#btn-edit-kondisi').attr('disabled',false); //set button enable 
+				}
+			});
+		});
 	});
+
 
 	function update(){
 		$("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
-		// $('[data-toggle="tooltip"]').tooltip();
 
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
 		var formData = new FormData($('#cari_gejala')[0])
@@ -42,267 +96,154 @@ $data = json_decode($data,false);
 				
 				var response = JSON.parse(data);
 
-					console.log(response);
+				console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
-				var each_obat = document.createElement('div');
-				each_obat.setAttribute("class","row padding-top-10");
-
-				var col = document.createElement('div');
-				col.setAttribute('class', 'col');
-
-				var margin_top_20 = document.createElement('div');
-				margin_top_20.setAttribute('class','margin-top-20');
-
-				var accordion = document.createElement('div');
-				accordion.setAttribute('id','accordion');
-				// accordion.setAttribute('role','tablist');
-
-				// console.log(response.obat);
+				var html	=	"<div class='row padding-top-10'>";
+				html 		+=	"<div class='col'>";
+				html 		+=	"<div class='margin-top-20'>";
+				html 		+=	"</div>";
+				html 		+=	"<div id='accordion'>";
+				
 				for(var k in response.obat){
-
-					var card = document.createElement('div');
-					card.setAttribute('class', 'card margin-top-20');
-
-					var card_header = document.createElement('div');
-					card_header.setAttribute('class', 'card-header');
-					card_header.setAttribute('id', 'heading'+response.obat[k].id_obat);
-
-					var row = document.createElement('div');
-					row.setAttribute('class', 'row');
-
-					var col1 = document.createElement('div');
-					col1.setAttribute('class','col');
-
-					var h5 = document.createElement('h5');
-
-					var link = document.createElement('a');
-					link.setAttribute('data-toggle', 'collapse');
-					link.setAttribute('href', '#collapse'+response.obat[k].id_obat);
-					link.setAttribute('class', 'collapsed');
-					link.setAttribute('aria-expanded', 'false');
-					link.setAttribute('aria-controls', 'collapse'+response.obat[k].id_obat);
-
-					var chevron = document. createElement('i');
-					chevron.setAttribute('class','icon ion-chevron-down float-right');
-
-					var nama_obat = document.createTextNode(response.obat[k].nama_obat);
-
-					var Ifound = document.createElement('div');
-					Ifound.setAttribute('class', 'col-3 ditemukan rounded');
-
-					var Icontainer = document.createElement('h6');
-					Icontainer.setAttribute('class', 'text-center');
 					
-
-					var Itext = document.createTextNode('Indikasi Cocok/Obat ditemukan');
-
-					// data-toggle="tooltip" data-placement="left" title="Tooltip on left"
+					html 		+=	"<div class='card margin-top-20'>";
+					html 		+=	"<div class='card-header' id='heading"+response.obat[k].id_obat+"'>";
+					html 		+=	"<div class='row'>";
+					html 		+=	"<div class='col'>";
+					html 		+=	"<h5>";
+					html 		+=	"<a href='#collapse"+response.obat[k].id_obat+"' class='collapsed' data-toggle='collapse' aria-expanded='false' aria-controls='collapse"+response.obat[k].id_obat+"'>"+response.obat[k].nama_obat;
+					html 		+=	"<i class='icon ion-chevron-down float-right'>";
+					html 		+=	"</i>";
+					html 		+=	"</a>";
+					html 		+=	"</h5>";
+					html 		+=	"</div>";
 					
-					var ItextHelp = document.createElement('i');
+					html 		+=	"<div class='col-3 ditemukan rounded'>";
 					
-					ItextHelp.setAttribute('class', 'icon ion-ios-help float-right');
-					ItextHelp.setAttribute('data-toggle', 'tooltip');
-					ItextHelp.setAttribute('data-placement', 'top');
-					ItextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien');
-
-					var Ijml = document.createElement('h6');
-					Ijml.setAttribute('class', 'text-center');
-
-					var IjmlText = document.createTextNode(response.obat[k].Iada+ " / " + response.obat.length);
-
-					var Kfound = document.createElement('div');
-					Kfound.setAttribute('class', 'col-3 ditemukan rounded');
-
-
-					var Kcontainer = document.createElement('h6');
-					Kcontainer.setAttribute('class', 'text-center');
-
-					var Ktext = document.createTextNode('Kandungan Kontra/Obat ditemukan');
-
-					var KtextHelp = document.createElement('i');
-					KtextHelp.setAttribute('class', 'icon ion-ios-help float-right');
-					KtextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis');
-
-					var Kjml = document.createElement('h6');
-					Kjml.setAttribute('class', 'text-center');
-
-					if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
-						if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
-							var KjmlText = document.createTextNode(response.obat[k].Kada+ "/" + response.obat.length);
-						}else{
-							var KjmlText = document.createTextNode("0 / " + response.obat.length);
-						}
-					}else{
-						var KjmlText = document.createTextNode("0 / " + response.obat.length);
-					}
-
-					var Pfound = document.createElement('div');
-					Pfound.setAttribute('class', 'col-3 ditemukan rounded');
-
-					var Pcontainer = document.createElement('h6');
-					Pcontainer.setAttribute('class', 'text-center');
-
-					var Ptext = document.createTextNode('Kandungan Peringatan/Obat ditemukan');
-
-					var PtextHelp = document.createElement('i');
-					PtextHelp.setAttribute('class', 'icon ion-ios-help float-right');
-					PtextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik peringatan pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis');
-
-					var Pjml = document.createElement('h6');
-					Pjml.setAttribute('class', 'text-center');
+					html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien' onclick='dobol()'>";
+					html 		+=	"</i>";
+					
+					html 		+=	"<h6 class='text-center'>Indikasi Cocok/Obat ditemukan";
+					html 		+=	"</h6>";
+					html 		+=	"<h6 class='text-center'>"+response.obat[k].Iada+ " / " + response.obat.length;
+					html 		+=	"</h6>";
+					html 		+=	"</div>";
+					
+					html 		+=	"<div class='col-3 ditemukan rounded'>";
+					html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik peringatan pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
+					html 		+=	"</i>";
+					html 		+=	"<h6 class='text-center'>Kandungan Peringatan/Obat ditemukan";
+					html 		+=	"</h6>";
 					if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
 						if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
-							var PjmlText = document.createTextNode(response.obat[k].Pada+ "/" + response.obat.length);
+							html +=	"<h6 class='text-center'>"+response.obat[k].Pada+ "/" + response.obat.length;
 						}else{
-							var PjmlText = document.createTextNode("0 / " + response.obat.length);
+							html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 						}
 					}else{
-						var PjmlText = document.createTextNode("0 / " + response.obat.length);
+						html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 					}
+					html +=	"</h6>";
+					html +=	"</div>";
+					
+					html 		+=	"<div class='col-3 ditemukan rounded'>";
+					html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
+					html 		+=	"</i>";
+					html 		+=	"<h6 class='text-center'>Kandungan Kontra/Obat ditemukan";
+					html 		+=	"</h6>";
+					if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
+						if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
+							html +=	"<h6 class='text-center'>"+response.obat[k].Kada+ " / " + response.obat.length;
+						}else{
+							html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+						}
+					}else{
+						html 	+=	"<h6 class='text-center'>0 / "+ response.obat.length;
+					}
+					html 		+=	"</h6>";
+					html 		+=	"</div>";
 
-					var collapse = document.createElement('div');
-					collapse.setAttribute('id', 'collapse'+response.obat[k].id_obat);
-					collapse.setAttribute('class', 'collapse');
-					collapse.setAttribute('role', 'tabpanel');
-					collapse.setAttribute('aria-labelledby', 'heading'+ response.obat[k].id_obat);
-					collapse.setAttribute('data-parent', '#accordion');
 
-					var card_body = document.createElement('div');
-					card_body.setAttribute('class', 'card-body');
+					html +=	"</div>";
+					html +=	"</div>";
 
-					var row1 = document.createElement('div');
-					row1.setAttribute('class', 'row');
-
-					var col2 = document.createElement('div');
-					col2.setAttribute('class', 'col');
-
-					var row2 = document.createElement('div');
-					row2.setAttribute('class', 'row');
-
+					html +=	"<div id='collapse"+response.obat[k].id_obat+"' class='collapse' role='tabpanel' aria-labelledby='heading"+response.obat[k].id_obat+"' data-parent='#accordion'>";
+					html +=	"<div class='card-body'>";
+					html +=	"<div class='row'>";
+					html +=	"<div class='col'>";
+					html +=	"<div class='row'>";
 
 					for(var l in response.obat[k].karakteristik){
 						
-						var col3 = document.createElement('div');
+						html +=	"<div ";
 						if (l == 'indikasi') {
-							col3.setAttribute('class', 'col informasi hijau rounded');
+							html +=	"class='col informasi hijau rounded'>";
 						}else if (l == 'kontraindikasi') {
-							col3.setAttribute('class', 'col informasi merah rounded');
+							html +=	"class='col informasi merah rounded'>";
 						}else{
-							col3.setAttribute('class', 'col informasi kuning rounded');
+							html +=	"class='col informasi kuning rounded'>";
 						}
-
-						var h6_karakter = document.createElement('h6');
-
-						// karakteristik
-						var h6text = document.createTextNode(l);
-
-						var ul = document.createElement('ul');
-
+						
+						html +=	"<h6>"+l;
+						html +=	"</h6>";
+						html +=	"<ul>";
+						
 						// ada dan tanya
 						for(var m in response.obat[k].karakteristik[l]){
 							// console.log(response.obat[k].karakteristik[l]);
 							// console.log(m);
-
-							/*
-							obat[k]				=	index obat yang didapat
-							karakteristik[l]	=	index karakteristik yang didapat
-
+							/*	obat[k]				=	index obat yang didapat
+								karakteristik[l]	=	index karakteristik yang didapat
 							*/
 							for(var n in response.obat[k].karakteristik[l][m]){
 								// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);			// console.log(n);
 
 								// '<a href="" data-toggle="modal" data-target="#ModalEditKondisi" data-idkondisi="'+data+'" ><i class="icon ion-edit"></i></a>'
 
-								var li = document.createElement('li');
-								var li_text = document.createTextNode(response.obat[k].karakteristik[l][m][n].detail_tipe);
-
-								var trigger_modal = document.createElement('a');
-								trigger_modal.setAttribute('href', '#');
-								trigger_modal.setAttribute('data-toggle', 'modal');
-								trigger_modal.setAttribute('data-target', '#ModaleEditKondisi');
-								trigger_modal.setAttribute('data-idTipeMaster', response.obat[k].karakteristik[l][m][n].id_tipe_master);
-
-								var li_icons = document.createElement('i');
+								html +=	"<li>"+response.obat[k].karakteristik[l][m][n].detail_tipe;
+								
 								if (l == 'indikasi') {
 									if (m == 'ada') {
-										li_icons.setAttribute('class', 'icon ion-checkmark-circled text-success');
-									}
-									else{
-										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
+										html +=	"<i class='icon ion-checkmark-circled text-success'></i>";
 									}
 								}else if (l =='kontraindikasi') {
 									if (m == 'ada') {
-										li_icons.setAttribute('class', 'icon ion-android-alert text-danger');
+										html +=	"<i class='icon ion-android-alert text-danger'></i>";
 									}
 									else if(m =='tanya'){
-										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
+										html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
+										html +=	"<i class='icon ion-help-circled text-primary'></i>";
+										html +=	"</a>";
 									}
 								}else{
 									if (m == 'ada') {
-										li_icons.setAttribute('class', 'icon ion-android-alert text-warning');
+										html +=	"<i class='icon ion-android-alert text-warning'></i>";
 									}else if( m == 'tanya'){
-										li_icons.setAttribute('class', 'icon ion-help-circled text-primary');
+										html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
+										html +=	"<i class='icon ion-help-circled text-primary'></i>";
+										html +=	"</a>";
 									}
 								}
-
-								ul.appendChild(li);
-								li.appendChild(li_text);
-								li.appendChild(trigger_modal);
-								trigger_modal.appendChild(li_icons);
+								html +=	"</li>";
 							}
 						}
-
-						row2.appendChild(col3);
-						col3.appendChild(h6_karakter);
-						h6_karakter.appendChild(h6text);
-						col3.appendChild(ul);
+						html +=	"</ul>";
+						html +=	"</div>";
 					}
-
-					card.appendChild(card_header);
-					accordion.appendChild(card);
-					card_header.appendChild(row);
-
-					row.appendChild(col1);
-					col1.appendChild(h5);
-					h5.appendChild(link);
-					link.appendChild(nama_obat);
-					link.appendChild(chevron);
-					
-					row.appendChild(Ifound);
-					Ifound.appendChild(ItextHelp);
-					Ifound.appendChild(Icontainer);
-					Icontainer.appendChild(Itext);
-					Ifound.appendChild(Ijml);
-					Ijml.appendChild(IjmlText);
-
-					row.appendChild(Pfound);
-					Pfound.appendChild(PtextHelp);
-					Pfound.appendChild(Pcontainer);
-					Pcontainer.appendChild(Ptext);
-					Pfound.appendChild(Pjml);
-					Pjml.appendChild(PjmlText);
-
-					row.appendChild(Kfound);
-					Kfound.appendChild(KtextHelp);
-					Kfound.appendChild(Kcontainer);
-					Kcontainer.appendChild(Ktext);
-					Kfound.appendChild(Kjml);
-					Kjml.appendChild(KjmlText);
-
-					card.appendChild(collapse);
-					collapse.appendChild(card_body);
-					card_body.appendChild(row1);
-					row1.appendChild(col2);
-					col2.appendChild(row2);
+					html +=	"</div>";
+					html +=	"</div>";
+					html +=	"</div>";
+					html +=	"</div>";
+					html +=	"</div>";
+					html +=	"</div>";
 				}
-
-				col.appendChild(margin_top_20);
-				col.appendChild(accordion);
-				each_obat.appendChild(col);
+				html +=	"</div>";
+				html +=	"</div>";
+				html +=	"</div>";
 
 				var currentDiv = document.getElementById("hasil"); 
-				currentDiv.appendChild(each_obat);
+				currentDiv.innerHTML = html;
 
 				$('#kirim-ulang').text('KIRIM ULANG');
 
@@ -314,9 +255,34 @@ $data = json_decode($data,false);
 			}
 		});
 	}
-
-
 </script>
+<!-- funstion tampilkan hasil collapsible -->
+
+<!-- MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
+<div class="modal fade" id="ModalEditKondisi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<form id="formeditkondisi" method="POST">      
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">Form edit kondisi pasien :  </h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<p id="apakah"></p>
+					<input type="hidden" name="id_master_kondisi" id="idMasterKondisiE">
+					<input type="hidden" name="id_user" id="idUser">
+					<input type="hidden" name="detail_kondisi" id="idKondisi">
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary mr-auto text-white" id="btn-tidak-kondisi">TIDAK</a>
+					<a class="btn btn-primary text-white" id="btn-ya-kondisi" >YA</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- END MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
+
 
 <div class="col-md-10 konten-kanan" id="style-1">
 	<div class="row" id="indikasi-yang-dicari">
@@ -339,9 +305,9 @@ $data = json_decode($data,false);
 				</div>
 			</form>					
 			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan" data-toggle="tooltip" data-placement="left" title="Tooltip on left"></span>
-			<i class="icon ion-ios-help float-right" data-toggle="tooltip" data-placement="left" title="Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien"></i>
 		</div>
 	</div>
+	<div class="margin-top-5" id="notif"></div>
 	<!-- collapsible ajax HERE-->
 	<div id="hasil">
 		
@@ -393,25 +359,6 @@ $data = json_decode($data,false);
 		</li>
 	</ul>
 </nav>
-
-<!-- MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
-<div class="modal fade" id="ModalEditKondisi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog" role="document">
-		<form id="formeditkondisi" method="POST">      
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel">Form edit kondisi pasien : <?=$user[0]->nama_user?> </h4>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-					<a class="btn btn-primary" id="btn-edit-kondisi" >Ya!</a>
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
-<!-- END MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
 
 
 

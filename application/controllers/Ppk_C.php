@@ -160,33 +160,6 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
-	public function view_hasil_($nomor_identitas)
-	{
-		$dataWhere	=	array('nomor_identitas' => $nomor_identitas);
-		$query		=	$this->SO_M->read('user',$dataWhere);
-		if ($query->num_rows() != 0) {
-			if ($this->input->post() !== NULL) {
-				$gejalas = $this->input->post('gejala[]');
-				$data['gejala_master']	=	$this->SO_M->readS('master_gejala')->result();
-				$data['user']			=	$query->result();
-				$data['gejala_pasien']	=	json_encode($gejalas);
-				$kirim['data'] 			=	json_encode($data);
-				$this->load->view('html/header');
-				$this->load->view('ppk/hasil_',$kirim);
-				$this->load->view('html/footer');
-			}
-			else{
-				$data['heading']	= "Tidak ada form data yang di POST";
-				$data['message']	= "<p>Coba inputkan gejala <a href='".base_url()."Ppk_C/view_gejala/$nomor_identitas'>lagi</a> </p>";
-				$this->load->view('errors/html/error_general',$data);
-			}
-		}else{
-			$data['heading']	= "Data tidak ditemukan";
-			$data['message']	= "<p>Coba lagi <a href='".base_url()."Akun_C/view_registered_user'>Cari identitas pasien</a> </p>";
-			$this->load->view('errors/html/error_general',$data);
-		}
-	}
-
 	public function cari_hasil($nomor_identitas)
 	{
 		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
@@ -380,6 +353,13 @@ class Ppk_C extends CI_Controller {
 		echo json_encode($result);
 	}
 
+	// untuk handle kontraindikasi dan peringatan yang belum pernah diketeahui faktanya. ini dipanggil pada modal editkondisi. jadi tanpa masuk menu add kondisi terlebih dahulu
+	public function cek_kondisi($id_master_kondisi)
+	{
+		$result 						=	$this->SO_M->readCol('master_kondisi',array('id_master_kondisi' => $id_master_kondisi),'detail_kondisi')->result();
+		echo json_encode($result);	
+	}
+
 	// untuk handle delete log pengobatan seorang user pada halam log pengobatan setiap user. dipanggil oleh ajax pada halaman tersebut
 	public function handle_delete_log()
 	{
@@ -412,8 +392,8 @@ class Ppk_C extends CI_Controller {
 		// jika belum ada di tabel kondisi
 		if ($result->num_rows() == 0) {
 			$result 	=	$this->SO_M->create('kondisi',$dataAdd);
-			$results	=	json_decode($result,true);
-			if ($results['status']) {
+			$results	=	json_decode($result);
+			if ($results->status) {
 				alert('','success','Berhasil','Data telah dimasukkan ke tabel kondisi',false);
 			}
 			else{
@@ -449,8 +429,8 @@ class Ppk_C extends CI_Controller {
 		unset($dataCondition);
 		$dataCondition['id_kondisi']	=	$this->input->post('id_kondisi');
 		$result 		=	$this->SO_M->update('kondisi',$dataCondition,$dataUpdate);
-		$results		=	json_decode($result,true);
-		if ($results['status']) {
+		$results		=	json_decode($result);
+		if ($results->status) {
 			alert('','success','Berhasil','Data telah ditambahkan ke tabel kondisi',false);
 		}
 		else{
@@ -458,7 +438,31 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
-	// finding values between multidimensional array. paste from https://stackoverflow.com/questions/4128323/in-array-and-multidimensional-array
+	// function untuk handle kondisi melalui hasil pencarian, agar tidak masuk ke menu add kondisi terlebih dahulu
+	public function handle_add_kondisi_($ya_tidak)
+	{
+		$dataAdd		=	array(
+									"id_user"				=>	$this->input->post('id_user'),
+									"id_master_kondisi"		=>	$this->input->post('id_master_kondisi'),
+									"detail_kondisi"		=>	$this->input->post('detail_kondisi'),
+									"tanggal_ditambahkan"	=>	date('Y-m-d')
+							);
+		if ($ya_tidak == '1') {
+			$dataAdd['status'] = 	1;
+		}else{
+			$dataAdd['status'] = 	0;
+		}
+		$result 	=	$this->SO_M->create('kondisi',$dataAdd);
+		$results	=	json_decode($result);
+		if ($results->status) {
+			alert('','success','Berhasil','Data user telah dimasukkan ke tabel kondisi',false);
+		}
+		else{
+			alert('','danger','Gagal','Tidak ada data user yang masuk pada tabel kondisi',false);
+		}
+	}
+
+	// finding values in multidimensional array. paste from https://stackoverflow.com/questions/4128323/in-array-and-multidimensional-array
 	// usage :
 	// $b = array(array("Mac", "NT"), array("Irix", "Linux"));
 	// echo in_array_r("Irix", $b) ? 'found' : 'not found';
