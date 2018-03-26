@@ -160,6 +160,33 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	public function view_hasil_($nomor_identitas)
+	{
+		$dataWhere	=	array('nomor_identitas' => $nomor_identitas);
+		$query		=	$this->SO_M->read('user',$dataWhere);
+		if ($query->num_rows() != 0) {
+			if ($this->input->post() !== NULL) {
+				$gejalas = $this->input->post('gejala[]');
+				$data['gejala_master']	=	$this->SO_M->readS('master_gejala')->result();
+				$data['user']			=	$query->result();
+				$data['gejala_pasien']	=	json_encode($gejalas);
+				$kirim['data'] 			=	json_encode($data);
+				$this->load->view('html/header');
+				$this->load->view('ppk/hasil_',$kirim);
+				$this->load->view('html/footer');
+			}
+			else{
+				$data['heading']	= "Tidak ada form data yang di POST";
+				$data['message']	= "<p>Coba inputkan gejala <a href='".base_url()."Ppk_C/view_gejala/$nomor_identitas'>lagi</a> </p>";
+				$this->load->view('errors/html/error_general',$data);
+			}
+		}else{
+			$data['heading']	= "Data tidak ditemukan";
+			$data['message']	= "<p>Coba lagi <a href='".base_url()."Akun_C/view_registered_user'>Cari identitas pasien</a> </p>";
+			$this->load->view('errors/html/error_general',$data);
+		}
+	}
+
 	public function cari_hasil($nomor_identitas)
 	{
 		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
@@ -265,7 +292,7 @@ class Ppk_C extends CI_Controller {
 			// sorting indikasi dari tinggi ke rendah
 			$maxIfounded;
 			for ($i=0; $i < sizeof($data['obat']); $i++) {
-				for ($j=0; $j < $i ; $j++) {
+				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
 					if ($data['obat'][$j]->Iada < $data['obat'][$j+1]->Iada) {
 						// var_dump($data['obat'][$j]->Iada);
 						$temp = $data['obat'][$j];

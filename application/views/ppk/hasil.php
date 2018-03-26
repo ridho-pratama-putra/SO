@@ -42,7 +42,7 @@ $data = json_decode($data,false);
 				
 				var response = JSON.parse(data);
 
-					// console.log(response);
+					console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var each_obat = document.createElement('div');
@@ -93,13 +93,15 @@ $data = json_decode($data,false);
 
 					var Icontainer = document.createElement('h6');
 					Icontainer.setAttribute('class', 'text-center');
+					
 
 					var Itext = document.createTextNode('Indikasi Cocok/Obat ditemukan');
 
 					// data-toggle="tooltip" data-placement="left" title="Tooltip on left"
+					
 					var ItextHelp = document.createElement('i');
+					
 					ItextHelp.setAttribute('class', 'icon ion-ios-help float-right');
-
 					ItextHelp.setAttribute('data-toggle', 'tooltip');
 					ItextHelp.setAttribute('data-placement', 'top');
 					ItextHelp.setAttribute('title', 'Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien');
@@ -208,11 +210,18 @@ $data = json_decode($data,false);
 
 							*/
 							for(var n in response.obat[k].karakteristik[l][m]){
-								// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);
-								// console.log(m);
+								// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);			// console.log(n);
+
+								// '<a href="" data-toggle="modal" data-target="#ModalEditKondisi" data-idkondisi="'+data+'" ><i class="icon ion-edit"></i></a>'
 
 								var li = document.createElement('li');
 								var li_text = document.createTextNode(response.obat[k].karakteristik[l][m][n].detail_tipe);
+
+								var trigger_modal = document.createElement('a');
+								trigger_modal.setAttribute('href', '#');
+								trigger_modal.setAttribute('data-toggle', 'modal');
+								trigger_modal.setAttribute('data-target', '#ModaleEditKondisi');
+								trigger_modal.setAttribute('data-idTipeMaster', response.obat[k].karakteristik[l][m][n].id_tipe_master);
 
 								var li_icons = document.createElement('i');
 								if (l == 'indikasi') {
@@ -239,7 +248,8 @@ $data = json_decode($data,false);
 
 								ul.appendChild(li);
 								li.appendChild(li_text);
-								li.appendChild(li_icons);
+								li.appendChild(trigger_modal);
+								trigger_modal.appendChild(li_icons);
 							}
 						}
 
@@ -383,6 +393,26 @@ $data = json_decode($data,false);
 		</li>
 	</ul>
 </nav>
+
+<!-- MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
+<div class="modal fade" id="ModalEditKondisi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<form id="formeditkondisi" method="POST">      
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">Form edit kondisi pasien : <?=$user[0]->nama_user?> </h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+					<a class="btn btn-primary" id="btn-edit-kondisi" >Ya!</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- END MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
+
 
 
 <!-- 

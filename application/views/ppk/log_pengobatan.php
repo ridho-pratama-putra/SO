@@ -33,8 +33,8 @@
 					{ "data": "id_kondisi" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKondisi" title="edit kondisi" data-idkondisi="'+data+'" ><i class="icon ion-edit"></i></a>'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKondisi" title="hapus kondisi" data-idkondisik="'+data+'" ><i class="icon ion-android-delete"></i></a>'+
+								'<a href="" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKondisi" title="edit kondisi" data-idkondisi="'+data+'" ><i class="icon ion-edit"></i></a>'+
+								'<a href="" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKondisi" title="hapus kondisi" data-idkondisik="'+data+'" ><i class="icon ion-android-delete"></i></a>'+
 							'</div>';
 						}
 					}
@@ -441,7 +441,7 @@
 						</div>
 							<input type="hidden" name="id_user" value="<?=$user[0]->id_user?>">
 							<input type="hidden" name="id_kondisi" id="idKondisiE">
-							<input type="text" name="id_master_kondisi" id="idMasterKondisiE">
+							<input type="hidden" name="id_master_kondisi" id="idMasterKondisiE">
 							<div class="modal-body">
 								<div class="form-group">
 									<label>Kondisi</label>
