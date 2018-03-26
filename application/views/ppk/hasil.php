@@ -18,6 +18,7 @@ $data = json_decode($data,false);
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
 		update();
+		show_kondisi();
 		$('#ModalEditKondisi').on('show.bs.modal', function(e) {
 			$("#idMasterKondisiE").attr('value', $(e.relatedTarget).data('idtipemaster'));
 			$("#idUser").attr('value', $(e.relatedTarget).data('iduser'));
@@ -27,6 +28,7 @@ $data = json_decode($data,false);
 				$("#idKondisi").attr('value',responE[0].detail_kondisi);
 			});
 		});
+
 		$("#btn-ya-kondisi" ).click(function() {
 			var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/0')?>";
 			var formData = new FormData($('#formeditkondisi')[0]);
@@ -41,13 +43,15 @@ $data = json_decode($data,false);
 				{
 					$("#notif").html(data);
 					update();
+					show_kondisi();
 					$('#ModalEditKondisi').modal('hide');
+					$('#btn-ya-kondisi').text('YA');
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					console.log(jqXHR, textStatus, errorThrown);
-					$('#btn-edit-kondisi').text('Eror'); //change button text
-					$('#btn-edit-kondisi').attr('disabled',false); //set button enable 
+					$('#btn-ya-kondisi').text('Eror'); //change button text
+					$('#btn-ya-kondisi').attr('disabled',false); //set button enable 
 				}
 			});
 		});
@@ -66,19 +70,36 @@ $data = json_decode($data,false);
 				{
 					$("#notif").html(data);
 					update();
+					show_kondisi();
 					$('#ModalEditKondisi').modal('hide');
+					$('#btn-ya-kondisi').text('TIDAK');
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					console.log(jqXHR, textStatus, errorThrown);
-					$('#btn-edit-kondisi').text('Eror'); //change button text
-					$('#btn-edit-kondisi').attr('disabled',false); //set button enable 
+					$('#btn-tidak-kondisi').text('Eror'); //change button text
+					$('#btn-tidak-kondisi').attr('disabled',false); //set button enable 
 				}
 			});
 		});
 	});
 
+	// ambil kondisi untuk ditampilkan pada side menu kanan 
+	function show_kondisi() {
+		$("#note-kondisi").empty();
 
+		var url = "<?=base_url("Ppk_C/get_col_kondisi/").$data->user[0]->id_user?>";
+		$.get(url,function(html){
+			var responE = JSON.parse(html);
+			var html = '';
+			for(var i in responE){
+				html += "<a class='nav-link disabled text-white badge badge-danger'>"+responE[i].detail_kondisi+"</a> ";
+			}
+			document.getElementById('note-kondisi').innerHTML = html;	
+		});
+	}
+
+	// reload hasi pencarian obat yang sesuai
 	function update(){
 		$("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
@@ -94,9 +115,9 @@ $data = json_decode($data,false);
 			success: function(data){
 				// console.log(data);
 				
-				var response = JSON.parse(data);
+				window.response = JSON.parse(data);
 
-				console.log(response);
+				// console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var html	=	"<div class='row padding-top-10'>";
@@ -171,23 +192,23 @@ $data = json_decode($data,false);
 					html +=	"<div id='collapse"+response.obat[k].id_obat+"' class='collapse' role='tabpanel' aria-labelledby='heading"+response.obat[k].id_obat+"' data-parent='#accordion'>";
 					html +=	"<div class='card-body'>";
 					html +=	"<div class='row'>";
-					html +=	"<div class='col'>";
-					html +=	"<div class='row'>";
+					html +=		"<div class='col'>";
+					html +=			"<div class='row'>";
 
 					for(var l in response.obat[k].karakteristik){
 						
-						html +=	"<div ";
+						html +=			"<div ";
 						if (l == 'indikasi') {
-							html +=	"class='col informasi hijau rounded'>";
+							html +=			"class='col informasi hijau rounded'>";
 						}else if (l == 'kontraindikasi') {
-							html +=	"class='col informasi merah rounded'>";
+							html +=			"class='col informasi merah rounded'>";
 						}else{
-							html +=	"class='col informasi kuning rounded'>";
+							html +=			"class='col informasi kuning rounded'>";
 						}
 						
-						html +=	"<h6>"+l;
-						html +=	"</h6>";
-						html +=	"<ul>";
+						html +=				"<h6>"+l;
+						html +=				"</h6>";
+						html +=				"<ul>";
 						
 						// ada dan tanya
 						for(var m in response.obat[k].karakteristik[l]){
@@ -228,12 +249,13 @@ $data = json_decode($data,false);
 								html +=	"</li>";
 							}
 						}
-						html +=	"</ul>";
-						html +=	"</div>";
+						html +=				"</ul>";
+						html +=			"</div>";
 					}
+					html +=			"</div>";
+					html +=		"</div>";
 					html +=	"</div>";
-					html +=	"</div>";
-					html +=	"</div>";
+					html += "<div class='row margin-top-10'><button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
 					html +=	"</div>";
 					html +=	"</div>";
 					html +=	"</div>";
@@ -314,7 +336,6 @@ $data = json_decode($data,false);
 	</div>
 </div>
 
-
 <!-- SIDE NAAV HERE -->
 <nav class="col-md-2 d-none d-sm-block bg-light sidebar" id="style-1">
 	<ul class="nav nav-pills flex-column">
@@ -328,35 +349,19 @@ $data = json_decode($data,false);
 			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> 19 Februari 1997 / 20Thn</i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$data->user[0]->tanggal_lahir?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
+			<span class="nav-link">Nomor Identitas<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
 		</li>
 		<li class="nav-item">
 			<span class="nav-link">Note Kondisi
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">...</a>
+				<div id='note-kondisi'></div>
 			</span>
 		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjd haskjdnas</i></span>
-		</li>
-		<li class="nav-item">
+<!-- 		<li class="nav-item">
 			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjdha skjdnas</i></span>
-		</li>
+		</li> -->
 	</ul>
 </nav>
 

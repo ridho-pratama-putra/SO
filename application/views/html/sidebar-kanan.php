@@ -16,29 +16,5 @@
 		<li class="nav-item">
 			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$user[0]->nomor_identitas?></i></span>
 		</li>
-		<li class="nav-item">
-			<span class="nav-link">Note Kondisi
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">...</a>
-			</span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjd haskjdnas</i></span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjdha skjdnas</i></span>
-		</li>
 	</ul>
 </nav>

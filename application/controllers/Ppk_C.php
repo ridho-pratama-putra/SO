@@ -124,7 +124,6 @@ class Ppk_C extends CI_Controller {
 			$data['gejala']	=	$this->SO_M->readS('master_gejala')->result();
 			$this->load->view('html/header');
 			$this->load->view('ppk/form_gejala',$data);
-			$this->load->view('html/sidebar-kanan',$data);
 			$this->load->view('html/footer');
 		}else{
 			$data['heading']	= "Data tidak ditemukan";
@@ -136,7 +135,8 @@ class Ppk_C extends CI_Controller {
 	public function view_hasil($nomor_identitas)
 	{
 		$dataWhere	=	array('nomor_identitas' => $nomor_identitas);
-		$query		=	$this->SO_M->read('user',$dataWhere);
+		$dataCol	=	array('id_user','nama_user','nomor_identitas','tanggal_lahir','alamat','akses','no_hp','link_foto');
+		$query		=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
 		if ($query->num_rows() != 0) {
 			if ($this->input->post() !== NULL) {
 				$gejalas = $this->input->post('gejala[]');
@@ -276,6 +276,7 @@ class Ppk_C extends CI_Controller {
 			}
 			
 			$maxIfounded = $data['obat'][0]->Iada;
+			// echo $maxIfounded;
 			for ($i=0; $i < sizeof($data['obat']); $i++) { 
 				if ($data['obat'][$i]->Iada == $maxIfounded) {
 					for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
@@ -460,6 +461,12 @@ class Ppk_C extends CI_Controller {
 		else{
 			alert('','danger','Gagal','Tidak ada data user yang masuk pada tabel kondisi',false);
 		}
+	}
+
+	public function get_col_kondisi($id_user)
+	{
+		$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('detail_kondisi'))->result();
+		echo json_encode($result);
 	}
 
 	// finding values in multidimensional array. paste from https://stackoverflow.com/questions/4128323/in-array-and-multidimensional-array
