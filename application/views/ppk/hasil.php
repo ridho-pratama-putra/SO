@@ -93,7 +93,11 @@ $data = json_decode($data,false);
 			var responE = JSON.parse(html);
 			var html = '';
 			for(var i in responE){
-				html += "<a class='nav-link disabled text-white badge badge-danger'>"+responE[i].detail_kondisi+"</a> ";
+				if (responE[i].status == 0) {
+					html += "<a class='nav-link disabled text-white badge badge-danger'>"+responE[i].detail_kondisi+"</a> ";
+				}else{
+					html += "<a class='nav-link disabled text-white badge badge-success'>"+responE[i].detail_kondisi+"</a> ";
+				}
 			}
 			document.getElementById('note-kondisi').innerHTML = html;	
 		});

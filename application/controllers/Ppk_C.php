@@ -465,7 +465,7 @@ class Ppk_C extends CI_Controller {
 
 	public function get_col_kondisi($id_user)
 	{
-		$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('detail_kondisi'))->result();
+		$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('detail_kondisi','status'))->result();
 		echo json_encode($result);
 	}
 
