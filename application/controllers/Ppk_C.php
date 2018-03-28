@@ -171,13 +171,20 @@ class Ppk_C extends CI_Controller {
 			$gejalas	=	$this->input->post('gejala[]');
 			$data['gejala'] = $gejalas;
 
+			// parameter untuk cari indikasi suatu obat yang cocok
 			$where = "tipe = 'indikasi' AND (id_tipe_master = ";
 			$i = 1;
+
+			// parameter untuk cari log_pengobatan dengan gejala yang mirip
+			$where_ = "gejala_log.id_gejala = ";
+			// generate where parameter untuk dikirim ke join dan generate where parameter untuk cari log pengobatan dengan gejala yang mirip
 			foreach ($gejalas as $key => $value) {
 				if ($i < sizeof($gejalas)) {
-					$where .= "'".$value."' OR id_tipe_master =";
+					$where	.=	"'".$value."' OR id_tipe_master =";
+					$where_	.=	"'".$value."' OR gejala_log.id_gejala=";
 				}else{
-					$where .= "'".$value."')";
+					$where	.= "'".$value."')";
+					$where_	.= "'".$value."'";
 				}
 				$i++;
 			}
@@ -188,8 +195,29 @@ class Ppk_C extends CI_Controller {
 			$this->db->where($where);
 			$this->db->join('master_obat','karakteristik_obat.id_obat = master_obat.id_obat','inner');
 			$querys = $this->db->get('karakteristik_obat');
+			
 			unset($where,$dataWhere);
 
+			// cari log pengobatan dengan gejala yang mirip dengan masukan
+			$this->db->select('gejala_log.id_log , log_pengobatan.tanggal');
+			$this->db->where($where_);
+			$this->db->order_by('gejala_log.id_log', 'ASC');
+			$this->db->join('log_pengobatan','gejala_log.id_log = log_pengobatan.id_log','inner');
+			$query = $this->db->get('gejala_log')->result();
+
+			// data log pengobatan ang mirip dengan gejala inputan
+			$data['histori'] = array();
+			foreach ($query as $key => $value) {
+				if (!isset($data['histori'][$value->id_log])) {
+					$data['histori'][$value->id_log] = array('banyak' => 1, 'tanggal' => $value->tanggal);
+				}else{
+					$data['histori'][$value->id_log]['banyak'] = $data['histori'][$value->id_log]['banyak'] + 1;
+				}
+			}
+
+			unset($query);
+
+			// cari apa saja kondisi (rekam medis) pasien
 			$dataWhere = array(
 								'id_user'	=>	$data['user'][0]->id_user,
 								'status'	=>	'0'
@@ -201,12 +229,11 @@ class Ppk_C extends CI_Controller {
 			$kondisiPasienAman = $this->SO_M->read('kondisi',$dataWhere)->result_array();
 			unset($dataWhere);
 
-
 			$query = $querys->result();
 			$data['obat'] = $query;
 			
 			/*perlu revisi karena nilai select gejala ganti, otomatis nilai yang jadi acuan ditabel juga ganti. baik acuan indikasi masupun kontraindikasi beserta peringatnnya*/
-			for ($i=0; $i < ($querys->num_rows()) ; $i++) { 
+			for ($i=0; $i < ($querys->num_rows()) ; $i++) {
 				$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 				$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 

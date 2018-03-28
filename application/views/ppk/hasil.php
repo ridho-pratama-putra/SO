@@ -2,7 +2,7 @@
 $data = json_decode($data,false);
 ?>
 <style type="text/css">
-	/*chevron onok animasine*/
+/*chevron onok animasine*/
 .card-header .icon {
   transition: .3s transform ease-in-out;
 }
@@ -14,11 +14,15 @@ $data = json_decode($data,false);
 <script type="text/javascript">
 	
 	$(document).ready(function(){
-	
+
+		// assign gejala dari database ke plugin select2
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
+		
+		// seperti "onload"..hehe. update itu untuk tampilkan hasil pencarian. show_kondisi itu untuk menampilkan apa saja kondisi (rekam medis) seorang pasien.
 		update();
 		show_kondisi();
+		
 		$('#ModalEditKondisi').on('show.bs.modal', function(e) {
 			$("#idMasterKondisiE").attr('value', $(e.relatedTarget).data('idtipemaster'));
 			$("#idUser").attr('value', $(e.relatedTarget).data('iduser'));
@@ -29,6 +33,7 @@ $data = json_decode($data,false);
 			});
 		});
 
+		// button saat seorang pasien menderita penyakit tersebut
 		$("#btn-ya-kondisi" ).click(function() {
 			var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/0')?>";
 			var formData = new FormData($('#formeditkondisi')[0]);
@@ -56,6 +61,7 @@ $data = json_decode($data,false);
 			});
 		});
 
+		// button saat seorang pasien aman dari penyakit tesebut
 		$("#btn-tidak-kondisi" ).click(function() {
 			var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/1')?>";
 			var formData = new FormData($('#formeditkondisi')[0]);
@@ -82,6 +88,16 @@ $data = json_decode($data,false);
 				}
 			});
 		});
+
+		// untuk masukkan obat yang dipilih ke tabel wm_obat
+		$("#masukkan-obat").click(function() {
+			
+		});
+
+		// untuk masuk ke menu peresepan obat
+		$("#ke-resep-obat").click(function () {
+			
+		});
 	});
 
 	// ambil kondisi untuk ditampilkan pada side menu kanan 
@@ -103,9 +119,9 @@ $data = json_decode($data,false);
 		});
 	}
 
-	// reload hasi pencarian obat yang sesuai
+	// reload hasi pencarian obat yang sesuai dan menampilkan log pengobatan dengan gejala yang mirip sebelumnya
 	function update(){
-		$("#hasil").empty();
+		// $("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
@@ -118,7 +134,7 @@ $data = json_decode($data,false);
 			processData: false,
 			success: function(data){
 				// console.log(data);
-				
+
 				window.response = JSON.parse(data);
 
 				// console.log(response);
@@ -130,6 +146,7 @@ $data = json_decode($data,false);
 				html 		+=	"</div>";
 				html 		+=	"<div id='accordion'>";
 				
+				// fetch data obat yang ditemukan
 				for(var k in response.obat){
 					
 					html 		+=	"<div class='card margin-top-20'>";
@@ -271,6 +288,15 @@ $data = json_decode($data,false);
 				var currentDiv = document.getElementById("hasil"); 
 				currentDiv.innerHTML = html;
 
+				// fetch data histori log pengobatan yang ditemukan
+				html = '';
+				for(var k in response.histori){
+					html += " <button type='button' class='btn btn-primary'>"+response.histori[k]['tanggal']+" <span class='badge badge-light'>"+response.histori[k]['banyak']+"</span></button> ";
+				}
+
+				currentDiv = document.getElementById("histori_ditemukan");
+				currentDiv.innerHTML = html;
+
 				$('#kirim-ulang').text('KIRIM ULANG');
 
 			},error: function (jqXHR, textStatus, errorThrown)
@@ -281,6 +307,7 @@ $data = json_decode($data,false);
 			}
 		});
 	}
+
 </script>
 <!-- funstion tampilkan hasil collapsible -->
 
@@ -329,8 +356,9 @@ $data = json_decode($data,false);
 						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">Kirim ulang</a>
 					</div>
 				</div>
-			</form>					
-			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan" data-toggle="tooltip" data-placement="left" title="Tooltip on left"></span>
+			</form>
+			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan"></span>
+			<div id="histori_ditemukan"></div>
 		</div>
 	</div>
 	<div class="margin-top-5" id="notif"></div>
@@ -338,6 +366,10 @@ $data = json_decode($data,false);
 	<div id="hasil">
 		
 	</div>
+	<div class="margin-top-15">
+		<button type="button" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button>
+	</div>
+	<div class="margin-top-15" id='ke-resep-obat'></div>
 </div>
 
 <!-- SIDE NAAV HERE -->
@@ -350,7 +382,9 @@ $data = json_decode($data,false);
 		</li>
 
 		<li class="nav-item">
-			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?></i></span>
+			<span class="nav-link">Nama : 
+				<i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?><a href="<?=base_url('Ppk_C/view_detail_user/').$data->user[0]->nomor_identitas?>" target="_blank"><i class="icon ion-arrow-right-c float-right"></i></a></i>
+			</span>
 		</li>
 		<li class="nav-item">
 			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$data->user[0]->tanggal_lahir?></i></span>
