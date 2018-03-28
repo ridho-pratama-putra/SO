@@ -18,7 +18,7 @@ $data = json_decode($data,false);
 		// assign gejala dari database ke plugin select2
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
-		
+
 		// seperti "onload"..hehe. update itu untuk tampilkan hasil pencarian. show_kondisi itu untuk menampilkan apa saja kondisi (rekam medis) seorang pasien.
 		update();
 		show_kondisi();
@@ -29,7 +29,7 @@ $data = json_decode($data,false);
 			$.get('<?=base_url()?>Ppk_C/cek_kondisi/'+$(e.relatedTarget).data('idtipemaster'),function(html){
 				var responE = JSON.parse(html);
 				document.getElementById('apakah').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+responE[0].detail_kondisi+"</h6>";
-				$("#idKondisi").attr('value',responE[0].detail_kondisi);
+				$("#detailKondisi").attr('value',responE[0].detail_kondisi);
 			});
 		});
 
@@ -118,10 +118,9 @@ $data = json_decode($data,false);
 			document.getElementById('note-kondisi').innerHTML = html;	
 		});
 	}
-
+	
 	// reload hasi pencarian obat yang sesuai dan menampilkan log pengobatan dengan gejala yang mirip sebelumnya
 	function update(){
-		// $("#hasil").empty();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
@@ -133,11 +132,7 @@ $data = json_decode($data,false);
 			contentType: false,
 			processData: false,
 			success: function(data){
-				// console.log(data);
-
-				window.response = JSON.parse(data);
-
-				// console.log(response);
+				response = JSON.parse(data);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var html	=	"<div class='row padding-top-10'>";
@@ -213,23 +208,24 @@ $data = json_decode($data,false);
 					html +=	"<div id='collapse"+response.obat[k].id_obat+"' class='collapse' role='tabpanel' aria-labelledby='heading"+response.obat[k].id_obat+"' data-parent='#accordion'>";
 					html +=	"<div class='card-body'>";
 					html +=	"<div class='row'>";
-					html +=		"<div class='col'>";
-					html +=			"<div class='row'>";
+					html +=	"<div class='col'>";
+					html +=	"<div class='row'>";
 
+					var bisa_diberikan = true;
 					for(var l in response.obat[k].karakteristik){
 						
-						html +=			"<div ";
+						html +=	"<div ";
 						if (l == 'indikasi') {
-							html +=			"class='col informasi hijau rounded'>";
+							html +=	"class='col informasi hijau rounded'>";
 						}else if (l == 'kontraindikasi') {
-							html +=			"class='col informasi merah rounded'>";
+							html +=	"class='col informasi merah rounded'>";
 						}else{
-							html +=			"class='col informasi kuning rounded'>";
+							html +=	"class='col informasi kuning rounded'>";
 						}
 						
-						html +=				"<h6>"+l;
-						html +=				"</h6>";
-						html +=				"<ul>";
+						html +=	"<h6>"+l;
+						html +=	"</h6>";
+						html +=	"<ul>";
 						
 						// ada dan tanya
 						for(var m in response.obat[k].karakteristik[l]){
@@ -257,6 +253,7 @@ $data = json_decode($data,false);
 										html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
 										html +=	"<i class='icon ion-help-circled text-primary'></i>";
 										html +=	"</a>";
+										bisa_diberikan = false;
 									}
 								}else{
 									if (m == 'ada') {
@@ -265,18 +262,23 @@ $data = json_decode($data,false);
 										html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
 										html +=	"<i class='icon ion-help-circled text-primary'></i>";
 										html +=	"</a>";
+										bisa_diberikan = false;
 									}
 								}
 								html +=	"</li>";
 							}
 						}
-						html +=				"</ul>";
-						html +=			"</div>";
+						html +=	"</ul>";
+						html +=	"</div>";
 					}
-					html +=			"</div>";
-					html +=		"</div>";
 					html +=	"</div>";
-					html += "<div class='row margin-top-10'><button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
+					html +=	"</div>";
+					html +=	"</div>";
+					if (bisa_diberikan) {
+						html += "<div class='row margin-top-10'><button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
+					}else{
+						html += "<div class='row margin-top-10'><button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Ada beberapa fakta yang belum diketahui. Mulai masukkan fakta</button></div>";
+					}
 					html +=	"</div>";
 					html +=	"</div>";
 					html +=	"</div>";
@@ -291,7 +293,7 @@ $data = json_decode($data,false);
 				// fetch data histori log pengobatan yang ditemukan
 				html = '';
 				for(var k in response.histori){
-					html += " <button type='button' class='btn btn-primary'>"+response.histori[k]['tanggal']+" <span class='badge badge-light'>"+response.histori[k]['banyak']+"</span></button> ";
+					html += "<a href='<?=base_url("Ppk_C/view_detail_per_log/").$data->user[0]->nomor_identitas."/"?>"+k+"' class='btn btn-primary btn-block margin-top-5' target='_blank'> Ditemukan Log pengobatan yang mirip pada tanggal : "+response.histori[k]['tanggal']+" sebanyak : "+response.histori[k]['banyak']+" gejala </a>";
 				}
 
 				currentDiv = document.getElementById("histori_ditemukan");
@@ -308,6 +310,26 @@ $data = json_decode($data,false);
 		});
 	}
 
+				$('#ModalUnknownFact').on('show.bs.modal', function(e) {
+					console.log('adasda');
+					// $("#idTipeMaster_").attr('value',response.unknown_fact[k].id_tipe_master);
+					// $("#idUser_").attr('value',response.kondisi[0].id_user);
+					document.getElementById('apakah_').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+response.unknown_fact[0].detail_kondisi+"</h6>";
+					// $("#detailKondisi_").attr('value',response.kondisi[0].detail_kondisi);
+				});
+	// untuk masukkan fakta. function ini triggernya ada di button mulai masukkan fakta pada setiap obat
+	function masukkan_fakta(id_user,id_obat) {
+		var url = "<?=base_url("Ppk_C/get_unknown_fact/")?>"+id_user+"/"+id_obat;
+		$.get(url,function(data){
+			// console.log(data);
+			var response = JSON.parse(data);
+			// console.log(response);
+			for(var k in response.unknown_fact){
+				// console.log(response.unknown_fact[k].id_tipe_master); return nya {id_tipe_master: "51", detail_tipe: "r"}
+				// $('#ModalUnknownFact').modal('show');
+			}
+		});
+	}
 </script>
 <!-- funstion tampilkan hasil collapsible -->
 
@@ -324,7 +346,7 @@ $data = json_decode($data,false);
 					<p id="apakah"></p>
 					<input type="hidden" name="id_master_kondisi" id="idMasterKondisiE">
 					<input type="hidden" name="id_user" id="idUser">
-					<input type="hidden" name="detail_kondisi" id="idKondisi">
+					<input type="hidden" name="detail_kondisi" id="detailKondisi">
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-primary mr-auto text-white" id="btn-tidak-kondisi">TIDAK</a>
@@ -335,6 +357,32 @@ $data = json_decode($data,false);
 	</div>
 </div>
 <!-- END MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
+
+
+<!-- MODAL UNTUK UNKNOWN FACT -->
+<div class="modal fade" id="ModalUnknownFact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<form id="formunknownfact" method="POST">      
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel_">Form edit kondisi pasien :  </h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<p id="apakah_"></p>
+					<input type="text" name="id_master_kondisi" id="idTipeMaster_">
+					<input type="text" name="id_user" id="idUser_">
+					<input type="text" name="detail_kondisi" id="detailKondisi_">
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary mr-auto text-white" id="btn-unknown-tidak-kondisi">TIDAK</a>
+					<a class="btn btn-primary text-white" id="btn-unknown-ya-kondisi" >YA</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- END MODAL UNTUK UNKNOWN FACT -->
 
 
 <div class="col-md-10 konten-kanan" id="style-1">
@@ -357,7 +405,7 @@ $data = json_decode($data,false);
 					</div>
 				</div>
 			</form>
-			<span class="badge badge-success" style="margin-top: 15px;" id="obat_ditemukan"></span>
+			<span class="badge badge-success margin-top-5"id="obat_ditemukan"></span>
 			<div id="histori_ditemukan"></div>
 		</div>
 	</div>
@@ -397,12 +445,11 @@ $data = json_decode($data,false);
 				<div id='note-kondisi'></div>
 			</span>
 		</li>
-<!-- 		<li class="nav-item">
+		<!--<li class="nav-item">
 			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjdha skjdnas</i></span>
 		</li> -->
 	</ul>
 </nav>
-
 
 
 <!-- 

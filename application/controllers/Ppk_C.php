@@ -490,10 +490,30 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	// function ini digunakan untuk mendapatkan informasi kondisi seorang pasien. datanya ditampilkan pada sidebar kanan halaman hasil
 	public function get_col_kondisi($id_user)
 	{
 		$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('detail_kondisi','status'))->result();
 		echo json_encode($result);
+	}
+
+	// function ini digunakan untuk mencari apa saja karakteristik suatu obat yang belum diketahui faktanya(kontraindikasi dan peringatan). daptkan karakteristik tanya.
+	// trigger function ini ada di halaman hasil
+	public function get_unknown_fact($id_user,$id_obat)
+	{
+		$data['kondisi']			= $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('id_user','id_master_kondisi','detail_kondisi'))->result_array();
+		$data['karakteristik_obat']	= $this->SO_M->readCol('karakteristik_obat',array('id_obat'=>$id_obat,'tipe !='=>'indikasi'),array('id_tipe_master','detail_tipe'))->result();
+
+		// generate unknown_fact
+		$data['unknown_fact'] = array();
+		foreach ($data['karakteristik_obat'] as $key => $value) {
+			if (!$this->in_array_r($data['karakteristik_obat'][$key]->id_tipe_master,$data['kondisi'])) {
+				array_push($data['unknown_fact'], array( 'id_tipe_master'=>$value->id_tipe_master, 'detail_tipe'=>$value->detail_tipe));
+			}
+		}
+		unset($data['kondisi'],$data['karakteristik_obat']);
+		$data['kondisi'] = array('id_user'=>$id_user);
+		echo json_encode($data);
 	}
 
 	// finding values in multidimensional array. paste from https://stackoverflow.com/questions/4128323/in-array-and-multidimensional-array
