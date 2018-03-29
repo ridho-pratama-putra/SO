@@ -164,9 +164,8 @@ class Ppk_C extends CI_Controller {
 	{
 		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
 		$dataCol		=	array('id_user');
-		// $data['user']	=	$this->SO_M->read('user',$dataWhere)->result();
-
 		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol)->result();
+
 		if ($this->input->post()!= NULL) {
 			$gejalas	=	$this->input->post('gejala[]');
 			$data['gejala'] = $gejalas;
@@ -222,17 +221,19 @@ class Ppk_C extends CI_Controller {
 								'id_user'	=>	$data['user'][0]->id_user,
 								'status'	=>	'0'
 							);
-			$kondisiPasienMengidap = $this->SO_M->read('kondisi',$dataWhere)->result_array();
-			
+			$kondisiPasienMengidap = $this->SO_M->readCol('kondisi',$dataWhere,array('id_master_kondisi'))->result_array();
+			$data['kondisiPasienMengidap'] = $kondisiPasienMengidap;
 			$dataWhere['status'] = '1';
 
-			$kondisiPasienAman = $this->SO_M->read('kondisi',$dataWhere)->result_array();
+			
+			$kondisiPasienAman = $this->SO_M->readCol('kondisi',$dataWhere,array('id_master_kondisi'))->result_array();
 			unset($dataWhere);
+			$data['kondisiPasienAman'] = $kondisiPasienAman;
 
 			$query = $querys->result();
 			$data['obat'] = $query;
+
 			
-			/*perlu revisi karena nilai select gejala ganti, otomatis nilai yang jadi acuan ditabel juga ganti. baik acuan indikasi masupun kontraindikasi beserta peringatnnya*/
 			for ($i=0; $i < ($querys->num_rows()) ; $i++) {
 				$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 				$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
@@ -271,9 +272,10 @@ class Ppk_C extends CI_Controller {
 					}
 				}
 				
-				$dataWhere			=	array(	'tipe' => 'kontraindikasi',	'id_obat' => $query[$i]->id_obat);
+				$dataWhere			= array(	'tipe' => 'kontraindikasi',	'id_obat' => $query[$i]->id_obat);
 				$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
-
+				// var_dump($kondisiPasienMengidap);
+				// var_dump($dataKontraindikasi);die();
 				foreach ($dataKontraindikasi as $key => $value) {
 					if ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasienMengidap)) {
 						$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
@@ -287,7 +289,7 @@ class Ppk_C extends CI_Controller {
 				}
 
 			}
-
+			// var_dump($data);die();
 
 			// sorting indikasi dari tinggi ke rendah
 			$maxIfounded;

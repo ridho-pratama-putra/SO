@@ -114,7 +114,7 @@ class Admin_C extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	// dari ajax untuk gdelete gejala
+	// dari ajax untuk delete gejala
 	public function handle_delete_gejala()
 	{
 		// cek apakah data gejala tersebut dimiliiki oleh suatu obat. jika iya maka jangan dihapus. jika tidak ada satupun obat yang memmilki gejal tersebut maka penghapusan dapat dilakukan
@@ -139,7 +139,7 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
-	// dari ajax untuk gdelete kondisi
+	// dari ajax untuk delete kondisi
 	public function handle_delete_kondisi()
 	{
 		// cek apakah data gejala tersebut dimiliiki oleh suatu obat. jika iya maka jangan dihapus. jika tidak ada satupun obat yang memmilki gejal tersebut maka penghapusan dapat dilakukan
@@ -155,12 +155,18 @@ class Admin_C extends CI_Controller {
 		else{
 			unset($dataCondition);
 			$dataCondition['id_master_kondisi'] =	$this->input->post('id_master_kondisi');
-			// $dataCondition['detail_gejala'] 	=	$this->input->post('detail_gejala');
-			$result = $this->SO_M->delete('master_kondisi',$dataCondition);
-			if ($result) {
-				alert('','success','Berhasil','Data telah dihapus',false);
-			}else{
-				alert('','danger','Gagal','Data tersebut dimiliki oleh suatu obat',false);
+			$result = $this->SO_M->read('kondisi',$dataCondition);
+			if ($result->num_rows() != 0) {
+				alert('','danger','Gagal','Data tersebut dimiliki oleh seorang pasien',false);
+			}
+			else{
+				// $dataCondition['detail_gejala'] 	=	$this->input->post('detail_gejala');
+				$result = $this->SO_M->delete('master_kondisi',$dataCondition);
+				if ($result == true) {
+					alert('','success','Berhasil','Data telah dihapus',false);
+				}else{
+					alert('','danger','Gagal','Data tersebut dimiliki oleh suatu obat',false);
+				}
 			}
 		}
 	}
@@ -363,7 +369,7 @@ class Admin_C extends CI_Controller {
 							$gejala_db		 			=	array();
 							// siapkan data untuk masuk ke tabel master_gejala
 							$gejala_db		=	array(	'detail_gejala'=>	$karakteristik_dari_form);
-							$result = $this->SO_M->create_id('master_gejala',$kondisi_db);
+							$result = $this->SO_M->create_id('master_gejala',$gejala_db);
 							$results = json_decode($result);
 							$karakteristik_db['id_tipe_master'] = $results->message;
 						}else{
@@ -424,8 +430,8 @@ class Admin_C extends CI_Controller {
 
 			$dataCondition 		=	array(	'id_karakteristik'	=>	$this->input->post('id_karakteristik'));
 			$dataUpdate			= 	array(	'id_obat'			=>	$this->input->post('id_obat'),
-											'detail_tipe'		=>	$this->input->post('detail_tipe'),
-											'tipe'				=>	$this->input->post('tipe')
+											'tipe'				=>	$this->input->post('tipe'),
+											'detail_tipe'		=>	$this->input->post('detail_tipe')
 								);
 			$dataKarakteristik	=	$this->input->post('tipe');
 
@@ -488,7 +494,7 @@ class Admin_C extends CI_Controller {
 					// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
 					else{
 						$result = $result->result();
-						$dataUpdate['id_tipe_master'] =$result[0]->id_gejala;
+						$dataUpdate['id_tipe_master'] = $result[0]->id_gejala;
 					}
 
 				}

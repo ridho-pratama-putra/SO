@@ -121,6 +121,7 @@ $data = json_decode($data,false);
 	
 	// reload hasi pencarian obat yang sesuai dan menampilkan log pengobatan dengan gejala yang mirip sebelumnya
 	function update(){
+		show_kondisi();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
@@ -132,7 +133,9 @@ $data = json_decode($data,false);
 			contentType: false,
 			processData: false,
 			success: function(data){
+				// console.log(data);
 				response = JSON.parse(data);
+				// console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				
 				var html	=	"<div class='row padding-top-10'>";

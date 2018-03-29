@@ -25,7 +25,7 @@
 			</div>
 		</form>
 		<div class=" col-12 margin-top-15">
-			<a href="<?=base_url()?>Akun_C/view_register_user_umum" class="btn btn-primary btn-block bg-dark" role='button'>Register</a>
+			<a href="<?=base_url()?>Akun_C/view_register_user" class="btn btn-primary btn-block bg-dark" role='button'>Register</a>
 		</div>
 	</div>
 </div>
