@@ -78,7 +78,7 @@ $data = json_decode($data,false);
 					update();
 					show_kondisi();
 					$('#ModalEditKondisi').modal('hide');
-					$('#btn-ya-kondisi').text('TIDAK');
+					$('#btn-tidak-kondisi').text('TIDAK');
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
