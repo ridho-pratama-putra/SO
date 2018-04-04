@@ -26,7 +26,7 @@
 							if (data == 1) {
 								return 'Aman';
 							}else{
-								return 'Mengidap';
+								return 'Hindari';
 							}
 						}
 					},

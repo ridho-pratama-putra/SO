@@ -313,25 +313,77 @@ $data = json_decode($data,false);
 		});
 	}
 
-				$('#ModalUnknownFact').on('show.bs.modal', function(e) {
-					console.log('adasda');
-					// $("#idTipeMaster_").attr('value',response.unknown_fact[k].id_tipe_master);
-					// $("#idUser_").attr('value',response.kondisi[0].id_user);
-					document.getElementById('apakah_').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+response.unknown_fact[0].detail_kondisi+"</h6>";
-					// $("#detailKondisi_").attr('value',response.kondisi[0].detail_kondisi);
-				});
+	// button saat seorang pasien menderita penyakit tersebut
+	function unknown_ya() {
+		var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/0/0')?>";
+		var formData = new FormData($('#formunknownfact')[0]);
+		document.getElementById("btn-unknown-ya-kondisi").innerHTML="Mohon Tunggu..";
+		$.ajax({
+			url : url,
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function(data)
+			{
+				document.getElementById("btn-unknown-ya-kondisi").innerHTML="Ya";
+				data = JSON.parse(data);
+				masukkan_fakta(data.id_user,data.id_obat);
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				console.log(jqXHR, textStatus, errorThrown);
+				$('#btn-unknown-ya-kondisi').text('Eror'); //change button text
+				$('#btn-unknown-ya-kondisi').attr('disabled',false); //set button enable 
+			}
+		});
+	};
+
+	// button saat seorang pasien aman dari penyakit tesebut
+	function unknown_tidak() {
+		var	url = "<?= base_url('Ppk_C/handle_add_kondisi_/1/0')?>";
+		var formData = new FormData($('#formunknownfact')[0]);
+		document.getElementById("btn-unknown-tidak-kondisi").innerHTML="Mohon Tunggu..";
+		$.ajax({
+			url : url,
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function(data)
+			{
+				document.getElementById("btn-unknown-tidak-kondisi").innerHTML="Tidak";
+				data = JSON.parse(data);
+				masukkan_fakta(data.id_user,data.id_obat);
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				console.log(jqXHR, textStatus, errorThrown);
+				$('#btn-unknown-tidak-kondisi').text('Eror'); //change button text
+				$('#btn-unknown-tidak-kondisi').attr('disabled',false); //set button enable 
+			}
+		});
+	};
+
 	// untuk masukkan fakta. function ini triggernya ada di button mulai masukkan fakta pada setiap obat
 	function masukkan_fakta(id_user,id_obat) {
 		var url = "<?=base_url("Ppk_C/get_unknown_fact/")?>"+id_user+"/"+id_obat;
 		$.get(url,function(data){
-			// console.log(data);
 			var response = JSON.parse(data);
-			// console.log(response);
-			for(var k in response.unknown_fact){
-				// console.log(response.unknown_fact[k].id_tipe_master); return nya {id_tipe_master: "51", detail_tipe: "r"}
-				// $('#ModalUnknownFact').modal('show');
+			$('#ModalUnknownFact').find('#idUser_').val(response.id_user.id_user);
+			if (response.unknown_fact.length != 0) {
+				for (var i = 0; i < 1; i++) {
+					$('#ModalUnknownFact').modal('show');
+					document.getElementById('apakah_').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+response.unknown_fact[i].detail_tipe+"</h6>";
+					$('#ModalUnknownFact').find('#idTipeMaster_').val(response.unknown_fact[i].id_tipe_master);
+					$('#ModalUnknownFact').find('#detailKondisi_').val(response.unknown_fact[i].detail_tipe);
+					$('#ModalUnknownFact').find('#idObat_').val(id_obat);
+				}
+			}else{
+				$('#ModalUnknownFact').modal('hide');
 			}
 		});
+		update();show_kondisi();
 	}
 </script>
 <!-- funstion tampilkan hasil collapsible -->
@@ -368,18 +420,21 @@ $data = json_decode($data,false);
 		<form id="formunknownfact" method="POST">      
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel_">Form edit kondisi pasien :  </h4>
+					<h4 class="modal-title" id="myModalLabel_">Form Backward Chaining:  </h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
 					<p id="apakah_"></p>
-					<input type="text" name="id_master_kondisi" id="idTipeMaster_">
-					<input type="text" name="id_user" id="idUser_">
-					<input type="text" name="detail_kondisi" id="detailKondisi_">
+					<input type="hidden" name="id_master_kondisi" id="idTipeMaster_">
+					<input type="hidden" name="id_user" id="idUser_">
+					<input type="hidden" name="detail_kondisi" id="detailKondisi_">
+					<input type="hidden" name="id_obat" id="idObat_">
 				</div>
 				<div class="modal-footer">
-					<a class="btn btn-primary mr-auto text-white" id="btn-unknown-tidak-kondisi">TIDAK</a>
-					<a class="btn btn-primary text-white" id="btn-unknown-ya-kondisi" >YA</a>
+					<a class="btn btn-primary mr-auto text-white" onclick="unknown_tidak()" id="btn-unknown-tidak-kondisi">Tidak</a>
+					<!-- <a class="btn btn-primary mr-auto text-white" id="btn-unknown-tidak-kondisi">TIDAK</a> -->
+					<a class="btn btn-primary text-white" onclick="unknown_ya()" id="btn-unknown-ya-kondisi">Ya</a>
+					<!-- <a class="btn btn-primary text-white" id="btn-unknown-ya-kondisi" >YA</a> -->
 				</div>
 			</div>
 		</form>

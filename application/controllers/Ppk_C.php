@@ -469,7 +469,7 @@ class Ppk_C extends CI_Controller {
 	}
 
 	// function untuk handle kondisi melalui hasil pencarian, agar tidak masuk ke menu add kondisi terlebih dahulu
-	public function handle_add_kondisi_($ya_tidak)
+	public function handle_add_kondisi_($ya_tidak,$alert = true)
 	{
 		$dataAdd		=	array(
 									"id_user"				=>	$this->input->post('id_user'),
@@ -482,13 +482,26 @@ class Ppk_C extends CI_Controller {
 		}else{
 			$dataAdd['status'] = 	0;
 		}
-		$result 	=	$this->SO_M->create('kondisi',$dataAdd);
-		$results	=	json_decode($result);
-		if ($results->status) {
-			alert('','success','Berhasil','Data user telah dimasukkan ke tabel kondisi',false);
-		}
-		else{
-			alert('','danger','Gagal','Tidak ada data user yang masuk pada tabel kondisi',false);
+
+		$result = $this->SO_M->read('kondisi',array('id_user'=>$dataAdd['id_user'],'id_master_kondisi'=>$dataAdd['id_master_kondisi']));
+			if ($result->num_rows()==0) {
+				
+			$result 	=	$this->SO_M->create('kondisi',$dataAdd);
+			$results	=	json_decode($result);
+			if ($results->status) {
+				if ($alert) {
+					alert('','success','Berhasil','Data user telah dimasukkan ke tabel kondisi',false);
+				}else{
+					echo json_encode(array("id_user"=>$this->input->post('id_user'), "id_obat" => $this->input->post('id_obat')));
+				}
+			}
+			else{
+				if ($alert) {
+					alert('','danger','Gagal','Tidak ada data user yang masuk pada tabel kondisi',false);
+				}else{
+					echo json_encode(array("id_user"=>$this->input->post('id_user'), "id_obat" => $this->input->post('id_obat')));
+				}
+			}
 		}
 	}
 
@@ -514,7 +527,7 @@ class Ppk_C extends CI_Controller {
 			}
 		}
 		unset($data['kondisi'],$data['karakteristik_obat']);
-		$data['kondisi'] = array('id_user'=>$id_user);
+		$data['id_user'] = array('id_user'=>$id_user);
 		echo json_encode($data);
 	}
 
