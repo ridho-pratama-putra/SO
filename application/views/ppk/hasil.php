@@ -133,11 +133,8 @@ $data = json_decode($data,false);
 			contentType: false,
 			processData: false,
 			success: function(data){
-				// console.log(data);
 				response = JSON.parse(data);
-				// console.log(response);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
-				
 				var html	=	"<div class='row padding-top-10'>";
 				html 		+=	"<div class='col'>";
 				html 		+=	"<div class='margin-top-20'>";
@@ -381,9 +378,9 @@ $data = json_decode($data,false);
 				}
 			}else{
 				$('#ModalUnknownFact').modal('hide');
+				update();show_kondisi();
 			}
 		});
-		update();show_kondisi();
 	}
 </script>
 <!-- funstion tampilkan hasil collapsible -->
