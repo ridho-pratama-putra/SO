@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Admin_C extends CI_Controller {	
-	public function __construct(){
+	function __construct(){
 		parent::__construct();
 		$this->load->model('SO_M');
 		if ($this->session->userdata('logged_in')['akses'] != 'admin' ){
@@ -9,7 +9,7 @@ class Admin_C extends CI_Controller {
 		}
 	}
 	// tampikan seluruh obat yang ada di database
-	public function view_read_obat()
+	function view_read_obat()
 	{
 		/*baca semua obat yang pada pada database, kemudian render*/
 		$data['result'] = $this->SO_M->readS('master_obat')->result();
@@ -19,7 +19,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// halaman untuk membuat obat baru. inputan beripa nama obat pada form
-	public function view_create_obat()
+	function view_create_obat()
 	{
 		/*tampilkan form untuk bisa menambhakan obat*/
 		$this->load->view('html/header');
@@ -28,7 +28,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// melihat informasi masing-masing karakteristik yang dimiliki suatu obat
-	public function view_karakteristik($karakteristik,$id_obat)
+	function view_karakteristik($karakteristik,$id_obat)
 	{
 		/*tampilkan satu jenis karakteristik (indikasi|kontraindikasi|peringatan) yang ada pada suatu obat*/
 		
@@ -61,8 +61,25 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
+	// untuk crud catatan yang dimiliki suatu obat
+	function view_catatan($id_obat)
+	{	
+		$result = $this->SO_M->readCol('catatan_obat',array('id_obat'=>$id_obat),'id_obat');
+		if ($result->num_rows() != 0) {
+			$data['result'] = $this->SO_M->read('catatan_obat',array('id_obat'=>$id_obat))->result();
+			$this->load->view('html/header');
+			$this->load->view('admin/view_catatan',$data);
+			$this->load->view('html/footer');
+		}else{
+			$data['id_obat'] = $id_obat;
+			$this->load->view('html/header');
+			$this->load->view('admin/create_catatan',$data);
+			$this->load->view('html/footer');
+		}
+	}
+
 	// untuk view apa saja kondisi yang ada dalam database
-	public function view_kondisi()
+	function view_kondisi()
 	{
 		$this->load->view('html/header');
 		$this->load->view('admin/view_kondisi');
@@ -70,7 +87,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	/*digunakan oleh datatable untuk menampilkan data pada view_$karakteristik*/
-	public function dataTable($karakteristik,$id_obat)
+	function dataTable($karakteristik,$id_obat)
 	{
 		$dataCondition 				= 	array(
 												'id_obat'	=>	$id_obat,
@@ -85,7 +102,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// halaman menampilkan dan CRUD gejala yang ada. nantinya inputan nini akan dijadikan prameter dropdown
-	public function view_gejala()
+	function view_gejala()
 	{
 		$this->load->view('html/header');
 		$this->load->view('admin/view_gejala');
@@ -93,7 +110,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// halaman tampilkan informasi seorang pasien
-	public function view_detail_user($nomor_identitas)
+	function view_detail_user($nomor_identitas)
 	{
 		/*dapatkan informasi identitas*/
 		$dataCondition['nomor_identitas'] 	=	$nomor_identitas;
@@ -108,14 +125,19 @@ class Admin_C extends CI_Controller {
 	}
 
 	// digunakan oleh datatable untuk menampilkan data pada view_CRUD gejala dan kondisi
-	public function dataTable_($tabel)
+	function dataTable_($tabel)
 	{
 		$data['master_data']	=	$this->SO_M->readS($tabel)->result();
 		echo json_encode($data);
 	}
 
+	function autocomplete($table,$col){
+		$data['master_data'] = $this->SO_M->readSCol($table,$col)->result();
+		echo json_encode($data);
+	}
+
 	// dari ajax untuk delete gejala
-	public function handle_delete_gejala()
+	function handle_delete_gejala()
 	{
 		// cek apakah data gejala tersebut dimiliiki oleh suatu obat. jika iya maka jangan dihapus. jika tidak ada satupun obat yang memmilki gejal tersebut maka penghapusan dapat dilakukan
 		$dataCondition['tipe'] = 'indikasi';
@@ -140,7 +162,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// dari ajax untuk delete kondisi
-	public function handle_delete_kondisi()
+	function handle_delete_kondisi()
 	{
 		// cek apakah data gejala tersebut dimiliiki oleh suatu obat. jika iya maka jangan dihapus. jika tidak ada satupun obat yang memmilki gejal tersebut maka penghapusan dapat dilakukan
 
@@ -171,17 +193,8 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
-	// // dari javaskrip untuk get data nama karakteristik obat melalui id_gejala pada halaman view_gejala (MODAL)
-	// public function handle_nama_gejala($id_gejala)
-	// {
-	// 	$dataCol['detail_gejala']		=	'detail_gejala';
-	// 	$dataCondition['id_gejala'] 	= 	$id_gejala;
-	// 	$result 						= 	$this->SO_M->readCol('master_gejala',$dataCondition,$dataCol)->result();
-	// 	echo json_encode($result);
-	// }
- 
 	// rename obat 
-	public function view_rename_obat($id_obat)
+	function view_rename_obat($id_obat)
 	{
 		// deklarasi datacondition
 		$dataCondition = array('id_obat'	=>	$id_obat);
@@ -207,7 +220,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// sebagai action="" pada form rename obat
-	public function handle_rename_obat()
+	function handle_rename_obat()
 	{
 		/* function untuk form pada view_rename dan nama obat harus unik */
 		if ($this->input->post() == null) {
@@ -244,7 +257,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	/* delete suatu obat dalam database	*/
-	public function handle_delete_obat($id_obat)
+	function handle_delete_obat($id_obat)
 	{
 		/*hapus suatu obat*/
 		$dataCondition = array('id_obat' => $id_obat);
@@ -273,7 +286,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	// sebagai action="" pada form create obat
-	public function handle_create_obat()
+	function handle_create_obat()
 	{
 		/*		nama obat harus unik		*/
 		if ($this->input->post() == null) {
@@ -302,8 +315,35 @@ class Admin_C extends CI_Controller {
 		}
 	}
 
+	// handling form create catatan obat
+	function handle_create_catatan()
+	{
+		$result = $this->SO_M->create('catatan_obat',array('id_obat'=>$this->input->post('id_obat'),'catatan'=>$this->input->post('catatan_obat')));
+		$result = json_decode($result);
+		if ($result->status) {
+			alert('alert_catatan','success','Berhasil','Create catatan ke catatan_obat berhasil');
+		}else{
+			alert('alert_catatan','warning','Gagal','Create catatan ke catatan_obat gagal');
+		}
+		redirect("Admin_C/view_catatan/".$this->input->post('id_obat'));
+	}
+
+	// handling form update catatan obat
+	function handle_update_catatan()
+	{
+		$result = $this->SO_M->update('catatan_obat',array('id_catatan'=>$this->input->post('id_catatan')),array('catatan'=>$this->input->post('catatan_obat')));
+		$result = json_decode($result);
+
+		if ($result->status == true) {
+			alert('alert_catatan','success','Berhasil','Update catatan ke catatan_obat berhasil');
+		}else{
+			alert('alert_catatan','warning','Gagal','Update catatan ke catatan_obat gagal.');
+		}
+		redirect("Admin_C/view_catatan/".$this->input->post('id_obat'));
+	}
+
 	// untuk handle multipile input form
-	public function handle_create_karakteristik($karakteristik)
+	function handle_create_karakteristik($karakteristik)
 	{
 		// echo $karakteristik;
 		if ($this->input->post() == null) {
@@ -401,7 +441,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	/*untuk merespon panggilan AJAX pada halaman view $karakteristik*/
-	public function handle_delete_karakteristik()
+	function handle_delete_karakteristik()
 	{
 		$dataCondition['id_karakteristik'] = $this->input->post('id_karakteristik');
 		$result = $this->SO_M->delete('karakteristik_obat',$dataCondition);
@@ -414,7 +454,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	/*dipanggil via get pada view indikasi untuk button edit indikasi*/
-	public function handle_detail_tipe($id_karakteristik)
+	function handle_detail_tipe($id_karakteristik)
 	{
 		$dataCondition 		=	array('id_karakteristik'=>$id_karakteristik);
 		$dataCol			= 	array('detail_tipe');
@@ -423,7 +463,7 @@ class Admin_C extends CI_Controller {
 	}
 
 	/*dipanggil oleh AJAX untuk melakukan edit pada karakteristik*/
-	public function handle_edit_karakteristik()
+	function handle_edit_karakteristik()
 	{
 		$this->form_validation->set_rules('detail_tipe','', 'required|xss_clean');
 		if ($this->form_validation->run() == TRUE) {
@@ -517,3 +557,15 @@ class Admin_C extends CI_Controller {
 		}
 	}
 }
+
+
+
+	// // dari javaskrip untuk get data nama karakteristik obat melalui id_gejala pada halaman view_gejala (MODAL)
+	// function handle_nama_gejala($id_gejala)
+	// {
+	// 	$dataCol['detail_gejala']		=	'detail_gejala';
+	// 	$dataCondition['id_gejala'] 	= 	$id_gejala;
+	// 	$result 						= 	$this->SO_M->readCol('master_gejala',$dataCondition,$dataCol)->result();
+	// 	echo json_encode($result);
+	// }
+ 

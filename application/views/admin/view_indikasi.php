@@ -1,11 +1,12 @@
-<!-- DATATABLE via JAVASCRIPT. menggunakan javascript karena hapus dan edit karakteristik dihandle oleh AJAX. biar live update. kalo PHP harus  refresh dulu-->
+<!-- DATATABLE via JAVASCRIPT. menggunakan javascript karena hapus dan edit karakteristik dihandle oleh AJAX. biar live update. kalo PHP harus  refresh dulu -->
 <script type="text/javascript">
 	window.onload=show();
+	
 	var respon;
+	
 	function show(){
 		$.get('<?php echo base_url('Admin_C/dataTable/indikasi/'.$master_obat[0]->id_obat)?>', function(html){
-			respon = JSON.parse(html);
-			
+			respon = JSON.parse(html);	
 			// destroy dulu datatable sebelumnya yang menggunakan json. 
 			$('#indikasi').DataTable().destroy();
 
@@ -34,7 +35,7 @@
 									"targets": [1],
 									"orderable": false
 								}]
-				});
+			});
 		});
 	}
 </script>
@@ -210,6 +211,23 @@
 </script>
 <!-- END HANDLE FORM EDIT INDIKASI DARI MODAL EDIT INDIKASI -->
 
+
+<!-- inisialisasi autocomplete -->
+<script type="text/javascript">
+	$.get('<?php echo base_url('Admin_C/autocomplete/master_gejala/detail_gejala')?>', function(html){
+		respon = JSON.parse(html);
+		data = new Array();
+		for (var i in respon.master_data) {
+			data.push(respon.master_data[i].detail_gejala);
+		}
+
+		$('#karakteristik_indikasi').autocomplete({
+			lookup: data,
+		});
+	});
+</script>
+<!-- END inisialisasi autocomplete -->
+
 <!-- CONTENT HTML -->
 <main>
 	<div style="border-radius: 5px; padding-bottom: 15px; background-color: #edefea;padding-top: 20px; ">
@@ -228,7 +246,7 @@
 						</div>
 					</div>
 					<div class="col margin-top-15">
-						<div id="jmlh-form-input"></div>
+						<!-- <div id="jmlh-form-input"></div> -->
 						<!-- <button type="button" class="btn btn-primary btn-block" onClick="addInput('dynamicInputIndikasi');"> <i class="icons ion-ios-plus-empty"></i> Add Input</button> -->
 					</div>
 				</div>	
@@ -261,4 +279,4 @@
 		</table>
 	</div>
 </main>
-<!-- CONTENT HTML -->
+<!-- CONTENT HTML

@@ -23,6 +23,14 @@ class SO_M extends CI_Model {
 		$query = $this->db->get($table);
 		return $query;
 	}
+
+	public function readSCol($table,$cols)
+	{
+		$this->db->select($cols);
+		$query = $this->db->get($table);
+		return $query;
+	}
+
 	public function create($table,$data){
 		$query = $this->db->insert($table, $data);
 		if (!$query) {

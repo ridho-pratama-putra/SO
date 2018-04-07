@@ -4,6 +4,7 @@
 	<title>Sistem Pemberian Saran Obat</title>
 </head>
 <link rel="shortcut icon" href="<?php echo base_url()?>assets/images/favicon.ico" type="image/vnd.microsoft.icon" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/jQuery-Autocomplete-devbridge/content/styles.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/sidebar-kanan.css">
@@ -26,9 +27,13 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
  -->
 
+<!-- WYSI text area ada bold italic dsb -->
 <script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/lib/js/wysihtml5-0.3.0.js"></script>
 <script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/src/bootstrap-wysihtml5.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/wysihtml5/src/bootstrap-wysihtml5.css"/>
+
+<!-- autocomlete -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/jQuery-Autocomplete-devbridge/dist/jquery.autocomplete.min.js"></script>
 
 <body>
 	<header>

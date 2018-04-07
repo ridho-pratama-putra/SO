@@ -209,6 +209,22 @@
 </script>
 <!-- END HANDLE FORM EDIT INDIKASI DARI MODAL EDIT INDIKASI -->
 
+<!-- inisialisasi autocomplete -->
+<script type="text/javascript">
+	$.get('<?php echo base_url('Admin_C/autocomplete/master_kondisi/detail_kondisi')?>', function(html){
+		respon = JSON.parse(html);
+		data = new Array();
+		for (var i in respon.master_data) {
+			data.push(respon.master_data[i].detail_kondisi);
+		}
+
+		$('#karakteristik_kontraindikasi').autocomplete({
+			lookup: data,
+		});
+	});
+</script>
+<!-- END inisialisasi autocomplete -->
+
 <!-- CONTENT HTML FORM -->
 <main>
 	<div style="border-radius: 5px; padding-bottom: 15px; background-color: #edefea;padding-top: 20px; ">
