@@ -21,6 +21,15 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/select2/js/select2.min.js"></script>
 <!-- <script type="text/javascript" src="<?php echo base_url()?>assets/sweetalert/src/sweetalert.js"></script> -->
 
+<!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/wysihtml5/bootstrap-wysihtml5-0.0.2.css"/>
+<script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/wysihtml5-0.3.0.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
+ -->
+
+<script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/lib/js/wysihtml5-0.3.0.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/wysihtml5/src/bootstrap-wysihtml5.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/wysihtml5/src/bootstrap-wysihtml5.css"/>
+
 <body>
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">

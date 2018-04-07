@@ -1,0 +1,70 @@
+body, html{
+	padding: 0;
+	margin: 0;
+}
+
+svg{
+	width: 100%;
+}
+
+img {
+    -webkit-backface-visibility: hidden; 
+    -ms-transform: translateZ(0); /* IE 9 */
+    -webkit-transform: translateZ(0); /* Chrome, Safari, Opera */
+    transform: translateZ(0);
+    image-rendering: pixelated;
+}
+
+#main {
+	width:300px; 
+	height:250px; 
+	background:#fff;
+	position:relative; 
+	overflow:hidden; 
+	display:none;
+	box-sizing:border-box; 
+	border:1px solid #000;
+	cursor: pointer;
+}
+#main *{
+	position:absolute;
+}
+
+.bg {
+	top: -142px;
+	left: -335px;
+}
+
+.corners {
+	width: 300px;
+	height: 250px;
+}
+
+.slant1 {
+	width: 23px;
+	height: 136px;
+}
+
+.slant2 {
+	width: 23px;
+	height: 136px;
+	bottom: 0;
+	right: 0;
+}
+
+.cta{
+    background-color: #009cde;
+    border-radius: 11px;
+    top: 142px;
+    left: 21px;
+    width: 130px;
+    height: 28px;
+}
+
+.sprite { background: url('sprite.png') no-repeat top left; height: 37px;  } 
+.sprite.txt1 {background-position: 0 0;width: 154px;height: 53px;top: 25px;left: 20px;} 
+.sprite.txt2 {background-position: -164px 0;width: 222px;height: 84px;left: 20px;top: 28px;} 
+.sprite.txt3 {background-position: -396px 0;width: 148px;height: 107px;top: 24px;left: 18px;} 
+.sprite.hashtag {background-position: -554px 0;width: 139px;top: 77px;left: 19px;} 
+.sprite.cta-text {background-position: -703px 0;width: 86px;height: 18px;top: 5px;left: 22px;} 
+.sprite.logo {background-position: -799px 0;width: 118px;bottom: -1px;right: 14px;} 

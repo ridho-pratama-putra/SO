@@ -1,0 +1,164 @@
+var frame1_text = "Get paid easily<br>for your<br>freelance work";
+var frame2_text = "With your own<br>secure and<br>personalized<br>link";
+var frame3_text = "Get paid<br>from any<br>channel with<br><span>PayPal.Me</span>";
+var cta_text = "Sign up for free";
+
+// Preloader
+function preload(){function e(){n===t-1?r[t]():n++}var n=0,a=new Array,t=preload.arguments.length-1,r=preload.arguments;for(i=0;i<t;i++)a[i]=new Image,a[i].src=preload.arguments[i],addEvent(a[i],"load",e)}function addEvent(e,n,a){e.addEventListener?e.addEventListener(n,a,!1):e.attachEvent&&e.attachEvent("on"+n,a)} 
+preload(
+  'bg.jpg','logo.png','pin.png','glow.png','profile.svg',
+  'icon-dollar.png',
+  'icon-call.png',
+  'icon-dollar.png',
+  'icon-fb.png',
+  'icon-ig.png',
+  'icon-skype.png',init);
+
+// Presets
+function slideFromLeft(elements, stagger) {
+  return new TimelineMax()
+  .staggerFrom(elements, .5, {x: 500, ease:Back.easeOut.config(1)}, stagger)
+}
+function slideFromRight(elements, stagger) {
+  return new TimelineMax()
+  .staggerFrom(elements, .7, {x: -300, ease:Back.easeOut.config(1)}, stagger)
+}
+
+function slideToLeft(elements, stagger) {
+  return new TimelineMax()
+  .staggerTo(elements, 1, {x: 0, ease:Back.easeOut.config(1)}, stagger)
+}
+
+function slideBack(elements) {
+  return new TimelineMax()
+  .to(elements, .5, {x: -50, ease:Power2.easeOut})
+  .to(elements, .5, {x: 0, ease:Back.easeOut.config(1)})
+}
+
+function textIn (elements, stagger) {
+  return new TimelineMax()
+  .staggerFrom(elements, .5, {x: -300, ease:Back.easeOut.config(1.3)}, stagger)
+}
+
+function setSlides(){
+  return new TimelineMax()
+  .set('.slide3', {x:880})
+  .set('.slide2', {x:880})
+}
+
+//TrimObject
+function insertObj(t) {
+  var _el = document.createElement("DIV");
+  _el.innerHTML = t;
+  return _el;
+}
+
+function TrimObject(id) {
+  var _el = document.getElementById(id);
+  var _str = _el.getAttribute('dymcText');
+  var _newStr = _str.split("<br>");
+  _el.innerHTML = "";
+
+  for (var i=0; i < _newStr.length;) {
+    var newDymcTxt = new insertObj(_newStr[i])
+    _el.appendChild(newDymcTxt)
+    i++;
+  };
+} 
+
+function setValueTo(id,attr,value) {
+  return document.getElementById(id).setAttribute(attr, value);
+}
+
+// Initial
+function init() {
+  window.onload = function(){
+    setValueTo('HeaderDymcTxt1','dymcText',frame1_text);
+    setValueTo('HeaderDymcTxt2','dymcText',frame2_text);
+    setValueTo('HeaderDymcTxt3','dymcText',frame3_text);
+    document.getElementById('CtaDymcTxt').innerHTML = cta_text;
+
+    startAnim();
+  }
+}
+
+function startAnim(){
+  TrimObject('HeaderDymcTxt1');
+  TrimObject('HeaderDymcTxt2');
+  TrimObject('HeaderDymcTxt3');
+
+  var f1 = document.querySelectorAll('#HeaderDymcTxt1>div'),
+      f2 = document.querySelectorAll('#HeaderDymcTxt2>div'),
+      f3 = document.querySelectorAll('#HeaderDymcTxt3>div, .cta');
+
+  var timeline = new TimelineMax()
+  .set('main', {display:'block'})
+  .set('.colors', {skewX:-10})
+  .set('#frame1', {transformOrigin:'0% 100%', force3D:false})
+  .set('.icons, .icons *', {force3D:false})
+
+  // Frame1 In
+  .add(slideFromLeft(['.slide4', '.slide3','.slide2'], 0.2))
+  .add(slideFromRight('.slide1', 0.2), '-=.6')
+  .from('.logo', .5, {x:300, ease:Back.easeOut.config(.5)}, '-=.3')
+  .from('#frame1', .7, {scale:1.05, ease:Power2.easeOut}, '-=.65')
+  .add(textIn(f1, 0.1),'-=.4')
+  .add(iconAnimF1(), '-=.3')
+
+  // Frame1 Out
+  .add('frame2', 'frame1Out-=1.6')
+  .add(setSlides, 'frame2')
+  .set('.slide3', {backgroundColor:'#009CDE'},'frame2')
+  .add(slideToLeft(['.slide3', '.slide2'],.15), 'frame2+=.02')
+  .add(slideBack('.slide1'), 'frame2+=.02')
+  .to('#frame1', .1,{opacity:0}, 'frame2+=.06')
+
+  // Frame2 In
+  .add(textIn(f2, 0.1),'frame2+=.8')
+  .add(iconAnimF2(), '-=.3')
+
+  // Frame2 Out
+  .add('frame3', 'frame2Out-=1.5')
+  .add(setSlides, 'frame3')
+  .set('.slide3', {backgroundColor:'#b6489f'},'frame3')
+  .add(slideToLeft(['.slide3', '.slide2'],.15), 'frame3+=.02')
+  .add(slideBack('.slide1'), 'frame3+=.02')
+  .to('#frame2', .1,{opacity:0}, 'frame3+=.06')
+
+  // Frame3 In
+  .add(textIn(f3, 0.1),'frame3+=.8')
+  .add(iconAnimF3(), '-=.3')
+}
+
+function iconAnimF1() {
+  return new TimelineMax()
+  .from('.p1, .glow1', 0.4, {scale:0, ease:Power2.easeOut, transformOrigin:'45% 55%'})
+  .add('iconSet1','pop1-=0.2')
+  .staggerFrom('.f1 .icon-line', 0.45, {scaleY:0, ease:Power2.easeOut}, 0.1, 'iconSet1')
+  .staggerFrom('.f1.icons', 1.5, {rotation:-8, yoyo:true, repeat:2, ease:Power0.easeNone}, 0.25, 'iconSet1')
+  .staggerFrom('.f1 .icon-img', 0.35, {scaleY:0, ease:Back.easeOut.config(2)}, 0.1, 'iconSet1+=0.4')
+  .staggerTo('.f1.icons', 0.35, {scale:0, opacity:0, ease:Back.easeIn.config(1.3)}, 0.1, 'iconSet1+=3.2')
+  .to('.glow1', 0.6, {opacity:0, yoyo:true, repeat:5, ease:Power0.easeNone}, 'iconSet1+=0.2')
+}
+
+function iconAnimF2() {
+  return new TimelineMax()
+  .from('.p2, .glow2', 0.4, {scale:0, opacity:0, ease:Power2.easeOut, transformOrigin:'45% 55%'})
+  .add('iconSet2','pop2-=0.2')
+  .from('.f2 .icon-line', 0.35, {scaleY:0, ease:Power2.easeOut}, 'iconSet2')
+  .from('.f2 .icon-img', 0.45, {rotationX:90, ease:Back.easeOut.config(3)}, 'iconSet2+=0.3')
+  .to('.f2 .icon-line', 1.5, {height:'+=5', yoyo:true, repeat:2, ease:Power0.easeNone}, 'iconSet2+=0.3')
+  .to('.f2 .icon-img', 1.5, {y:'-=5', yoyo:true, repeat:2, ease:Power0.easeNone}, 'iconSet2+=0.3')
+  .staggerTo('.f2.icons', 0.35, {scale:0, opacity:0, ease:Back.easeIn.config(1.3)}, 0.1, 'iconSet2+=3')
+  .to('.glow2', 0.6, {opacity:0, yoyo:true, repeat:5, ease:Power0.easeNone}, 'iconSet2+=0.2')
+}
+
+function iconAnimF3() {
+  return new TimelineMax()
+  .from('.p3, .glow3', 0.4, {scale:0, opacity:0, ease:Power2.easeOut, transformOrigin:'45% 55%'})
+  .add('iconSet3','pop3-=0.2')
+  .staggerFrom('.f3 .icon-line', 0.45, {scaleY:0, ease:Power2.easeOut}, 0.1, 'iconSet3')
+  .staggerFrom('.f3.icons', 1.5, {rotation:-8, yoyo:true, repeat:3, ease:Power0.easeNone}, 0.25, 'iconSet3')
+  .staggerFrom('.f3 .icon-img', 0.35, {scaleY:0, ease:Back.easeOut.config(3)}, 0.1, 'iconSet3+=0.4')
+  .to('.glow3', 0.6, {opacity:0, yoyo:true, repeat:9, ease:Power0.easeNone}, 'iconSet3+=0.2')
+}

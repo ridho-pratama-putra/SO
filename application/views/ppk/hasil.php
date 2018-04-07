@@ -275,9 +275,17 @@ $data = json_decode($data,false);
 					html +=	"</div>";
 					html +=	"</div>";
 					if (bisa_diberikan) {
-						html += "<div class='row margin-top-10'><button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
+						html += "<div class='row margin-top-10'>";
+						html += "<button type='button' class='btn btn-primary btn-lg col-6' ><i class='icon ion-ios-plus-outline'></i> Masukkan keranjang</button> ";
+						html += "<button type='button' class='btn btn-primary btn-lg col-6' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button>";
+						html += "</div><div class='row margin-top-10'>"
+						html += "<button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
 					}else{
-						html += "<div class='row margin-top-10'><button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Ada beberapa fakta yang belum diketahui. Mulai masukkan fakta</button></div>";
+						html += "<div class='row margin-top-10'>"
+						html += "<button type='button' class='btn btn-primary btn-lg col-6' ><i class='icon ion-ios-plus-outline'></i> Masukkan keranjang</button>";
+						html += "<button type='button' class='btn btn-primary btn-lg col-6' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button>";
+						html += "</div><div class='row margin-top-10'>"
+						html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Ada beberapa fakta yang belum diketahui. Mulai masukkan fakta</button></div>";
 					}
 					html +=	"</div>";
 					html +=	"</div>";

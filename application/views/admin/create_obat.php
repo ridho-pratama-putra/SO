@@ -7,7 +7,7 @@
 				<h3 class="text-center" >Create KB obat</h3>
 				<div class="margin-top-15 form-group">
 					<div class="">
-						<input type="text" class="form-control" id="nama_obat" placeholder="Masukkan Nama Obat" name="nama_obat">
+						<input type="text" class="form-control" id="nama_obat" placeholder="Masukkan Nama Obat" name="nama_obat" required>
 					</div>
 				</div>
 			</div>

@@ -2,9 +2,9 @@
 	$(document).ready(function() {
 		$('#read_obat').DataTable({
 			"columnDefs": [{
-			"targets": [1],
-			"orderable": false
-		}]
+				"targets": [1],
+				"orderable": false
+			}]
 		});
 	});
 </script>
@@ -34,6 +34,7 @@
 								<a href="<?=base_url()?>Admin_C/view_karakteristik/indikasi/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Indikasi</a>
 								<a href="<?=base_url()?>Admin_C/view_karakteristik/kontraindikasi/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Kontraindikasi</a>
 								<a href="<?=base_url()?>Admin_C/view_karakteristik/peringatan/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Peringatan</a>
+								<a href="<?=base_url()?>Admin_C/view_catatan/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Catatan Obat</a>
 							</div>
 							<div class="btn-group" role="group">
 								<a href="<?=base_url()?>Admin_C/view_rename_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Rename Obat</a>
