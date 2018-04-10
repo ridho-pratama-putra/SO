@@ -23,6 +23,7 @@
 					{ "data": "id_gejala" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
+									'<a href="<?=base_url('Admin_C/get_obat/gejala/')?>'+data+'" role="button" class="btn btn-secondary bg-dark" title="Lihat obat apa saja yang memiliki gejala ini">Lihat Daftar Obat</a>'+
 									// '<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditGejala" title="edit gejala" data-idgejala="'+data+'" >Edit Indikasi</a>'+
 									'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteGejala" title="hapus gejala" data-idgejala="'+data+'" data-detailgejala="'+full.detail_gejala+'">Hapus Gejala</a>'+
 								'</div>';

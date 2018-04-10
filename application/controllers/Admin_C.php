@@ -95,6 +95,8 @@ class Admin_C extends CI_Controller {
 										);
 		$dataCol					= 	array(
 												'id_karakteristik',
+												'id_obat',
+												'id_tipe_master',
 												'detail_tipe'
 										);
 		$data[$karakteristik]		=	$this->SO_M->readCol('karakteristik_obat',$dataCondition,$dataCol)->result();
@@ -131,6 +133,7 @@ class Admin_C extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	// get data untuk dijadikan autocomplte
 	function autocomplete($table,$col){
 		$data['master_data'] = $this->SO_M->readSCol($table,$col)->result();
 		echo json_encode($data);
@@ -485,7 +488,7 @@ class Admin_C extends CI_Controller {
 				if ($dataKarakteristik == 'kontraindikasi' || $dataKarakteristik == 'peringatan') {
 					
 					// cek di master_tipe, apakah data sudah ada atau belum.jika belum maka insert master_tipe baru dan ambil idnya. jika sudah, ambil idnya. kemudian persiapan untuk masuk ke karakteristik obat
-					$result = $this->SO_M->read('master_kondisi',array('detail_kondisi' => $dataUpdate['detail_tipe']));
+					$result = $this->SO_M->readCol('master_kondisi',array('detail_kondisi' => $dataUpdate['detail_tipe']),'id_master_kondisi');
 
 					// jika belum ada di master kondisi, insert kemudian ambil id nya
 					if ($result->num_rows() == 0) {
@@ -507,14 +510,14 @@ class Admin_C extends CI_Controller {
 
 					// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
 					else{
-						$result = $result->result();
-						$dataUpdate['id_tipe_master'] =$result[0]->id_master_kondisi;
+						$id_master_kondisi = $result->result();
+						$dataUpdate['id_tipe_master'] =$id_master_kondisi[0]->id_master_kondisi;
 					}
 				}
 
 				// jika indikasi, maka cek di tabel master_gejala
 				else{
-					$result = $this->SO_M->read('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']));
+					$result = $this->SO_M->readCol('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']),'id_gejala');
 					if ($result->num_rows() == 0) {
 						$result = $this->SO_M->create_id('master_gejala',array('detail_gejala' => $dataUpdate['detail_tipe']));
 						$results = json_decode($result);
@@ -533,8 +536,8 @@ class Admin_C extends CI_Controller {
 					}
 					// jika sudah ada di master_kondisi, maka ambil idnya dan jadikan id_master_kondisi pada dataUpdate
 					else{
-						$result = $result->result();
-						$dataUpdate['id_tipe_master'] = $result[0]->id_gejala;
+						$id_gejala = $result->result();
+						$dataUpdate['id_tipe_master'] = $id_gejala[0]->id_gejala;
 					}
 
 				}
@@ -555,6 +558,22 @@ class Admin_C extends CI_Controller {
 		}else{
 			alert('','danger','Gagal','Form berisi whitespace',false);
 		}
+	}
+
+	// untuk ambil daftar obat yang  memiliki sutu nilai pada tabel gejala / kondisi
+	function get_obat($tipe,$id_tipe_master)
+	{
+		$this->db->select(array('id_obat','tipe'));
+		$this->db->distinct();
+		if ($tipe == 'kondisi') {
+			$this->db->where(array('id_tipe_master'=>$id_tipe_master,'tipe !=' => 'indikasi'));
+		}else{
+			$this->db->where(array('id_tipe_master'=>$id_tipe_master,'tipe' => 'indikasi'));
+		}
+		$data['result'] = $this->db->get('karakteristik_obat')->result();
+		$this->load->view('html/header');
+		$this->load->view('admin/view_obat_per_karakteristik',$data);
+		$this->load->view('html/footer');	
 	}
 }
 

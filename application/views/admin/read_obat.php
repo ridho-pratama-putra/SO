@@ -4,7 +4,8 @@
 			"columnDefs": [{
 				"targets": [1],
 				"orderable": false
-			}]
+			}],
+			"paging": false
 		});
 	});
 </script>
@@ -21,8 +22,8 @@
 		<table id="read_obat" class="table table-striped table-hover" cellspacing="0" width="100%" style="width: 100%">
 			<thead class="thead-dark">
 				<tr>
-				<th width="55%">Nama Obat</th>
-				<th width="55%;" class="text-center">CRUD</th>
+				<th width="44%">Nama Obat</th>
+				<th class="text-center">CRUD</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -30,15 +31,15 @@
 					<tr>
 						<td><?=$value->nama_obat?></td>
 						<td class="text-center">
-							<div class="btn-group" role="group" >
-								<a href="<?=base_url()?>Admin_C/view_karakteristik/indikasi/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Indikasi</a>
-								<a href="<?=base_url()?>Admin_C/view_karakteristik/kontraindikasi/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Kontraindikasi</a>
-								<a href="<?=base_url()?>Admin_C/view_karakteristik/peringatan/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Peringatan</a>
-								<a href="<?=base_url()?>Admin_C/view_catatan/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Catatan Obat</a>
+							<div class="btn btn-group btn-xs" role="group" >
+								<a href="<?=base_url()?>Admin_C/view_karakteristik/indikasi/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Indikasi</a>
+								<a href="<?=base_url()?>Admin_C/view_karakteristik/kontraindikasi/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Kontraindikasi</a>
+								<a href="<?=base_url()?>Admin_C/view_karakteristik/peringatan/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Peringatan</a>
+								<a href="<?=base_url()?>Admin_C/view_catatan/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Catatan Obat</a>
 							</div>
-							<div class="btn-group" role="group">
-								<a href="<?=base_url()?>Admin_C/view_rename_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Rename Obat</a>
-								<a href="<?php echo base_url()?>Admin_C/handle_delete_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark">Hapus</a>
+							<div class="btn btn-group btn-xs" role="group">
+								<a href="<?=base_url()?>Admin_C/view_rename_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Rename Obat</a>
+								<a href="<?php echo base_url()?>Admin_C/handle_delete_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Hapus</a>
 							</div>
 						</td>
 					</tr>

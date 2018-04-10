@@ -34,7 +34,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan" data-idobat="<?=$master_obat[0]->id_obat?>">Edit peringatan</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditPeringatan" title="edit peringatan" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="peringatan" data-idobat="'+full.id_obat+'" data-id_tipe_master="'+full.id_tipe_master+'">Edit peringatan</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeletePeringatan" title="hapus PERINGATAN" data-idkarakteristik="'+data+'" >Hapus peringatan</a>'+
 							'</div>';
 						}
@@ -45,7 +45,8 @@
 				"columnDefs": [{
 									"targets": [1],
 									"orderable": false
-								}]
+								}],
+				"paging": false
 				});
 		});
 	}
@@ -135,9 +136,10 @@
 					<h4 class="modal-title" id="myModalLabel">Form Edit Peringatan</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
-					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
+					<input type="text" name="id_karakteristik" id="idKarakteristike" title="id_karakteristik">
+					<input type="text" name="id_obat" id="idObat" title="id_obat">
 					<input type="hidden" name="tipe" id="tipee">
-					<input type="hidden" name="id_obat" id="idObat">
+					<input type="text" name="" id="idTipeMaster" title="id_tipe_master">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Peringatan</label>
@@ -161,12 +163,14 @@
 		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
 		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
 		$("#idObat").attr('value', $(e.relatedTarget).data('idobat'));
+		$("#idTipeMaster").attr('value', $(e.relatedTarget).data('id_tipe_master'));
 	});
 	$('#ModalEditPeringatan').on('hide.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipe").removeAttr('value');
 		$("#tipee").removeAttr('value');
 		$("#idObat").removeAttr('value');
+		$("#idTipeMaster").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT PERINGATAN SEBAGAI ACUAN -->
@@ -191,7 +195,7 @@
 			{
 				
 				$("#idKarakteristike").attr('value');
-				$("#detailTipe").val();
+				document.getElementById('formeditperingatan').reset();
 				$("#notif").html(data);
 				$('#btn-edit-peringatan').text('Ya!');
 				$('#btn-edit-peringatan').attr('disabled',false);
@@ -220,6 +224,13 @@
 
 		$('#karakteristik_peringatan').autocomplete({
 			lookup: data,
+			onSelect: function (suggestion) {
+				$('#detailTipe').attr('value',suggestion.data);
+			}
+		});
+
+		$('#detailTipe').autocomplete({
+			lookup: data
 		});
 	});
 </script>
@@ -276,15 +287,3 @@
 		</table>
 	</div>
 </main>
-<!-- CONTENT HTML -->
-			<!-- 	<?php foreach ($peringatan as $key => $value) {	?>
-					<tr>
-						<td><?=$value->detail_tipe?></td>
-						<td class="text-center">
-							<div class="btn-group" role="group">
-								<a href="<?=base_url()?>Admin_C/handle_edit_peringatan/<?=$value->id_karakteristik?>" class="btn btn-secondary" style="text-decoration: none;">Edit Peringatan</a>
-								<a href="<?=base_url()?>Admin_C/handle_delete_peringatan/<?=$value->id_karakteristik?>" class="btn btn-secondary" style="text-decoration: none;">Hapus Peringatan</a>
-							</div>
-						</td>
-					</tr>
-				<?php	} ?> -->

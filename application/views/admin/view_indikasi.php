@@ -6,7 +6,7 @@
 	
 	function show(){
 		$.get('<?php echo base_url('Admin_C/dataTable/indikasi/'.$master_obat[0]->id_obat)?>', function(html){
-			respon = JSON.parse(html);	
+			respon = JSON.parse(html);
 			// destroy dulu datatable sebelumnya yang menggunakan json. 
 			$('#indikasi').DataTable().destroy();
 
@@ -22,7 +22,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return	'<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="indikasi" data-idobat="<?=$master_obat[0]->id_obat ?>"">Edit Indikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditIndikasi" title="edit indikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="indikasi" data-idobat="'+full.id_obat+'" data-id_tipe_master="'+full.id_tipe_master+'">Edit Indikasi</a>'+
 
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteIndikasi" title="hapus indikasi" data-idkarakteristik="'+data+'" >Hapus Indikasi</a>'+
 							'</div>';
@@ -34,7 +34,8 @@
 				"columnDefs": [{
 									"targets": [1],
 									"orderable": false
-								}]
+								}],
+				"paging": false
 			});
 		});
 	}
@@ -137,9 +138,10 @@
 					<h4 class="modal-title" id="myModalLabel">Form Edit Indikasi</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
-					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
+					<input type="text" name="id_karakteristik" id="idKarakteristike" title="id_karakteristik">
+					<input type="text" name="id_obat" id="idObat" title="id_obat">
 					<input type="hidden" name="tipe" id="tipee">
-					<input type="hidden" name="id_obat" id="idObat">
+					<input type="text" name="" id="idTipeMaster" title="id_tipe_master">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Indikasi</label>
@@ -163,12 +165,14 @@
 		$("#detailTipe").attr('value', $(e.relatedTarget).data('detailtipe'));
 		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
 		$("#idObat").attr('value', $(e.relatedTarget).data('idobat'));
+		$("#idTipeMaster").attr('value', $(e.relatedTarget).data('id_tipe_master'));
 	});
 	$('#ModalEditIndikasi').on('hide.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipe").removeAttr('value');
 		$("#tipee").removeAttr('value');
 		$("#idObat").removeAttr('value');
+		$("#idTipeMaster").removeAttr('value');
 	});
 </script>
 <!-- END AMBIL ELEMEN BUTTON EDIT INDIKASI SEBAGAI ACUAN -->
@@ -223,7 +227,15 @@
 
 		$('#karakteristik_indikasi').autocomplete({
 			lookup: data,
+			onSelect: function (suggestion) {
+				$('#detailTipe').attr('value',suggestion.data);
+			}
 		});
+
+		$('#detailTipe').autocomplete({
+			lookup:data,
+		});
+
 	});
 </script>
 <!-- END inisialisasi autocomplete -->

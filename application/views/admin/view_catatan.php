@@ -3,6 +3,7 @@
 		$('#catatan_obat').wysihtml5();
 	});
 </script>
+
 <main>
 <div class="container-fluid margin-top-15  padding-bottom-15">
 	<div class="row">
@@ -17,7 +18,7 @@
 				<div class="form-group">
 					<input type="hidden" name="id_obat" value="<?=$result[0]->id_obat?>">
 					<input type="hidden" name="id_catatan" value="<?=$result[0]->id_catatan?>">
-					<textarea class="form-control col-12" id="catatan_obat" name="catatan_obat" rows="15"><?=$result[0]->catatan?></textarea>
+					<textarea class="form-control col-12" id="catatan_obat" name="catatan_obat" rows="16"><?=$result[0]->catatan?></textarea>
 				</div>
 				<button type="submit" class="btn btn-primary btn-block">Update Catatan Obat</button>
 			</form>

@@ -13,6 +13,7 @@
 					{ "data": "id_master_kondisi" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
+									'<a href="<?=base_url('Admin_C/get_obat/kondisi/')?>'+data+'" role="button" class="btn btn-secondary bg-dark" title="Lihat obat apa saja yang memiliki kondisi ini">Lihat Daftar Obat</a>'+
 									'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKondisi" title="hapus gejala" data-idkondisi="'+data+'" data-detailkondisi="'+full.detail_kondisi+'">Hapus Kondisi</a>'+
 								'</div>';
 						}

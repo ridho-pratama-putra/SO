@@ -20,7 +20,7 @@
 					{ "data": "id_karakteristik" ,
 						render: function ( data, type, full, meta ) {
 							return '<div class="btn-group" role="group">'+
-								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi" data-idobat="<?=$master_obat[0]->id_obat?>">Edit kontraindikasi</a>'+
+								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalEditKontraindikasi" title="edit kontraindikasi" data-idkarakteristik="'+data+'" data-detailtipe="'+full.detail_tipe+'" data-tipe="kontraindikasi" data-idobat="'+full.id_obat+'" data-id_tipe_master="'+full.id_tipe_master+'">Edit kontraindikasi</a>'+
 								'<a href="#modal" role="button" data-toggle="modal" class="btn btn-secondary bg-dark" data-target="#ModalDeleteKontraindikasi" title="hapus kontraindikasi" data-idkarakteristik="'+data+'" >Hapus kontraindikasi</a>'+
 							'</div>';
 						}
@@ -31,7 +31,8 @@
 				"columnDefs": [{
 									"targets": [1],
 									"orderable": false
-								}]
+								}],
+				"paging": false
 				});
 		});
 	}
@@ -134,9 +135,10 @@
 					<h4 class="modal-title" id="myModalLabel">Form Edit Kontraindikasi</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
-					<input type="hidden" name="id_karakteristik" id="idKarakteristike">
+					<input type="text" name="id_karakteristik" id="idKarakteristike" title="id_karakteristik">
+					<input type="text" name="id_obat" id="idObat" title="id_obat">
 					<input type="hidden" name="tipe" id="tipee">
-					<input type="hidden" name="id_obat" id="idObat">
+					<input type="text" name="" id="idTipeMaster" title="id_tipe_master">
 					<div class="modal-body">
 						<div class='form-group'>
 							<label>Kontraindikasi</label>
@@ -160,12 +162,14 @@
 		$("#detailTipek").attr('value', $(e.relatedTarget).data('detailtipe'));
 		$("#tipee").attr('value', $(e.relatedTarget).data('tipe'));
 		$("#idObat").attr('value', $(e.relatedTarget).data('idobat'));
+		$("#idTipeMaster").attr('value', $(e.relatedTarget).data('id_tipe_master'));
 	});
 	$('#ModalEditKontraindikasi').on('hidden.bs.modal', function(e) {
 		$("#idKarakteristike").removeAttr('value');
 		$("#detailTipek").removeAttr('value');
 		$("#tipee").removeAttr('value');
 		$("#idObat").removeAttr('value');
+		$("#idTipeMaster").removeAttr('value');
 	});
 
 </script>
@@ -191,7 +195,7 @@
 			{
 				
 				$("#idKarakteristike").attr('value');
-				$("#detailTipe").val();
+				document.getElementById('formeditkontraindikasi').reset();
 				$("#notif").html(data);
 				$('#btn-edit-kontraindikasi').text('Ya!');
 				$('#btn-edit-kontraindikasi').attr('disabled',false);
@@ -220,6 +224,13 @@
 
 		$('#karakteristik_kontraindikasi').autocomplete({
 			lookup: data,
+			onSelect: function (suggestion) {
+				$('#detailTipek').attr('value',suggestion.data);
+			}
+		});
+
+		$('#detailTipek').autocomplete({
+			lookup: data			
 		});
 	});
 </script>

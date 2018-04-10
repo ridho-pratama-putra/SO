@@ -3,9 +3,13 @@
 <head>
 	<title>Sistem Pemberian Saran Obat</title>
 </head>
+
 <link rel="shortcut icon" href="<?php echo base_url()?>assets/images/favicon.ico" type="image/vnd.microsoft.icon" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/jQuery-Autocomplete-devbridge/content/styles.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/bootstrap/css/bootstrap.min.css">
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/sidebar-kanan.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/custom.css">
