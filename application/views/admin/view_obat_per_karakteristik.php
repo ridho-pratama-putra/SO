@@ -1,6 +1,5 @@
 <main>
-	<div class="container margin-top-15" id="notif"><!-- id="notif digunakan untuk memuat alert sukses/ gagal dari aksi ajax" -->
-		<?=$this->session->flashdata("alert_CRUD_kondisi");?>
+	<div class="container margin-top-15" id="notif">s
 	</div>
 	<div class="container margin-top-15">
 		<br>

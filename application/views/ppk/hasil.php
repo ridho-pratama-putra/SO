@@ -28,7 +28,7 @@ $data = json_decode($data,false);
 			$("#idUser").attr('value', $(e.relatedTarget).data('iduser'));
 			$.get('<?=base_url()?>Ppk_C/cek_kondisi/'+$(e.relatedTarget).data('idtipemaster'),function(html){
 				var responE = JSON.parse(html);
-				document.getElementById('apakah').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+responE[0].detail_kondisi+"</h6>";
+				document.getElementById('apakah').innerHTML = "Apakah pasien <h5 class='text-danger'>"+responE[0].detail_kondisi+"</h6>";
 				$("#detailKondisi").attr('value',responE[0].detail_kondisi);
 			});
 		});
@@ -88,31 +88,22 @@ $data = json_decode($data,false);
 				}
 			});
 		});
-
-		// untuk masukkan obat yang dipilih ke tabel wm_obat
-		$("#masukkan-obat").click(function() {
-			
-		});
-
-		// untuk masuk ke menu peresepan obat
-		$("#ke-resep-obat").click(function () {
-			
-		});
 	});
 
 	// ambil kondisi untuk ditampilkan pada side menu kanan 
+	var note_kondisi ='';
 	function show_kondisi() {
 		$("#note-kondisi").empty();
-
-		var url = "<?=base_url("Ppk_C/get_col_kondisi/").$data->user[0]->id_user?>";
-		$.get(url,function(html){
-			var responE = JSON.parse(html);
-			var html = '';
-			for(var i in responE){
-				if (responE[i].status == 0) {
-					html += "<a class='nav-link disabled text-white badge badge-danger'>"+responE[i].detail_kondisi+"</a> ";
+		// dapatkan kondisi seorang users
+		$.get("<?=base_url("Ppk_C/get_col_kondisi/").$data->user[0]->id_user?>",function(html){
+			note_kondisi = JSON.parse(html);
+			// reset variabel html
+			html = '';
+			for(var i in note_kondisi){
+				if (note_kondisi[i].status == 0) {
+					html += "<a class='nav-link disabled text-white badge badge-danger'>"+note_kondisi[i].detail_kondisi+"</a> ";
 				}else{
-					html += "<a class='nav-link disabled text-white badge badge-success'>"+responE[i].detail_kondisi+"</a> ";
+					html += "<a class='nav-link disabled text-white badge badge-success'>"+note_kondisi[i].detail_kondisi+"</a> ";
 				}
 			}
 			document.getElementById('note-kondisi').innerHTML = html;	
@@ -125,6 +116,7 @@ $data = json_decode($data,false);
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
+		var id_dokter = "<?=$this->session->userdata('logged_in')['id_user']?>";
 		var formData = new FormData($('#cari_gejala')[0])
 		$.ajax({
 			url : url,
@@ -276,14 +268,14 @@ $data = json_decode($data,false);
 					html +=	"</div>";
 					if (bisa_diberikan) {
 						html += "<div class='row margin-top-10'>";
-						html += "<button type='button' class='btn btn-primary btn-lg col-6' ><i class='icon ion-ios-plus-outline'></i> Masukkan keranjang</button> ";
-						html += "<button type='button' class='btn btn-primary btn-lg col-6' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button>";
+						html += "<button type='button' class='btn btn-primary btn-lg col-4' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+						html += "<button type='button' class='btn btn-primary btn-lg offset-lg-4 col-4' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button> ";
 						html += "</div><div class='row margin-top-10'>"
 						html += "<button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
 					}else{
 						html += "<div class='row margin-top-10'>"
-						html += "<button type='button' class='btn btn-primary btn-lg col-6' ><i class='icon ion-ios-plus-outline'></i> Masukkan keranjang</button>";
-						html += "<button type='button' class='btn btn-primary btn-lg col-6' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button>";
+						html += "<button type='button' class='btn btn-primary btn-lg col-4' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+						html += "<button type='button' class='btn btn-primary btn-lg offset-lg-4 col-4' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button> ";
 						html += "</div><div class='row margin-top-10'>"
 						html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Ada beberapa fakta yang belum diketahui. Mulai masukkan fakta</button></div>";
 					}
@@ -379,7 +371,7 @@ $data = json_decode($data,false);
 			if (response.unknown_fact.length != 0) {
 				for (var i = 0; i < 1; i++) {
 					$('#ModalUnknownFact').modal('show');
-					document.getElementById('apakah_').innerHTML = "Apakah pasien mengalami <h5 class='text-danger'>"+response.unknown_fact[i].detail_tipe+"</h6>";
+					document.getElementById('apakah_').innerHTML = "Apakah pasien <h5 class='text-danger'>"+response.unknown_fact[i].detail_tipe+"</h6>";
 					$('#ModalUnknownFact').find('#idTipeMaster_').val(response.unknown_fact[i].id_tipe_master);
 					$('#ModalUnknownFact').find('#detailKondisi_').val(response.unknown_fact[i].detail_tipe);
 					$('#ModalUnknownFact').find('#idObat_').val(id_obat);
@@ -389,6 +381,19 @@ $data = json_decode($data,false);
 				update();show_kondisi();
 			}
 		});
+	}
+
+	function masukkan_wm(id_pasien,id_dokter,id_obat){
+		$.post("<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
+			{
+				post_id_pasien		: id_pasien,
+				post_id_dokter		: id_dokter,
+				post_gejala			: {asd : $("#select_gejala").select2('data')[1].text},
+				post_id_obat		: id_obat
+			},function (data) {
+				$("#notif").html(data);	
+			}
+		);
 	}
 </script>
 <!-- funstion tampilkan hasil collapsible -->

@@ -44,7 +44,8 @@
 				"columnDefs": [{
 									"targets": [3],
 									"orderable": false
-								}]
+								}],
+				"paging": false
 				});
 		});
 	}
@@ -455,7 +456,7 @@
 									<label>Status</label>
 									<select class="form-control" name="status" id="statusE">
 										<option value="1">Aman</option>
-										<option value="0">Mengidap</option>
+										<option value="0">Hindari</option>
 									</select>
 								</div>
 							</div>

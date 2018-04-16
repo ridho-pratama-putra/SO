@@ -67,10 +67,12 @@ class Admin_C extends CI_Controller {
 		$result = $this->SO_M->readCol('catatan_obat',array('id_obat'=>$id_obat),'id_obat');
 		if ($result->num_rows() != 0) {
 			$data['result'] = $this->SO_M->read('catatan_obat',array('id_obat'=>$id_obat))->result();
+			$data['nama_obat'] = $this->SO_M->readCol('master_obat',array('id_obat'=>$id_obat),array('nama_obat'))->result();
 			$this->load->view('html/header');
 			$this->load->view('admin/view_catatan',$data);
 			$this->load->view('html/footer');
 		}else{
+			$data['nama_obat'] = $this->SO_M->readCol('master_obat',array('id_obat'=>$id_obat),array('nama_obat'))->result();
 			$data['id_obat'] = $id_obat;
 			$this->load->view('html/header');
 			$this->load->view('admin/create_catatan',$data);

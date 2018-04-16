@@ -153,6 +153,21 @@ class Akun_C extends CI_Controller {
 		redirect();
 	}
 
+	public function view_ubah_password($id_user)
+	{
+		$result = $this->SO_M->readCol('user',array('id_user'=>$id_user),array('id_user','nama_user'));
+		if ($result->num_rows() == 1) {
+			$data['id_user'] = $result->result();
+			$this->load->view('html/header');
+			$this->load->view('umum/ubah_password',$data);
+			$this->load->view('html/footer');
+		}else{
+			$data['heading']		=	"id user tidak terdaftar";
+			$data['message']		=	"";
+			$this->load->view('errors/html/error_404',$data);
+		}
+	}
+
 	/*
 	function dibawah ini digunakan oleh admin saat akan mendaftarkan pengguna baru.
 	bisa admin, ppk, atau pengguna
@@ -294,5 +309,38 @@ class Akun_C extends CI_Controller {
 			}
 			redirect('Akun_C/view_registered_user');
 		}
+	}
+
+	function handle_ubah_password()
+	{
+		if ($this->input->post()!= null) {
+			$id_user = $this->input->post('id_user');
+			$current_password = $this->input->post('current_password');
+			$new_password = $this->input->post('new_password');
+			$verif_password = $this->input->post('verif_password');
+			$encrypted_current = hash("sha256",$current_password);
+			$cek_user_dan_password = $this->SO_M->readCol('user',array('id_user'=>$id_user,'password'=>$encrypted_current),array('id_user'));
+			if ($cek_user_dan_password->num_rows() == 1) {
+				$encrypted_new = hash('sha256',$new_password);
+				$encrypted_verif = hash('sha256',$verif_password);
+				if ($encrypted_new == $encrypted_verif) {
+					$result = $this->SO_M->update('user',array('id_user'=>$id_user),array('password'=>$encrypted_verif));
+					$results = json_decode($result);
+					if ($results->status) {
+						alert('alert_ubah_password','success','Berhasil','Ubah password berhasil');
+					}
+					else{
+						alert('alert_ubah_password','danger','Gagal','Ubah password gagal');
+					}
+				}else{
+					alert('alert_ubah_password','danger','Gagal','password baru dengan password verifikasi tidak sama');
+				}
+			}else{
+				alert('alert_ubah_password','danger','Gagal','data user tidak ditemukan');
+			}
+		}else{
+			alert('alert_ubah_password','danger','Gagal','tidak ada data yang di post');
+		}
+		redirect('Akun_C/view_ubah_password/'.$id_user);
 	}
 }

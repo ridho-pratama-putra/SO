@@ -44,7 +44,7 @@
   </div>
 </div> -->
 							<div class="btn-group" role="group">
-								<a href="<?=base_url()?>Admin_C/view_detail_user/<?=$value->nomor_identitas?>" class="btn btn-secondary bg-dark">Detail User</a>
+								<!-- <a href="<?=base_url()?>Admin_C/view_detail_user/<?=$value->nomor_identitas?>" class="btn btn-secondary bg-dark">Detail User</a> -->
 								<a href="<?=base_url()?>Akun_C/reset_password/<?=$value->id_user?>" class="btn btn-secondary bg-dark">Reset Password</a>
 								<a href="" class="btn btn-secondary bg-dark">Hapus</a>
 							</div>

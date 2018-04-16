@@ -506,10 +506,16 @@ class Ppk_C extends CI_Controller {
 	}
 
 	// function ini digunakan untuk mendapatkan informasi kondisi seorang pasien. datanya ditampilkan pada sidebar kanan halaman hasil
-	public function get_col_kondisi($id_user)
+	// true untuk return berupa json untuk ajax, false untuk return array.
+	public function get_col_kondisi($id_user,$type = true)
 	{
-		$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('detail_kondisi','status'))->result();
-		echo json_encode($result);
+		if ($type) {
+			$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('detail_kondisi','status'))->result();
+			echo json_encode($result);
+		}else{
+			$result =  $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('id_master_kondisi','id_user','detail_kondisi','status'))->result_array();
+			return $result;
+		}
 	}
 
 	// function ini digunakan untuk mencari apa saja karakteristik suatu obat yang belum diketahui faktanya(kontraindikasi dan peringatan). daptkan karakteristik tanya.
@@ -545,6 +551,28 @@ class Ppk_C extends CI_Controller {
 			}
 		}
 		return false;
+	}
+
+	public function handle_insert_wm_obat()
+	{
+		$id_obat		= $this->input->post('post_id_obat');
+		$id_pasien		= $this->input->post('post_id_pasien');
+		$id_dokter		= $this->input->post('post_id_dokter');
+		$gejala			= $this->input->post('post_gejala');
+
+		$note_kondisi	= $this->get_col_kondisi($id_pasien,false);
+		$result = $this->SO_M->readCol('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter),'id_wm_obat');
+		if ($result->num_rows() == 0) {
+			$result = $this->SO_M->create('wm_obat',array('id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'id_obat'=>$id_obat,'tanggal'=>date('Y-m-d')));
+		}
+		// masukkan data ke tabel wm_kondisi
+		$this->SO_M->createS('wm_kondisi',$note_kondisi);
+		$this->SO_M->truncateTable('wm_kondisi');
+
+		// masukkan data ke wm_gejala
+		echo "<pre>";
+		var_dump($gejala);die();
+		$this->SO_M->createS('wm_gejala',$gejala);
 	}
 }
 

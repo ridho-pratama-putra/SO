@@ -128,6 +128,11 @@ class SO_M extends CI_Model {
 		
 		return $result;
 	}
+
+	public function truncateTable($tabel)
+	{
+		$this->db->query('TRUNCATE TABLE wm_kondisi');
+	}
 	
 	// public function readDistinct($table)
 	// {
