@@ -125,6 +125,7 @@ $data = json_decode($data,false);
 			contentType: false,
 			processData: false,
 			success: function(data){
+				// console.log(data);
 				response = JSON.parse(data);
 				document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
 				var html	=	"<div class='row padding-top-10'>";
@@ -384,11 +385,12 @@ $data = json_decode($data,false);
 	}
 
 	function masukkan_wm(id_pasien,id_dokter,id_obat){
+
 		$.post("<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
 			{
 				post_id_pasien		: id_pasien,
 				post_id_dokter		: id_dokter,
-				post_gejala			: {asd : $("#select_gejala").select2('data')[1].text},
+				post_gejala			: $("#select_gejala").val(),
 				post_id_obat		: id_obat
 			},function (data) {
 				$("#notif").html(data);	
@@ -483,7 +485,7 @@ $data = json_decode($data,false);
 		
 	</div>
 	<div class="margin-top-15">
-		<button type="button" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button>
+		<a href="<?=base_url('Ppk_C/cari_hasil_/'.$data->user[0]->nomor_identitas)?>" role='button' class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a>
 	</div>
 	<div class="margin-top-15" id='ke-resep-obat'></div>
 </div>

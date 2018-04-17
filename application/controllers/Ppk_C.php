@@ -132,6 +132,7 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	// untuk tampilkan form bagian atas pada halaman hasil, isi formnya berua inputan gejala
 	public function view_hasil($nomor_identitas)
 	{
 		$dataWhere	=	array('nomor_identitas' => $nomor_identitas);
@@ -160,6 +161,15 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	// untuk tampilan input gejala tok, ini dipanggil setelah masukkan identitas pasien
+	public function handle_view_id()
+	{
+		if ($this->input->post() != null) {
+			redirect('Ppk_C//view_detail_user/'.$this->input->post('nomor_identitas'));
+		}
+	}
+
+	// metode untuk dari input gejala ek tampilan list obat sesuai gejala. untuk yang dari list sesuai gejala ke dafatar peresepan obat ada di function cari_hasil_
 	public function cari_hasil($nomor_identitas)
 	{
 		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
@@ -169,6 +179,8 @@ class Ppk_C extends CI_Controller {
 		if ($this->input->post()!= NULL) {
 			$gejalas	=	$this->input->post('gejala[]');
 			$data['gejala'] = $gejalas;
+
+			// var_dump($data);die();
 
 			// parameter untuk cari indikasi suatu obat yang cocok
 			$where = "tipe = 'indikasi' AND (id_tipe_master = ";
@@ -553,26 +565,224 @@ class Ppk_C extends CI_Controller {
 		return false;
 	}
 
+	// untuk masukkan data ke wm. function ini dipanggi lpada halaman hasi lsaat akan memberikan obat kedalam daftar peresepan obat.
 	public function handle_insert_wm_obat()
 	{
 		$id_obat		= $this->input->post('post_id_obat');
 		$id_pasien		= $this->input->post('post_id_pasien');
 		$id_dokter		= $this->input->post('post_id_dokter');
-		$gejala			= $this->input->post('post_gejala');
+		$gejalas		= $this->input->post('post_gejala');
 
 		$note_kondisi	= $this->get_col_kondisi($id_pasien,false);
-		$result = $this->SO_M->readCol('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter),'id_wm_obat');
+		$result = $this->SO_M->readCol('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'tanggal'=>date("Y-m-d")),'id_wm_obat');
 		if ($result->num_rows() == 0) {
 			$result = $this->SO_M->create('wm_obat',array('id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'id_obat'=>$id_obat,'tanggal'=>date('Y-m-d')));
+			$result = json_decode($result);
+			if ($result->status) {
+				alert('','success','Berhasil','Obat telah masuk dalam daftar peresepan',false);
+			}else{
+				alert('','warning','Peringatan','Obat telah masuk dalam daftar peresepan. Silahkan masuk ke daftar resep obat',false);
+			}
+		}else{
+			alert('','warning','Peringatan','Obat telah masuk dalam daftar peresepan. Silahkan masuk ke daftar resep obat',false);
 		}
+		
 		// masukkan data ke tabel wm_kondisi
-		$this->SO_M->createS('wm_kondisi',$note_kondisi);
-		$this->SO_M->truncateTable('wm_kondisi');
+		for ($i=0; $i < sizeof($note_kondisi) ; $i++) { 
+			$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$id_pasien,'id_master_kondisi'=>$note_kondisi[$i]['id_master_kondisi'],'detail_kondisi'=>$note_kondisi[$i]['detail_kondisi']),'id_wm_kondisi');
+			if ($result->num_rows()==0) {
+				$result = $this->SO_M->create('wm_kondisi',$note_kondisi[$i]);
+			}
+		}
+		// $this->SO_M->truncateTable('wm_kondisi');
+		// var_dump($note_kondisi);
+		// die();
 
-		// masukkan data ke wm_gejala
-		echo "<pre>";
-		var_dump($gejala);die();
-		$this->SO_M->createS('wm_gejala',$gejala);
+		// masukkan data ke tabel wm_gejala
+		for ($i=0; $i < sizeof($gejalas) ; $i++) { 
+			$result = $this->SO_M->readCol('wm_gejala',array('id_gejala'=>$gejalas[$i],'id_user'=>$id_pasien),'id_wm_gejala');
+			if ($result->num_rows() == 0) {
+				$result = $this->SO_M->readCol('master_gejala',array('id_gejala'=>$gejalas[$i]),'detail_gejala')->result_array();
+				$result = $this->SO_M->create('wm_gejala',array('id_user'=>$id_pasien,'id_gejala'=>$gejalas[$i],'detail_gejala'=>$result[0]['detail_gejala']));
+			}
+		}
+	}
+
+	// untuk metode tapi yang dari halaman hasil ke halaman daftar peresepan obat
+	public function cari_hasil_($nomor_identitas)
+	{
+		$dataWhere		=	array('nomor_identitas' => $nomor_identitas);
+		$dataCol		=	array('id_user');
+		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol)->result();
+
+		// dapatkan data dari tabel wm_gejala
+		$gejala 		=	$this->SO_M->readCol('wm_gejala',array('id_user'=>$data['user'][0]->id_user),'id_gejala')->result_array();
+		foreach ($gejala as $key => $value) {
+			$gejala[$key] = $gejala[$key]['id_gejala'];
+		}
+		// parameter untuk cari indikasi suatu obat yang cocok
+		$where = "tipe = 'indikasi' AND (id_tipe_master = ";
+		$i = 1;
+		// parameter untuk cari log_pengobatan dengan gejala yang mirip
+		$where_ = "gejala_log.id_gejala = ";
+		// generate where parameter untuk dikirim ke join dan generate where parameter untuk cari log pengobatan dengan gejala yang mirip
+		foreach ($gejala as $key => $value) {
+			if ($i < sizeof($gejala)) {
+				$where	.=	"'".$value."' OR id_tipe_master =";
+				$where_	.=	"'".$value."' OR gejala_log.id_gejala=";
+			}else{
+				$where	.= "'".$value."')";
+				$where_	.= "'".$value."'";
+			}
+			$i++;
+		}
+
+		// cari obat (id_obat dan nama obatnya nya) yang sesuai gejala
+		$this->db->select('karakteristik_obat.id_obat , master_obat.nama_obat');
+		$this->db->distinct();
+		$this->db->where($where);
+		$this->db->join('master_obat','karakteristik_obat.id_obat = master_obat.id_obat','inner');
+		$querys = $this->db->get('karakteristik_obat');
+		
+		unset($where,$dataWhere);
+
+		// cari log pengobatan dengan gejala yang mirip dengan masukan
+		$this->db->select('gejala_log.id_log , log_pengobatan.tanggal');
+		$this->db->where($where_);
+		$this->db->order_by('gejala_log.id_log', 'ASC');
+		$this->db->join('log_pengobatan','gejala_log.id_log = log_pengobatan.id_log','inner');
+		$query = $this->db->get('gejala_log')->result();
+
+		// masukkan data log pengobatan ang mirip dengan gejala inputan
+		$data['histori'] = array();
+		foreach ($query as $key => $value) {
+			if (!isset($data['histori'][$value->id_log])) {
+				$data['histori'][$value->id_log] = array('banyak' => 1, 'tanggal' => $value->tanggal);
+			}else{
+				$data['histori'][$value->id_log]['banyak'] = $data['histori'][$value->id_log]['banyak'] + 1;
+			}
+		}
+		unset($query);
+
+		// cari apa saja kondisi (rekam medis) pasien yang harus dihindari
+		$dataWhere = array('id_user'=>$data['user'][0]->id_user,'status'=>'0');
+		$kondisiPasienMengidap = $this->SO_M->readCol('kondisi',$dataWhere,array('id_master_kondisi'))->result_array();
+		$data['kondisiPasienMengidap'] = $kondisiPasienMengidap;
+
+		// cari apa saja kondisi (rekam medis) pasien yang aman
+		$dataWhere['status'] = '1';			
+		$kondisiPasienAman = $this->SO_M->readCol('kondisi',$dataWhere,array('id_master_kondisi'))->result_array();
+		$data['kondisiPasienAman'] = $kondisiPasienAman;
+		unset($dataWhere);
+
+		$query = $querys->result();
+		$data['obat'] = $query;
+			
+		for ($i=0; $i < ($querys->num_rows()) ; $i++) {
+			$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
+			$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
+			/*untuk sorting berdsarakan indikasi terbanyak*/
+			$data['obat'][$i]->Iada = 0;
+			$data['obat'][$i]->Itanya = 0;
+			$data['obat'][$i]->Kada = 0;
+			$data['obat'][$i]->Ktanya = 0;
+			$data['obat'][$i]->Pada = 0;
+			$data['obat'][$i]->Ptanya = 0;
+			/*END untuk sorting berdsarakan indikasi terbanyak*/
+
+			foreach ($dataIndikasi as $key => $value) {
+				if (in_array($dataIndikasi[$key]->id_tipe_master,$gejala)) {
+					$data['obat'][$i]->karakteristik['indikasi']['ada'][] = array('id_karakteristik'=>	$dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
+					$data['obat'][$i]->Iada += 1;
+				}else{
+					$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array('id_karakteristik'=>	$dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
+					$data['obat'][$i]->Itanya += 1;
+				}
+			}
+			
+			$dataWhere			=	array('tipe' => 'peringatan','id_obat' => $query[$i]->id_obat);
+			$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+			foreach ($dataPeringatan as $key => $value) {
+				if ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasienMengidap)) {
+					$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
+					$data['obat'][$i]->Pada += 1;
+				}elseif ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasienAman)) {
+					$data['obat'][$i]->karakteristik['peringatan']['aman'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
+				}
+				else{
+					$data['obat'][$i]->karakteristik['peringatan']['tanya'][] = array('id_karakteristik'=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
+					$data['obat'][$i]->Ptanya += 1;
+				}
+			}
+			
+			$dataWhere			= array(	'tipe' => 'kontraindikasi',	'id_obat' => $query[$i]->id_obat);
+			$dataKontraindikasi	= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+			// var_dump($kondisiPasienMengidap);
+			// var_dump($dataKontraindikasi);die();
+			foreach ($dataKontraindikasi as $key => $value) {
+				if ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasienMengidap)) {
+					$data['obat'][$i]->karakteristik['kontraindikasi']['ada'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
+					$data['obat'][$i]->Kada += 1;
+				}elseif ($this->in_array_r($dataKontraindikasi[$key]->id_tipe_master,$kondisiPasienAman)) {
+					$data['obat'][$i]->karakteristik['kontraindikasi']['aman'][] = array(	'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe	);
+				}else{
+					$data['obat'][$i]->karakteristik['kontraindikasi']['tanya'][] = array( 'id_karakteristik'	=>	$dataKontraindikasi[$key]->id_karakteristik,'id_tipe_master' => $dataKontraindikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataKontraindikasi[$key]->detail_tipe);
+					$data['obat'][$i]->Ktanya += 1;
+				}
+			}
+
+		}
+		// var_dump($data);die();
+
+			// sorting indikasi dari tinggi ke rendah
+			$maxIfounded;
+			for ($i=0; $i < sizeof($data['obat']); $i++) {
+				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
+					if ($data['obat'][$j]->Iada < $data['obat'][$j+1]->Iada) {
+						// var_dump($data['obat'][$j]->Iada);
+						$temp = $data['obat'][$j];
+						$data['obat'][$j] = $data['obat'][$j+1];
+						$data['obat'][$j+1] = $temp;
+					}
+				}
+			}
+			
+			$maxIfounded = $data['obat'][0]->Iada;
+			// echo $maxIfounded;
+			for ($i=0; $i < sizeof($data['obat']); $i++) { 
+				if ($data['obat'][$i]->Iada == $maxIfounded) {
+					for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
+						if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada ) {
+							$temp = $data['obat'][$j];
+							$data['obat'][$j] = $data['obat'][$j+1];
+							$data['obat'][$j+1] = $temp;
+						}
+					}
+				}
+			}
+			
+			$minPfounded = $data['obat'][0]->Pada;
+			for ($i=0; $i < sizeof($data['obat']); $i++) { 
+				if ($data['obat'][$i]->Iada == $maxIfounded) {
+					if ($data['obat'][$i]->Pada == $minPfounded) {
+						for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
+							if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
+								// echo $data['obat'][$j]->Kada." | ";
+								$temp = $data['obat'][$j];
+								$data['obat'][$j] = $data['obat'][$j+1];
+								$data['obat'][$j+1] = $temp;
+							}
+						}
+					}
+				}
+			}
+			echo "<pre>";
+			echo json_encode($data, JSON_PRETTY_PRINT);
+		// }else{
+		// 	$data = array('status' => false,'message' => 'tidak ada data yang di post');
+		// 	echo json_encode($data);
+		// }
 	}
 }
 
