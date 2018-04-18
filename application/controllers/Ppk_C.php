@@ -188,7 +188,7 @@ class Ppk_C extends CI_Controller {
 
 			// parameter untuk cari log_pengobatan dengan gejala yang mirip
 			$where_ = "gejala_log.id_gejala = ";
-			// generate where parameter untuk dikirim ke join dan generate where parameter untuk cari log pengobatan dengan gejala yang mirip
+			// generate where parameter untuk dikirim ke join dan generate where_ parameter untuk cari log pengobatan dengan gejala yang mirip
 			foreach ($gejalas as $key => $value) {
 				if ($i < sizeof($gejalas)) {
 					$where	.=	"'".$value."' OR id_tipe_master =";
@@ -620,64 +620,36 @@ class Ppk_C extends CI_Controller {
 		foreach ($gejala as $key => $value) {
 			$gejala[$key] = $gejala[$key]['id_gejala'];
 		}
-		// parameter untuk cari indikasi suatu obat yang cocok
-		$where = "tipe = 'indikasi' AND (id_tipe_master = ";
-		$i = 1;
-		// parameter untuk cari log_pengobatan dengan gejala yang mirip
-		$where_ = "gejala_log.id_gejala = ";
-		// generate where parameter untuk dikirim ke join dan generate where parameter untuk cari log pengobatan dengan gejala yang mirip
-		foreach ($gejala as $key => $value) {
-			if ($i < sizeof($gejala)) {
-				$where	.=	"'".$value."' OR id_tipe_master =";
-				$where_	.=	"'".$value."' OR gejala_log.id_gejala=";
-			}else{
-				$where	.= "'".$value."')";
-				$where_	.= "'".$value."'";
-			}
-			$i++;
-		}
 
-		// cari obat (id_obat dan nama obatnya nya) yang sesuai gejala
+		// baca apa saja obat yang ada di daftar resep, baca idnya sekalian generate where
+		$result = $this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_obat')->result_array();
+		$where = 'master_obat.id_obat = ';
+		foreach ($result as $key => $value) {
+			$result[$key] = $result[$key]['id_obat'];
+			if ($key == (sizeof($result)-1)) {
+				$where .= $result[$key];
+			}else{
+				$where .= $result[$key]." OR master_obat.id_obat = ";
+			}
+		}
+		// cari obat (id_obat dan nama obatnya nya) yang sesuai gejala $where
 		$this->db->select('karakteristik_obat.id_obat , master_obat.nama_obat');
 		$this->db->distinct();
 		$this->db->where($where);
 		$this->db->join('master_obat','karakteristik_obat.id_obat = master_obat.id_obat','inner');
 		$querys = $this->db->get('karakteristik_obat');
 		
-		unset($where,$dataWhere);
-
-		// cari log pengobatan dengan gejala yang mirip dengan masukan
-		$this->db->select('gejala_log.id_log , log_pengobatan.tanggal');
-		$this->db->where($where_);
-		$this->db->order_by('gejala_log.id_log', 'ASC');
-		$this->db->join('log_pengobatan','gejala_log.id_log = log_pengobatan.id_log','inner');
-		$query = $this->db->get('gejala_log')->result();
-
-		// masukkan data log pengobatan ang mirip dengan gejala inputan
-		$data['histori'] = array();
-		foreach ($query as $key => $value) {
-			if (!isset($data['histori'][$value->id_log])) {
-				$data['histori'][$value->id_log] = array('banyak' => 1, 'tanggal' => $value->tanggal);
-			}else{
-				$data['histori'][$value->id_log]['banyak'] = $data['histori'][$value->id_log]['banyak'] + 1;
-			}
-		}
-		unset($query);
-
-		// cari apa saja kondisi (rekam medis) pasien yang harus dihindari
-		$dataWhere = array('id_user'=>$data['user'][0]->id_user,'status'=>'0');
-		$kondisiPasienMengidap = $this->SO_M->readCol('kondisi',$dataWhere,array('id_master_kondisi'))->result_array();
+		// dapatkan data kondisi pasien pada tabel wm_kondisi
+		$kondisiPasienMengidap = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0))->result();
 		$data['kondisiPasienMengidap'] = $kondisiPasienMengidap;
-
-		// cari apa saja kondisi (rekam medis) pasien yang aman
-		$dataWhere['status'] = '1';			
-		$kondisiPasienAman = $this->SO_M->readCol('kondisi',$dataWhere,array('id_master_kondisi'))->result_array();
+		$kondisiPasienAman = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1))->result();
 		$data['kondisiPasienAman'] = $kondisiPasienAman;
-		unset($dataWhere);
 
+		// koreksi masing2 karakteristik
 		$query = $querys->result();
 		$data['obat'] = $query;
-			
+
+		// manipulasi array
 		for ($i=0; $i < ($querys->num_rows()) ; $i++) {
 			$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 			$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
@@ -735,25 +707,40 @@ class Ppk_C extends CI_Controller {
 		}
 		// var_dump($data);die();
 
-			// sorting indikasi dari tinggi ke rendah
-			$maxIfounded;
-			for ($i=0; $i < sizeof($data['obat']); $i++) {
-				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
-					if ($data['obat'][$j]->Iada < $data['obat'][$j+1]->Iada) {
-						// var_dump($data['obat'][$j]->Iada);
+		// sorting indikasi dari tinggi ke rendah
+		$maxIfounded;
+		for ($i=0; $i < sizeof($data['obat']); $i++) {
+			for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
+				if ($data['obat'][$j]->Iada < $data['obat'][$j+1]->Iada) {
+					// var_dump($data['obat'][$j]->Iada);
+					$temp = $data['obat'][$j];
+					$data['obat'][$j] = $data['obat'][$j+1];
+					$data['obat'][$j+1] = $temp;
+				}
+			}
+		}
+		
+		$maxIfounded = $data['obat'][0]->Iada;
+		// echo $maxIfounded;
+		for ($i=0; $i < sizeof($data['obat']); $i++) { 
+			if ($data['obat'][$i]->Iada == $maxIfounded) {
+				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
+					if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada ) {
 						$temp = $data['obat'][$j];
 						$data['obat'][$j] = $data['obat'][$j+1];
 						$data['obat'][$j+1] = $temp;
 					}
 				}
 			}
-			
-			$maxIfounded = $data['obat'][0]->Iada;
-			// echo $maxIfounded;
-			for ($i=0; $i < sizeof($data['obat']); $i++) { 
-				if ($data['obat'][$i]->Iada == $maxIfounded) {
+		}
+		
+		$minPfounded = $data['obat'][0]->Pada;
+		for ($i=0; $i < sizeof($data['obat']); $i++) { 
+			if ($data['obat'][$i]->Iada == $maxIfounded) {
+				if ($data['obat'][$i]->Pada == $minPfounded) {
 					for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
-						if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada ) {
+						if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
+							// echo $data['obat'][$j]->Kada." | ";
 							$temp = $data['obat'][$j];
 							$data['obat'][$j] = $data['obat'][$j+1];
 							$data['obat'][$j+1] = $temp;
@@ -761,28 +748,9 @@ class Ppk_C extends CI_Controller {
 					}
 				}
 			}
-			
-			$minPfounded = $data['obat'][0]->Pada;
-			for ($i=0; $i < sizeof($data['obat']); $i++) { 
-				if ($data['obat'][$i]->Iada == $maxIfounded) {
-					if ($data['obat'][$i]->Pada == $minPfounded) {
-						for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
-							if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
-								// echo $data['obat'][$j]->Kada." | ";
-								$temp = $data['obat'][$j];
-								$data['obat'][$j] = $data['obat'][$j+1];
-								$data['obat'][$j+1] = $temp;
-							}
-						}
-					}
-				}
-			}
-			echo "<pre>";
-			echo json_encode($data, JSON_PRETTY_PRINT);
-		// }else{
-		// 	$data = array('status' => false,'message' => 'tidak ada data yang di post');
-		// 	echo json_encode($data);
-		// }
+		}
+		echo "<pre>";
+		echo json_encode($data, JSON_PRETTY_PRINT);
 	}
 }
 
