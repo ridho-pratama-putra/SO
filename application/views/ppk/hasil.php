@@ -264,7 +264,19 @@ $data = json_decode($data,false);
 						html +=	"</ul>";
 						html +=	"</div>";
 					}
+						
 					html +=	"</div>";
+					
+					// html +=	"<div class='row'>";
+					// html +=	"<div class='col rounded informasi ditemukan margin-top-10'>";
+					// html +=	"<h6>Catatan Obat";
+					// html +=	"</h6>";
+					// html +=	"<p>";
+					// html +=	response.obat[k].catatan_obat;
+					// html +=	"</p>";
+					// html +=	"</div>";
+					// html +=	"</div>";
+
 					html +=	"</div>";
 					html +=	"</div>";
 					if (bisa_diberikan) {

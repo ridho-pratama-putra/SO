@@ -72,11 +72,18 @@ class Admin_C extends CI_Controller {
 			$this->load->view('admin/view_catatan',$data);
 			$this->load->view('html/footer');
 		}else{
-			$data['nama_obat'] = $this->SO_M->readCol('master_obat',array('id_obat'=>$id_obat),array('nama_obat'))->result();
-			$data['id_obat'] = $id_obat;
-			$this->load->view('html/header');
-			$this->load->view('admin/create_catatan',$data);
-			$this->load->view('html/footer');
+			$data['nama_obat'] = $this->SO_M->readCol('master_obat',array('id_obat'=>$id_obat),array('nama_obat'));
+			if ($data['nama_obat']->num_rows()==0) {
+				$data['heading']		=	"Data tidak ditemukan";
+				$data['message']		=	"<p>ID obat tidak ditemukan. Coba lihat <a href='".base_url()."Admin_C/view_read_obat'>daftar obat</a></p>";
+				$this->load->view('errors/html/error_404',$data);
+			}else{
+				$data['nama_obat']=	$data['nama_obat']->result();
+				$data['id_obat'] = $id_obat;
+				$this->load->view('html/header');
+				$this->load->view('admin/create_catatan',$data);
+				$this->load->view('html/footer');
+			}
 		}
 	}
 

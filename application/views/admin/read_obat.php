@@ -39,7 +39,7 @@
 							</div>
 							<div class="btn btn-group btn-xs" role="group">
 								<a href="<?=base_url()?>Admin_C/view_rename_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Rename Obat</a>
-								<a href="<?php echo base_url()?>Admin_C/handle_delete_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" target="_blank">Hapus</a>
+								<a href="<?php echo base_url()?>Admin_C/handle_delete_obat/<?=$value->id_obat?>" class="btn btn-secondary bg-dark" >Hapus</a>
 							</div>
 						</td>
 					</tr>
