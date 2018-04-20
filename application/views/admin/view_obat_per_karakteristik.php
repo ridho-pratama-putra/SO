@@ -1,5 +1,5 @@
 <main>
-	<div class="container margin-top-15" id="notif">s
+	<div class="container margin-top-15" id="notif">
 	</div>
 	<div class="container margin-top-15">
 		<br>

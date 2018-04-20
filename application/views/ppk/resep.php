@@ -1,25 +1,46 @@
+<?php
+$data = json_decode($data,false);
+?>
+<script type="text/javascript">
+	update();
+	function update() {
+		var url = "<?=base_url('Ppk_C/cari_hasil_/'.$data->user[0]->nomor_identitas)?>";
+		$.get(url,function(data){
+			var response = JSON.parse(data);
+
+			// parsing jumlah dan detail gejala pada wm_gejala
+			document.getElementById('jumlah_wm_gejala').innerHTML = response.gejala.length;
+			html = '';
+			for(var i in response.gejala){
+				html += "<a class='nav-link disabled badge badge-warning text-white'>"+response.gejala[i].detail_gejala+"</a> ";
+			}
+			document.getElementById('detail_wm_gejala').innerHTML = html;
+
+			// parsing jumlah obat dan detailnya pada wm_obat
+			document.getElementById('jumalh_wm_obat').innerHTML = response.obat.length;
+
+			// parsing kondisi pada wm_kondisi
+			
+		});
+	}
+</script>
+
 <div class="col-md-10 konten-kanan" id="style-1">
 	<div class="col margin-top-15">
 		<h2 class="text-center">Obat yang diresepkan</h2>
 	</div>
 	<div class="col margin-top-15">
-		<h5>Gejala yang dimasukkan sejumlah <span class="badge badge-danger"> 3</span></h5>
+		<h5>Gejala yang dimasukkan sejumlah <span class="badge badge-danger" id="jumlah_wm_gejala"></span></h5>
 	</div>
 	<div class="col">
-		<h5>
-			<span class="badge badge-warning text-white">Pusing</span>
-			<span class="badge badge-warning text-white">ngelu</span>
-			<span class="badge badge-warning text-white">muntah-muntah</span>
-			<span class="badge badge-warning text-white">mual</span>
-			<span class="badge badge-warning text-white">gringgingen</span>
-			<span class="badge badge-warning text-white">sing</span>
-			<span class="badge badge-warning text-white">ing</span>
-			<span class="badge badge-warning text-white">ng</span>
-			<span class="badge badge-warning text-white">g</span>
+		<h5 id="detail_wm_gejala">
+			<!-- javascript generated content -->
 		</h5>
 	</div>
 	<div class="col margin-top-15">
-		<h5>List obat yang diberikan sejumlah <span class="badge badge-danger"> 2</span></h5>
+		<h5>List obat yang diberikan sejumlah <span class="badge badge-danger" id="jumalh_wm_obat"></span>
+			<!-- javascript generated content -->
+		</h5>
 	</div>
 	<div class="col">
 		<div class="card">
@@ -170,3 +191,26 @@
 		<button type="button" class="btn btn-primary btn-lg btn-block" title="Masukkan ke log pengobatan"> <i class="icon ion-ios-briefcase-outline"></i> Resepkan</button>		
 	</div>
 </div>
+
+
+
+<!-- SIDE NAAV HERE -->
+<nav class="col-md-2 d-none d-sm-block bg-light sidebar" id="style-1">
+	<ul class="nav nav-pills flex-column">
+		<li class="nav-item">
+			<div>
+				<img src="<?php echo base_url().$data->user[0]->link_foto?>" alt="foto-profil" class="img-thumbnail rounded">
+			</div>
+		</li>
+
+		<li class="nav-item">
+			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?></i></span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled hijau" href="#"> 19 Februari 1997 / 20Thn</i></span>
+		</li>
+		<li class="nav-item">
+			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
+		</li>
+	</ul>
+</nav>

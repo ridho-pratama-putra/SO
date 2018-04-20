@@ -165,7 +165,7 @@ class Ppk_C extends CI_Controller {
 	public function handle_view_id()
 	{
 		if ($this->input->post() != null) {
-			redirect('Ppk_C//view_detail_user/'.$this->input->post('nomor_identitas'));
+			redirect('Ppk_C/view_detail_user/'.$this->input->post('nomor_identitas'));
 		}
 	}
 
@@ -611,6 +611,29 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	public function view_resep_($nomor_identitas)
+	{
+		$dataWhere		=	array('nomor_identitas' => $this->input->post('nomor_identitas'));
+		$dataCol		=	array('id_user','nama_user','nomor_identitas','tanggal_lahir','alamat','akses','no_hp','link_foto');
+		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
+		if ($data['user']->num_rows() == 1) {
+			$data['user'] = $data['user']->result();
+			if ($this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_pasien')->num_rows() != 0) {
+				$kirim['data'] = json_encode($data);
+				$this->load->view('html/header');
+				$this->load->view('ppk/resep',$kirim);
+				$this->load->view('html/footer');
+			}else{
+				$data['heading']	= "Data tidak ditemukan";
+				$data['message']	= "<p>Belum ada obat yang diresepkan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien</a>, kemudian mulai alur pengobatan </p>";
+				$this->load->view('errors/html/error_general',$data);
+			}
+		}else{
+			$data['heading']	= "Data user tidak ditemukan";
+			$data['message']	= "<p>Coba lagi <a href='".base_url()."Akun_C/view_registered_user'>Cari identitas pasien</a> </p>";
+			$this->load->view('errors/html/error_general',$data);
+		}
+	}
 	// untuk metode tapi yang dari halaman hasil ke halaman daftar peresepan obat
 	public function cari_hasil_($nomor_identitas)
 	{
@@ -619,10 +642,11 @@ class Ppk_C extends CI_Controller {
 		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
 		if ($data['user']->num_rows() == 1) {
 			$data['user'] = $data['user']->result();
-			if ($this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_pasien')->num_rows() != 0) {
+			// if ($this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_pasien')->num_rows() != 0) {
 				
 				// dapatkan data dari tabel wm_gejala
-				$gejala 		=	$this->SO_M->readCol('wm_gejala',array('id_user'=>$data['user'][0]->id_user),'id_gejala')->result_array();
+				$gejala 		=	$this->SO_M->readCol('wm_gejala',array('id_user'=>$data['user'][0]->id_user),array('id_gejala','detail_gejala'))->result_array();
+				$data['gejala'] = $gejala;
 				foreach ($gejala as $key => $value) {
 					$gejala[$key] = $gejala[$key]['id_gejala'];
 				}
@@ -758,17 +782,15 @@ class Ppk_C extends CI_Controller {
 						}
 					}
 				}
-				echo "<pre>";
-				echo json_encode($data, JSON_PRETTY_PRINT);
-			}else{
-				// echo "<pre>";
+				echo json_encode($data);
+			// }else{
 				// $data = array('status' => false,'message' => 'Belum ada obat yang diresepkan');
 				// echo json_encode($data);
 
-				$data['heading']	= "Data tidak ditemukan";
-				$data['message']	= "<p>Belum ada obat yang diresepkan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien</a>, kemudian mulai alur pengobatan </p>";
-				$this->load->view('errors/html/error_general',$data);
-			}
+				// $data['heading']	= "Data tidak ditemukan";
+				// $data['message']	= "<p>Belum ada obat yang diresepkan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien</a>, kemudian mulai alur pengobatan </p>";
+				// $this->load->view('errors/html/error_general',$data);
+			// }
 		}else{
 			$data['heading']	= "Data tidak ditemukan";
 				$data['message']	= "<p>Data users tidak ditemukan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien yang terdaftar</a>, kemudian mulai alur pengobatan </p>";
