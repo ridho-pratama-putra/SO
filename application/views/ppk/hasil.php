@@ -1,15 +1,7 @@
 <?php
 $data = json_decode($data,false);
 ?>
-<style type="text/css">
-	/*chevron onok animasine*/
-	.card-header .icon {
-	  transition: .3s transform ease-in-out;
-	}
-	.card-header .collapsed .icon {
-	  transform: rotate(90deg);
-	}
-</style>
+
 <!-- funstion tampilkan hasil collapsible -->
 <script type="text/javascript">
 	
@@ -133,11 +125,11 @@ $data = json_decode($data,false);
 				}else{
 					// console.log(response);
 					document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
-					var html	=	"<div class='row padding-top-10'>";
-					html 		+=	"<div class='col'>";
-					html 		+=	"<div class='margin-top-20'>";
-					html 		+=	"</div>";
-					html 		+=	"<div id='accordion'>";
+					var html = "<div class='row padding-top-10'>";
+					html +=	"<div class='col'>";
+					html +=	"<div class='margin-top-20'>";
+					html +=	"</div>";
+					html +=	"<div id='accordion'>";
 					
 					// fetch data obat yang ditemukan
 					for(var k in response.obat){
@@ -289,15 +281,34 @@ $data = json_decode($data,false);
 
 						html +=	"</div>";
 						html +=	"</div>";
+						bisa_diberikan = 1;
 						if (bisa_diberikan) {
 							html += "<div class='row margin-top-10'>";
-							html += "<button type='button' class='btn btn-primary btn-lg col-4' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
-							html += "<button type='button' class='btn btn-primary btn-lg offset-lg-4 col-4' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button> ";
-							html += "</div><div class='row margin-top-10'>"
+							if (response.obat[k].wm_obat == 'belum') {
+								html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
+								html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+								html+="</div>"
+							}else{
+								html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
+								html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+								html+="</div>"
+							}
+							
+							html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
+							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button> ";
+							html += "</div></div><div class='row margin-top-10'>"
 							html += "<button type='button' class='btn btn-primary btn-lg btn-block' title='Jangan lupa masuk ke menu peresepan obat melalui tombol 'ke daftar resep obat' agar data tersimpan pada log pengobatan'><i class='icon ion-ios-plus-outline'></i> Masukkan obat ini ke daftar obat yang akan diberikan</button></div>";
 						}else{
 							html += "<div class='row margin-top-10'>"
-							html += "<button type='button' class='btn btn-primary btn-lg col-4' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+							if (response.obat[k].wm_obat == 'belum') {
+								html += "<div id='wm_obat"+response.obat[k].id_obat+"'>";
+								html += "<button type='button' class='btn btn-primary btn-lg col-4' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+								html+="</div>"
+							}else{
+								html += "<div id='wm_obat"+response.obat[k].id_obat+"'>";
+								html += "<button type='button' class='btn btn-primary btn-lg col-4' onclick='hapus_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+								html+="</div>"
+							}
 							html += "<button type='button' class='btn btn-primary btn-lg offset-lg-4 col-4' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i>Mulai masukkan fakta</button> ";
 							html += "</div><div class='row margin-top-10'>"
 							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_fakta("+response.user[0].id_user+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Ada beberapa fakta yang belum diketahui. Mulai masukkan fakta</button></div>";
@@ -416,6 +427,22 @@ $data = json_decode($data,false);
 				post_id_obat		: id_obat
 			},function (data) {
 				$("#notif").html(data);	
+				// update();
+				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+			}
+		);
+	}
+
+	function hapus_wm(id_pasien,id_dokter,id_obat){
+		$.post("<?=base_url('Ppk_C/handle_delete_wm_obat')?>",
+			{
+				post_id_pasien		: id_pasien,
+				post_id_dokter		: id_dokter,
+				post_id_obat		: id_obat
+			},function(data){
+				$("#notif").html(data);	
+				// update();
+				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
 			}
 		);
 	}

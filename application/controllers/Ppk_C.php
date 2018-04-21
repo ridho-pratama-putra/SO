@@ -257,7 +257,14 @@ class Ppk_C extends CI_Controller {
 				$data['obat'][$i]->Ktanya = 0;
 				$data['obat'][$i]->Pada = 0;
 				$data['obat'][$i]->Ptanya = 0;
-				/*END untuk sorting berdsarakan indikasi terbanyak*/
+				/*END inisialisasi untuk sorting berdsarakan indikasi terbanyak*/
+
+				// kalau sudah ada di wm_obat, tombol masukkan wm diganti hapus, kalau belum diganti masukkan
+				if ($this->SO_M->read('wm_obat',array('id_obat'=>$query[$i]->id_obat))->num_rows() == 0){
+					$data['obat'][$i]->wm_obat = 'belum';
+				}else{
+					$data['obat'][$i]->wm_obat = 'sudah';
+				}
 
 				foreach ($dataIndikasi as $key => $value) {
 					if (in_array($dataIndikasi[$key]->id_tipe_master,$gejalas)) {
@@ -571,49 +578,67 @@ class Ppk_C extends CI_Controller {
 	// untuk masukkan data ke wm. function ini dipanggi lpada halaman hasi lsaat akan memberikan obat kedalam daftar peresepan obat.
 	public function handle_insert_wm_obat()
 	{
-		$id_obat		= $this->input->post('post_id_obat');
-		$id_pasien		= $this->input->post('post_id_pasien');
-		$id_dokter		= $this->input->post('post_id_dokter');
-		$gejalas		= $this->input->post('post_gejala');
+		if ($this->input->post() != null) {
+			$id_obat		= $this->input->post('post_id_obat');
+			$id_pasien		= $this->input->post('post_id_pasien');
+			$id_dokter		= $this->input->post('post_id_dokter');
+			$gejalas		= $this->input->post('post_gejala');
 
-		$note_kondisi	= $this->get_col_kondisi($id_pasien,false);
-		$result = $this->SO_M->readCol('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'tanggal'=>date("Y-m-d")),'id_wm_obat');
-		if ($result->num_rows() == 0) {
-			$result = $this->SO_M->create('wm_obat',array('id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'id_obat'=>$id_obat,'tanggal'=>date('Y-m-d')));
-			$result = json_decode($result);
-			if ($result->status) {
-				alert('','success','Berhasil','Obat telah masuk dalam daftar peresepan',false);
+			$note_kondisi	= $this->get_col_kondisi($id_pasien,false);
+			$result = $this->SO_M->readCol('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'tanggal'=>date("Y-m-d")),'id_wm_obat');
+			if ($result->num_rows() == 0) {
+				$result = $this->SO_M->create('wm_obat',array('id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter,'id_obat'=>$id_obat,'tanggal'=>date('Y-m-d')));
+				$result = json_decode($result);
+				if ($result->status) {
+					alert('','success','Berhasil','Obat telah masuk dalam daftar peresepan',false);
+				}else{
+					alert('','warning','Peringatan','Obat telah masuk dalam daftar peresepan. Silahkan masuk ke daftar resep obat',false);
+				}
 			}else{
 				alert('','warning','Peringatan','Obat telah masuk dalam daftar peresepan. Silahkan masuk ke daftar resep obat',false);
 			}
-		}else{
-			alert('','warning','Peringatan','Obat telah masuk dalam daftar peresepan. Silahkan masuk ke daftar resep obat',false);
-		}
-		
-		// masukkan data ke tabel wm_kondisi
-		for ($i=0; $i < sizeof($note_kondisi) ; $i++) { 
-			$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$id_pasien,'id_master_kondisi'=>$note_kondisi[$i]['id_master_kondisi'],'detail_kondisi'=>$note_kondisi[$i]['detail_kondisi']),'id_wm_kondisi');
-			if ($result->num_rows()==0) {
-				$result = $this->SO_M->create('wm_kondisi',$note_kondisi[$i]);
+			
+			// masukkan data ke tabel wm_kondisi
+			for ($i=0; $i < sizeof($note_kondisi) ; $i++) { 
+				$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$id_pasien,'id_master_kondisi'=>$note_kondisi[$i]['id_master_kondisi'],'detail_kondisi'=>$note_kondisi[$i]['detail_kondisi']),'id_wm_kondisi');
+				if ($result->num_rows()==0) {
+					$result = $this->SO_M->create('wm_kondisi',$note_kondisi[$i]);
+				}
 			}
-		}
-		// $this->SO_M->truncateTable('wm_kondisi');
-		// var_dump($note_kondisi);
-		// die();
+			// $this->SO_M->truncateTable('wm_kondisi');
+			// var_dump($note_kondisi);
+			// die();
 
-		// masukkan data ke tabel wm_gejala
-		for ($i=0; $i < sizeof($gejalas) ; $i++) { 
-			$result = $this->SO_M->readCol('wm_gejala',array('id_gejala'=>$gejalas[$i],'id_user'=>$id_pasien),'id_wm_gejala');
-			if ($result->num_rows() == 0) {
-				$result = $this->SO_M->readCol('master_gejala',array('id_gejala'=>$gejalas[$i]),'detail_gejala')->result_array();
-				$result = $this->SO_M->create('wm_gejala',array('id_user'=>$id_pasien,'id_gejala'=>$gejalas[$i],'detail_gejala'=>$result[0]['detail_gejala']));
+			// masukkan data ke tabel wm_gejala
+			for ($i=0; $i < sizeof($gejalas) ; $i++) { 
+				$result = $this->SO_M->readCol('wm_gejala',array('id_gejala'=>$gejalas[$i],'id_user'=>$id_pasien),'id_wm_gejala');
+				if ($result->num_rows() == 0) {
+					$result = $this->SO_M->readCol('master_gejala',array('id_gejala'=>$gejalas[$i]),'detail_gejala')->result_array();
+					$result = $this->SO_M->create('wm_gejala',array('id_user'=>$id_pasien,'id_gejala'=>$gejalas[$i],'detail_gejala'=>$result[0]['detail_gejala']));
+				}
 			}
+		}else{
+			alert('','warning','Peringatan','Nothing post',false);
+		}
+	}
+
+	public function handle_delete_wm_obat()
+	{
+		if ($this->input->post() != null) {
+			$id_obat		= $this->input->post('post_id_obat');
+			$id_pasien		= $this->input->post('post_id_pasien');
+			$id_dokter		= $this->input->post('post_id_dokter');
+			if ($this->SO_M->delete('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter))) {
+				alert('','success','Berhasil','Obat berhasi dihapus dari wm_obat',false);
+			}
+		}else{
+			alert('','warning','Peringatan','Nothing post',false);
 		}
 	}
 
 	public function view_resep_($nomor_identitas)
 	{
-		$dataWhere		=	array('nomor_identitas' => $this->input->post('nomor_identitas'));
+		$dataWhere		=	array('nomor_identitas' =>$nomor_identitas);
 		$dataCol		=	array('id_user','nama_user','nomor_identitas','tanggal_lahir','alamat','akses','no_hp','link_foto');
 		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
 		if ($data['user']->num_rows() == 1) {
@@ -670,9 +695,9 @@ class Ppk_C extends CI_Controller {
 				$querys = $this->db->get('karakteristik_obat');
 				
 				// dapatkan data kondisi pasien pada tabel wm_kondisi
-				$kondisiPasienMengidap = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0))->result();
+				$kondisiPasienMengidap = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0))->result_array();
 				$data['kondisiPasienMengidap'] = $kondisiPasienMengidap;
-				$kondisiPasienAman = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1))->result();
+				$kondisiPasienAman = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1))->result_array();
 				$data['kondisiPasienAman'] = $kondisiPasienAman;
 
 				// koreksi masing2 karakteristik

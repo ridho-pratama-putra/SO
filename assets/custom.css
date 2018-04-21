@@ -1,3 +1,11 @@
+/*chevron onok animasine*/
+.card-header .icon {
+  transition: .3s transform ease-in-out;
+}
+.card-header .collapsed .icon {
+  transform: rotate(90deg);
+}
+
 #indikasi-yang-dicari
 {
 	padding-top: 20px;
