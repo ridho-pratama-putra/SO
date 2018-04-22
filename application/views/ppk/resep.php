@@ -21,6 +21,20 @@ $data = json_decode($data,false);
 			}
 			document.getElementById('detail_wm_gejala').innerHTML = html;
 
+			// parsing gejala yang belum terobati dan gejala yang diobati lebih dari 1 obat untuk dijadikan alert
+			html = '';
+			for (var i in response.gejala) {
+				// console.log(response.gejala[i].terobati);
+				if (typeof response.gejala[i].terobati == 'undefined') {
+					html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" belum terobati.</div>";
+				}else{
+					if (response.gejala[i].terobati == 'ganda') {
+						html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" diobati dengan obat ganda.</div>";
+					}
+				}
+			}
+			document.getElementById('notif').innerHTML = html;
+
 			// parsing jumlah obat dan detailnya pada wm_obat
 			document.getElementById('jumlah_wm_obat').innerHTML = response.obat.length;
 
@@ -373,17 +387,18 @@ $data = json_decode($data,false);
 			</div>
 		</div> -->
 	</div>
-
-
-	<div class="col margin-top-15">
-		<h5>Tambahkan pesan</h5>
-	</div>
-	<div class="col margin-top-15">
-		<textarea placeholder="tuliskan pesan disini" style="width: 100%"></textarea>
-	</div>
-	<div class="col margin-top-15">
-		<button type="button" class="btn btn-primary btn-lg btn-block" title="Masukkan ke log pengobatan"> <i class="icon ion-ios-briefcase-outline"></i> Resepkan</button>		
-	</div>
+	<form method="POST" action="<?=base_url('Ppk_C/handle_insert_log_pengobatan')?>">
+		<div class="col margin-top-15">
+			<h5>Tambahkan pesan</h5>
+		</div>
+		<div class="col margin-top-15">
+			<input type="text" name="id_user" value="<?=$data->user[0]->id_user?>">
+			<textarea placeholder="tuliskan pesan disini" style="width: 100%" name="pesan_resep"></textarea>
+		</div>
+		<div class="col margin-top-15">
+			<button type="submit" class="btn btn-primary btn-lg btn-block" title="Masukkan ke log pengobatan"> <i class="icon ion-ios-briefcase-outline"></i> Resepkan</button>		
+		</div>
+	</form>
 </div>
 
 

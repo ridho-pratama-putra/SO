@@ -676,7 +676,7 @@ class Ppk_C extends CI_Controller {
 					$gejala[$key] = $gejala[$key]['id_gejala'];
 				}
 
-				// baca apa saja obat yang ada di daftar resep, baca idnya sekalian generate where
+				// baca apa saja obat yang ada di daftar resep, baca idnya untuk mendapatkan karakteristiknya dan sekalian generate where untuk cari karakteristik tersebut
 				$result = $this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_obat')->result_array();
 				$where = 'master_obat.id_obat = ';
 				foreach ($result as $key => $value) {
@@ -687,7 +687,8 @@ class Ppk_C extends CI_Controller {
 						$where .= $result[$key]." OR master_obat.id_obat = ";
 					}
 				}
-				// cari obat (id_obat dan nama obatnya nya) yang sesuai gejala $where
+
+				// cari obat (id_obat dan nama obatnya nya) yang sesuai id $where
 				$this->db->select('karakteristik_obat.id_obat , master_obat.nama_obat');
 				$this->db->distinct();
 				$this->db->where($where);
@@ -706,6 +707,8 @@ class Ppk_C extends CI_Controller {
 
 				// manipulasi array
 				for ($i=0; $i < ($querys->num_rows()) ; $i++) {
+
+					// $dataindikasi menyimpan apa saja indikasi yang dimilikisuatu obat
 					$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 					$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
 
@@ -719,11 +722,25 @@ class Ppk_C extends CI_Controller {
 					/*END untuk sorting berdsarakan indikasi terbanyak*/
 
 					foreach ($dataIndikasi as $key => $value) {
+
+						// jika suatu indikai obat cocok dengan gejala yang dirasakan pasien (ditemukan pada array $gejala), maka masukkan ke index ada
+						// jika tidak ditemukan kecocokan gejala, masukkan ke index tanya
 						if (in_array($dataIndikasi[$key]->id_tipe_master,$gejala)) {
-							$data['obat'][$i]->karakteristik['indikasi']['ada'][] = array('id_karakteristik'=>	$dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
+							$data['obat'][$i]->karakteristik['indikasi']['ada'][] = array('id_karakteristik' => $dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe' => $dataIndikasi[$key]->detail_tipe);
 							$data['obat'][$i]->Iada += 1;
+							$key = array_search($dataIndikasi[$key]->id_tipe_master, $gejala);
+
+							// kalau belum ada, buat index terobati dengan isi sudah
+							// kalau sudah ada, pasti isi terobati adalah sudah, maka dari itu harus diganti ke ganda untuk pemeriksaan 2 obat untuk 1 penyakit which is nggak efisien
+							if (!array_key_exists('terobati', $data['gejala'][$key])) {
+								$data['gejala'][$key]['terobati'] = 'sudah';
+							}else{
+								if ($data['gejala'][$key]['terobati'] == 'sudah') {
+									$data['gejala'][$key]['terobati'] = 'ganda';
+								}
+							}
 						}else{
-							$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array('id_karakteristik'=>	$dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe'		=>	$dataIndikasi[$key]->detail_tipe	);
+							$data['obat'][$i]->karakteristik['indikasi']['tanya'][] = array('id_karakteristik' => $dataIndikasi[$key]->id_karakteristik, 'id_tipe_master' => $dataIndikasi[$key]->id_tipe_master,'detail_tipe' => $dataIndikasi[$key]->detail_tipe);
 							$data['obat'][$i]->Itanya += 1;
 						}
 					}
@@ -821,6 +838,61 @@ class Ppk_C extends CI_Controller {
 				$data['message']	= "<p>Data users tidak ditemukan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien yang terdaftar</a>, kemudian mulai alur pengobatan </p>";
 				$this->load->view('errors/html/error_general',$data);
 		}
+	}
+
+	// untuk handle masukkan resep ke log pengobatan
+	public function handle_insert_log_pengobatan()
+	{
+		// get data2 dari wm
+		$pesan_resep = $this->input->post('pesan_resep');
+		$id_user = $this->input->post('id_user');
+
+		// get all wm_kondisi
+		$data['wm_kondisi'] = $this->SO_M->read('wm_kondisi',array('id_user'=>$id_user))->result();
+		
+		// delete all data where id_user = $id_user
+		$this->SO_M->delete('wm_kondisi',array('id_user'=>$id_user));
+		
+		// get all wm_gejala
+		$data['wm_gejala'] = $this->SO_M->read('wm_gejala',array('id_user'=>$id_user))->result();
+		
+		// delete all data where id_user = $id_user
+		$this->SO_M->delete('wm_gejala',array('id_user'=>$id_user));
+		
+		// get all wm_obat
+		$data['wm_obat'] = $this->SO_M->read('wm_obat',array('id_pasien'=>$id_user))->result();
+		
+		// delete all data where id_user = $id_user
+		$this->SO_M->delete('wm_obat',array('id_pasien'=>$id_user));
+
+		// create data ke log_pengobatan, kemudian get idnya. idnya untuk memasukkan data log gejala, log kondisi, dan log obat
+		$id_log_pengobatan = $this->SO_M->create_id('log_pengobatan',array('id_user' => $id_user, 'tanggal'=>date('Y-m-d')));
+		$id_log_pengobatan = json_decode($id_log_pengobatan);
+		$id_log_pengobatan = $id_log_pengobatan->message;
+		// tambah element dengan index id_log pada array wmkondisi wmobat wmgejala
+		foreach ($data['wm_gejala'] as $key => $value) {
+			$data['wm_gejala'][$key]->id_log = $id_log_pengobatan;
+			unset($data['wm_gejala'][$key]->id_wm_gejala);
+		}
+		foreach ($data['wm_kondisi'] as $key => $value) {
+			$data['wm_kondisi'][$key]->id_log = $id_log_pengobatan;
+			unset($data['wm_kondisi'][$key]->id_wm_kondisi);
+		}
+		foreach ($data['wm_obat'] as $key => $value) {
+			$data['wm_obat'][$key]->id_log = $id_log_pengobatan;
+			unset($data['wm_obat'][$key]->id_wm_obat,$data['wm_obat'][$key]->id_pasien,$data['wm_obat'][$key]->tanggal);
+		}
+		// masukkan gejala ke gejala_log
+		$result = $this->SO_M->createS('gejala_log',$data['wm_gejala']);
+		// var_dump($result);
+
+		// masukkan kondisi ke kondisi_log
+		$result = $this->SO_M->createS('kondisi_log',$data['wm_kondisi']);
+		// var_dump($result);
+
+		// masukkan obat ke obat_log
+		$result = $this->SO_M->createS('obat_log',$data['wm_obat']);
+		// var_dump($result);
 	}
 }
 
