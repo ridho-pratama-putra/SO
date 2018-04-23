@@ -36,7 +36,7 @@
 							<td><?= $value->tanggal ?></td>
 							<td>
 								<div class="btn-group" role="group">
-									<a href="<?=base_url()?>Pasien_C/view_detail_per_log/<?=$value->id_log?>" class="btn btn-secondary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>
+									<a href="<?=base_url()?>Pasien_C/view_detail_per_log/<?=$value->id_log?>/<?=$this->session->userdata('logged_in')['id_user']?>" class="btn btn-secondary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>
 								</div>
 							</td>
 						</tr>

@@ -37,7 +37,28 @@
 				</h3>
 			</div>
 		</div>
-		<!-- SIDE NAAV HERE -->
+		<div class="col-12 margin-top-15 rounded" style="background-color: #cfd1d3">
+			<br>
+			<h4 class="text-center">Kondisi pasien saat pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
+			<div class="margin-top-15 padding-bottom-10">
+				<h3> Mengalami : 
+					<?php foreach ($kondisi_per_log as $key => $value) {	?>
+						<a class="text-white badge badge-danger" ><?= $value->detail_kondisi ?></a>
+					<?php } ?>
+				</h3>
+			</div>
+		</div>
+
+		<div class="col-12 margin-top-15 rounded" style="background-color: #cfd1d3">
+			<br>
+			<h4 class="text-center">Pesan untuk pasien saat pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
+			<div class="margin-top-15 padding-bottom-10">
+				<h5>
+					<?=$pesan_per_log[0]->pesan?>
+				</h5>
+			</div>
+		</div>
+		
 	</div>
 </div>
 

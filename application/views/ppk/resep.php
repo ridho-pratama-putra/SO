@@ -392,7 +392,7 @@ $data = json_decode($data,false);
 			<h5>Tambahkan pesan</h5>
 		</div>
 		<div class="col margin-top-15">
-			<input type="text" name="id_user" value="<?=$data->user[0]->id_user?>">
+			<input type="hidden" name="id_user" value="<?=$data->user[0]->id_user?>">
 			<textarea placeholder="tuliskan pesan disini" style="width: 100%" name="pesan_resep"></textarea>
 		</div>
 		<div class="col margin-top-15">

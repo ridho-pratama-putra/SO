@@ -47,7 +47,7 @@ class Ppk_C extends CI_Controller {
 	// detail untuk setiap log pengobatan. detailnya yakni gejalanya apa saja, obatnya apa saja. obat bisa diklik untuk melihat karakteristiknya
 	public function view_detail_per_log($nomor_identitas,$id_log)
 	{
-		$dataCondition['id_log'] 	=	$id_log;
+		
 		$data['gejala_per_log']		=	$this->SO_M->rawQuery("	SELECT
 																gejala_log.id_log_gejala,
 																gejala_log.id_log,
@@ -67,17 +67,15 @@ class Ppk_C extends CI_Controller {
 																obat_log
 																INNER JOIN master_obat ON obat_log.id_obat = master_obat.id_obat
 																WHERE id_log = ".$id_log)->result();
-		$dataCol					=	array('tanggal');
-		$data['log_pengobatan']		=	$this->SO_M->readCol('log_pengobatan',$dataCondition,$dataCol)->result();
+		
+		$data['log_pengobatan']		=	$this->SO_M->readCol('log_pengobatan',array('id_log'=>$id_log),array('tanggal'))->result();
 
-		unset($dataCondition['id_log']);
+		$data['kondisi_per_log']	=	$this->SO_M->readCol('kondisi_log',array('id_log'=>$id_log,'status'=>0),array('detail_kondisi','status'))->result();
 
-		// data user didapatkan untuk menu side bar :D
-		$dataCondition['nomor_identitas']	=	$nomor_identitas;
-		$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
+		$data['pesan_per_log']		=	$this->SO_M->read('pesan_log',array('id_log'=>$id_log))->result();
 
 		// cari informasi identitas user
-		$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+		$data['user']				=	$this->SO_M->readCol('user',array('nomor_identitas'=>$nomor_identitas),array('id_user','nama_user','nomor_identitas','no_hp','link_foto'))->result();
 
 		$this->load->view('html/header');
 		$this->load->view('ppk/detail_per_log',$data);
@@ -417,6 +415,9 @@ class Ppk_C extends CI_Controller {
 	{
 		$dataCondition['id_log'] 	= 	$this->input->post('id_log');
 		$result						= 	$this->SO_M->delete('log_pengobatan',$dataCondition);
+		$this->SO_M->delete('obat_log',array('id_log'=>$dataCondition['id_log']));
+		$this->SO_M->delete('gejala_log',array('id_log'=>$dataCondition['id_log']));
+		$this->SO_M->delete('kondisi_log',array('id_log'=>$dataCondition['id_log']));
 		if ($result == true) {
 			alert('','success','Berhasil','Data telah dihapus dari tabel log_pengobatan',false);
 		}else{
@@ -835,8 +836,8 @@ class Ppk_C extends CI_Controller {
 			// }
 		}else{
 			$data['heading']	= "Data tidak ditemukan";
-				$data['message']	= "<p>Data users tidak ditemukan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien yang terdaftar</a>, kemudian mulai alur pengobatan </p>";
-				$this->load->view('errors/html/error_general',$data);
+			$data['message']	= "<p>Data users tidak ditemukan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien yang terdaftar</a>, kemudian mulai alur pengobatan </p>";
+			$this->load->view('errors/html/error_general',$data);
 		}
 	}
 
@@ -884,15 +885,19 @@ class Ppk_C extends CI_Controller {
 		}
 		// masukkan gejala ke gejala_log
 		$result = $this->SO_M->createS('gejala_log',$data['wm_gejala']);
-		// var_dump($result);
+		var_dump($result);
 
 		// masukkan kondisi ke kondisi_log
 		$result = $this->SO_M->createS('kondisi_log',$data['wm_kondisi']);
-		// var_dump($result);
+		var_dump($result);
 
 		// masukkan obat ke obat_log
 		$result = $this->SO_M->createS('obat_log',$data['wm_obat']);
-		// var_dump($result);
+		var_dump($result);
+
+		// masukkan pesan yang dimiliki sebuah log_pengobatan
+		$result = $this->SO_M->create('pesan_log',array('id_log'=>$id_log_pengobatan,'pesan'=>$pesan_resep));
+		var_dump($result);
 	}
 }
 

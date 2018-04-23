@@ -87,7 +87,10 @@
 								<a class="nav-link <?=($method == 'view_id') ? 'active' : ''?>" href="<?=base_url()?>Ppk_C/view_id">Pemeriksaan</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link <?=($method == 'view_ubah_password') ? 'active' : ''?>" href="<?=base_url()?>Akun_C/view_ubah_password">Ubah Password</a>
+								<a class="nav-link <?=($method == 'view_ubah_password') ? 'active' : ''?>" href="<?=base_url('Akun_C/view_ubah_password/'.$this->session->userdata('logged_in')['id_user'])?>" >Ubah Password</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url('Akun_C/view_edit_identitas/'.$this->session->userdata('logged_in')['id_user'])?>" >Edit Identitas</a>
 							</li>
 							<div class="dropdown-divider"></div>
 							<li class="nav-item">
@@ -95,7 +98,10 @@
 							</li>
 						<?php } else{ ?>
 							<li class="nav-item">
-								<a class="nav-link <?=($method == 'view_ubah_password') ? 'active' : ''?>" href="<?=base_url()?>Akun_C/view_ubah_password">Ubah Password</a>
+								<a class="nav-link <?=($method == 'view_ubah_password') ? 'active' : ''?>" href="<?=base_url('Akun_C/view_ubah_password/'.$this->session->userdata('logged_in')['id_user'])?>">Ubah Password</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="<?=base_url('Akun_C/view_edit_identitas/'.$this->session->userdata('logged_in')['id_user'])?>" >Edit Identitas</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="<?=base_url()?>Akun_C/handle_logout">Sign Out : <?=$this->session->userdata('logged_in')['akses']?> <?=$this->session->userdata('logged_in')['nama_user']?></a>

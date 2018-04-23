@@ -43,6 +43,17 @@
 		?>
 		</ul>
 	</div>
+	<div class="col-12 rounded konten-karakteristik">
+		<h3>CATATAN OBAT</h3>
+		
+		<?php
+		foreach ($catatan_obat as $key => $value) {
+			?>
+			<?=$value->catatan?>
+			<?php
+		}
+		?>
+	</div>
 </div>
 
 <?php

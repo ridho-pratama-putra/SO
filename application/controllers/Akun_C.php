@@ -2,13 +2,13 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Akun_C extends CI_Controller {
-	public function __construct(){
+	function __construct(){
 		parent::__construct();
 		$this->load->model('SO_M');
-		// date_default_timezone_set("Asia/Jakarta");
+		date_default_timezone_set("Asia/Jakarta");
 	}
 
-	public function view_login()
+	function view_login()
 	{
 		if(isset($this->session->userdata['logged_in'])){
 			alert('alert_login','warning','Warning','Sudah Login');
@@ -19,7 +19,7 @@ class Akun_C extends CI_Controller {
 				redirect('Ppk_C/view_id');
 			}
 			else if ($this->session->userdata['logged_in']['akses'] == 'pasien') {
-				redirect('Pasien_C/view_log_pengobatan/'.$this->session->userdata['logged_in']['id_user']);
+				redirect('Pasien_C/view_log_pengobatan/');
 			}
 		}
 		// jika belum login / tidak ada sesion yang aktiv
@@ -30,7 +30,7 @@ class Akun_C extends CI_Controller {
 		}
 	}
 
-	public function view_register_user()
+	function view_register_user()
 	{
 		if($this->session->userdata('logged_in')['akses'] == 'admin'){
 			$this->load->view('html/header');
@@ -49,7 +49,7 @@ class Akun_C extends CI_Controller {
 		}
 	}
 
-	public function view_registered_user()
+	function view_registered_user()
 	{
 		/*tampilkan data-data siapa saja pasien yang telah terdaftar*/
 		if($this->session->userdata['logged_in']['akses'] == 'admin'){
@@ -71,7 +71,7 @@ class Akun_C extends CI_Controller {
 		}
 	}
 
-	public function handle_login()
+	function handle_login()
 	{
 		$this->form_validation->set_rules('nomor_identitas', 'Username', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
@@ -138,7 +138,7 @@ class Akun_C extends CI_Controller {
 		}
 	}
 	
-	public function handle_logout() 
+	function handle_logout() 
 	{
 		// hapus apa saja session yang akan direset
 		$sess_array = array(
@@ -153,7 +153,7 @@ class Akun_C extends CI_Controller {
 		redirect();
 	}
 
-	public function view_ubah_password($id_user)
+	function view_ubah_password($id_user)
 	{
 		$result = $this->SO_M->readCol('user',array('id_user'=>$id_user),array('id_user','nama_user'));
 		if ($result->num_rows() == 1) {
@@ -172,7 +172,7 @@ class Akun_C extends CI_Controller {
 	function dibawah ini digunakan oleh admin saat akan mendaftarkan pengguna baru.
 	bisa admin, ppk, atau pengguna
 	*/
-	public function handle_register_user()
+	function handle_register_user()
 	{
 		$this->form_validation->set_rules('nama_user','Nama','trim|required');
 		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|is_unique[user.nomor_identitas]');
@@ -231,7 +231,7 @@ class Akun_C extends CI_Controller {
 	}
 
 	/*function dobawah ini digunakan saat ppk ingin mendaftarkan pasien baru*/
-	public function handle_register_user_umum()
+	function handle_register_user_umum()
 	{
 		$this->form_validation->set_rules('nama_user','Nama','trim|required');
 		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|is_unique[user.nomor_identitas]');
@@ -293,7 +293,7 @@ class Akun_C extends CI_Controller {
 		}
 	}
 
-	public function reset_password($id_user)
+	function reset_password($id_user)
 	{
 		if ($this->session->userdata['logged_in']['akses'] == 'admin') {
 			$dataWhere	=	array("id_user" => $id_user);
@@ -342,5 +342,27 @@ class Akun_C extends CI_Controller {
 			alert('alert_ubah_password','danger','Gagal','tidak ada data yang di post');
 		}
 		redirect('Akun_C/view_ubah_password/'.$id_user);
+	}
+	function view_edit_identitas($id_user)
+	{
+		if ($id_user == $this->session->userdata['logged_in']['id_user']) {
+			$data['user'] = $this->SO_M->read('user',array('id_user'=>$id_user))->result();
+			$this->load->view('html/header');
+			$this->load->view('umum/edit_identitas',$data);
+			$this->load->view('html/footer');
+		}else{
+			redirect('Akun_C/view_edit_identitas/'.$this->session->userdata['logged_in']['id_user']);
+		}
+	}
+	function handle_edit_identitas()
+	{
+		$update = $this->SO_M->update('user',array('id_user'=>$this->input->post('id_user')),array('nomor_identitas'=>$this->input->post('nomor_identitas'),'tanggal_lahir'=>$this->input->post('tanggal_lahir')));
+		$update = json_decode($update);
+		if ($update->status) {
+			alert('alert_edit_identitas','success','Berhasil','Perubahan telah masuk database');
+		}else{
+			alert('alert_edit_identitas','danger','Gagalagal','Perubahan tidak masuk database');
+		}
+		redirect('Akun_C/view_edit_identitas/'.$this->input->post('id_user'));
 	}
 }
