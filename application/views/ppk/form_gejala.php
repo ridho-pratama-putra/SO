@@ -84,7 +84,7 @@
 			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$user[0]->nama_user?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"><?=$user[0]->tanggal_lahir?></i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"><?=$user[0]->tanggal_lahir != '' ? $user[0]->tanggal_lahir : 'YYYY-mm-dd' ?> / <?=$umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
 			<span class="nav-link">Nomor Identitas<i class="nav-link disabled"><?=$user[0]->nomor_identitas?></i></span>

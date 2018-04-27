@@ -14,52 +14,52 @@
 		});
 		$('#tooltip-gejala').tooltip();
 	</script>
-	<div class="margin-top-15">
-		<div class="col-12 rounded-bottom" style="background-color: #cfd1d3">
-			<br>
-			<h4 class="text-center">Detail gejala untuk pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
-			<div class="margin-top-15 padding-bottom-10">
-				<h3>
-					<?php foreach ($gejala_per_log as $key => $value) {	?>
-						<span class="badge badge-primary"><?= $value->detail_gejala ?></span>
-					<?php } ?>
-				</h3>
-			</div>
-		</div>
-		<div class="col-12 margin-top-15 rounded" style="background-color: #cfd1d3">
-			<br>
-			<h4 class="text-center">Daftar obat yang diberikan untuk pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
-			<div class="margin-top-15 padding-bottom-10">
-				<h3>
-					<?php foreach ($obat_per_log as $key => $value) {	?>
-						<a class="btn text-white badge badge-primary" href="<?=base_url()?>Ppk_C/view_karakteristik_obat/<?=$value->id_obat?>" role='button'><?= $value->nama_obat ?></a>
-					<?php } ?>
-				</h3>
-			</div>
-		</div>
-		<div class="col-12 margin-top-15 rounded" style="background-color: #cfd1d3">
-			<br>
-			<h4 class="text-center">Kondisi pasien saat pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
-			<div class="margin-top-15 padding-bottom-10">
-				<h3> Mengalami : 
-					<?php foreach ($kondisi_per_log as $key => $value) {	?>
-						<a class="text-white badge badge-danger" ><?= $value->detail_kondisi ?></a>
-					<?php } ?>
-				</h3>
-			</div>
-		</div>
-
-		<div class="col-12 margin-top-15 rounded" style="background-color: #cfd1d3">
-			<br>
-			<h4 class="text-center">Pesan untuk pasien saat pemeriksaan pada <?=$log_pengobatan[0]->tanggal?></h4>
-			<div class="margin-top-15 padding-bottom-10">
-				<h5>
-					<?=$pesan_per_log[0]->pesan?>
-				</h5>
-			</div>
-		</div>
+	<div class="margin-top-15 col-12">
+		<h2 class="text-center">Detail Log Pengobatan Pada <?=tgl_indo($log_pengobatan[0]->tanggal)?></h2>
 		
+			<br>
+			<h4>Detail gejala </h4>
+			<ol>
+			<?php foreach ($gejala_per_log as $key => $value) {	?>
+				<li> <?= $value->detail_gejala ?></li>
+			<?php } ?>
+			</ol>
 	</div>
+	<div class="col-12">
+		<br>
+		<h4>Daftar obat yang diberikan</h4>
+		<ol>
+			<?php foreach ($obat_per_log as $key => $value) {	?>
+				<li><a class="btn text-white badge badge-primary" href="<?=base_url()?>Ppk_C/view_karakteristik_obat/<?=$value->id_obat?>" role='button'><?= $value->nama_obat ?></a></li>
+			<?php } ?>
+		</ol>
+	</div>
+ 	<div class="col-12">
+		<br>
+		<h4>Kondisi pasien saat pemeriksaan</h4>
+		<div class="margin-top-15 padding-bottom-10">
+			<ul>
+			<h6> Mengalami : </h6>
+				<ol>
+				<?php foreach ($kondisi_per_log as $key => $value) {	?>
+					<li><?= $value->detail_kondisi ?></li>
+				<?php } ?>
+				</ol>
+			</ul>
+		</div>
+	</div>
+
+	<div class="col-12">
+		<br>
+		<h4>Pesan untuk pasien saat pemeriksaan</h4>
+		<div class="margin-top-15 padding-bottom-10">
+			<h6>
+				<li><?=$pesan_per_log[0]->pesan?></li>
+			</h6>
+		</div>
+	</div>
+		
+</div>
 </div>
 
 <nav class="col-md-2 d-none d-sm-block bg-light sidebar" id="style-1">
@@ -74,34 +74,10 @@
 			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$user[0]->nama_user?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> 19 Februari 1997 / 20Thn</i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$user[0]->tanggal_lahir != '' ? tgl_indo($user[0]->tanggal_lahir) : 'YYYY-mm-dd' ?> / <?=$umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$user[0]->nomor_identitas?></i></span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Note Kondisi
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">...</a>
-			</span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjd haskjdnas</i></span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjdha skjdnas</i></span>
+			<span class="nav-link">No. Identitas<i class="nav-link disabled"><?=$user[0]->nomor_identitas?></i></span>
 		</li>
 	</ul>
 </nav>

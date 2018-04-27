@@ -33,7 +33,7 @@
 					<tbody>
 						<?php foreach ($log_pengobatan as $key => $value) {	?>
 						<tr>
-							<td><?= $value->tanggal ?></td>
+							<td><?= tgl_indo($value->tanggal) ?></td>
 							<td>
 								<div class="btn-group" role="group">
 									<a href="<?=base_url()?>Pasien_C/view_detail_per_log/<?=$value->id_log?>/<?=$this->session->userdata('logged_in')['id_user']?>" class="btn btn-secondary" style="text-decoration: none;" data-toggle="tooltip" title="lihat lebih detail apa saja gejala yang dicatat pada pengobatan di tanggal ini">Detail Pengobatan</a>
@@ -62,18 +62,13 @@
 						<?php foreach ($kondisi as $key => $value) {	?>
 						<tr>
 							<td><?= $value->detail_kondisi?></td>
-							<td><?= $value->tanggal_ditambahkan?></td>
-							<td><?= $value->status?></td>
+							<td><?= tgl_indo($value->tanggal_ditambahkan)?></td>
+							<td><?= $value->status == '1' ? 'aman' : 'hindari'?></td>
 						</tr>
 						<?php } ?>
 					</tbody>
 				</table>
 			</div>
-
-
-
-
-
 			<!-- SIDE NAAV HERE -->
 		</div>
 	</div>
@@ -89,34 +84,10 @@
 			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$user[0]->nama_user?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> 19 Februari 1997 / 20Thn</i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$user[0]->tanggal_lahir != '' ? tgl_indo($user[0]->tanggal_lahir) : 'YYYY-mm-dd' ?> / <?=$umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$user[0]->nomor_identitas?></i></span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Note Kondisi
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">Hipertensi</a>
-				<a class="nav-link disabled text-white badge badge-danger">Lansia</a>
-				<a class="nav-link disabled text-white badge badge-danger">...</a>
-			</span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjd haskjdnas</i></span>
-		</li>
-		<li class="nav-item">
-			<span class="nav-link">Dummy<i class="nav-link disabled" href="#">iajkhdbjhagdsjdha skjdnas</i></span>
+			<span class="nav-link">No. Identitas<i class="nav-link disabled"><?=$user[0]->nomor_identitas?></i></span>
 		</li>
 	</ul>
 </nav>

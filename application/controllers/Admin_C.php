@@ -4,6 +4,8 @@ class Admin_C extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('SO_M');
+		date_default_timezone_set("Asia/Jakarta");
+		
 		if ($this->session->userdata('logged_in')['akses'] != 'admin' ){
 			redirect();
 		}

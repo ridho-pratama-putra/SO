@@ -75,7 +75,12 @@ class Ppk_C extends CI_Controller {
 		$data['pesan_per_log']		=	$this->SO_M->read('pesan_log',array('id_log'=>$id_log))->result();
 
 		// cari informasi identitas user
-		$data['user']				=	$this->SO_M->readCol('user',array('nomor_identitas'=>$nomor_identitas),array('id_user','nama_user','nomor_identitas','no_hp','link_foto'))->result();
+		$data['user']				=	$this->SO_M->readCol('user',array('nomor_identitas'=>$nomor_identitas),array('id_user','nama_user','nomor_identitas','no_hp','link_foto','tanggal_lahir'))->result();
+
+		$today = new DateTime();
+		$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
+		
+		$data['umur'] = $today->diff($tanggal_lahir);
 
 		$this->load->view('html/header');
 		$this->load->view('ppk/detail_per_log',$data);
@@ -119,6 +124,9 @@ class Ppk_C extends CI_Controller {
 		$results			=	$query->result();
 		if($query->num_rows() != 0){
 			$data['user'] 	=	$results;
+			$today = new DateTime();
+			$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
+			$data['umur'] = $today->diff($tanggal_lahir);
 			$data['gejala']	=	$this->SO_M->readS('master_gejala')->result();
 			$this->load->view('html/header');
 			$this->load->view('ppk/form_gejala',$data);
@@ -138,9 +146,13 @@ class Ppk_C extends CI_Controller {
 		$query		=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
 		if ($query->num_rows() != 0) {
 			if ($this->input->post() !== NULL) {
-				$gejalas = $this->input->post('gejala[]');
+				$gejalas 				=	$this->input->post('gejala[]');
 				$data['gejala_master']	=	$this->SO_M->readS('master_gejala')->result();
 				$data['user']			=	$query->result();
+				$today 					=	new DateTime();
+				$tanggal_lahir 			=	new DateTime($data['user'][0]->tanggal_lahir);
+				
+				$data['umur'] 			=	$today->diff($tanggal_lahir);
 				$data['gejala_pasien']	=	json_encode($gejalas);
 				$kirim['data'] 			=	json_encode($data);
 				$this->load->view('html/header');
@@ -210,7 +222,7 @@ class Ppk_C extends CI_Controller {
 			// cari log pengobatan dengan gejala yang mirip dengan masukan
 			$this->db->select('gejala_log.id_log , log_pengobatan.tanggal');
 			$this->db->where($where_);
-			$this->db->order_by('gejala_log.id_log', 'ASC');
+			$this->db->order_by('tanggal', 'ASC');
 			$this->db->join('log_pengobatan','gejala_log.id_log = log_pengobatan.id_log','inner');
 			$query = $this->db->get('gejala_log')->result();
 
@@ -276,6 +288,7 @@ class Ppk_C extends CI_Controller {
 				
 				$dataWhere			=	array('tipe' => 'peringatan','id_obat' => $query[$i]->id_obat);
 				$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
 				foreach ($dataPeringatan as $key => $value) {
 					if ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasienMengidap)) {
 						$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
@@ -360,14 +373,14 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
-	// halaman untuk "checkout" keranjang obat
-	public function view_resep()
-	{
-		$this->load->view('html/header');
-		$this->load->view('ppk/resep');
-		$this->load->view('html/sidebar-kanan');
-		$this->load->view('html/footer');
-	}
+	// // halaman untuk "checkout" keranjang obat
+	// public function view_resep()
+	// {
+	// 	$this->load->view('html/header');
+	// 	$this->load->view('ppk/resep');
+	// 	$this->load->view('html/sidebar-kanan');
+	// 	$this->load->view('html/footer');
+	// }
 
 	// untuk menangani submit form pada view_id yang berisi nomor identitas pasien. function ini menghasilkan daftar kondisi yang dimiliki oleh seorang pasien
 	public function view_detail_user($nomor_identitas)
@@ -384,6 +397,10 @@ class Ppk_C extends CI_Controller {
 			$dataCondition				=	array();
 			$dataCol					=	array('id_master_kondisi AS id','detail_kondisi AS text');
 			$data['master_kondisi']		=	$this->SO_M->readCol('master_kondisi',$dataCondition,$dataCol)->result();
+			$today = new DateTime();
+			$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
+			
+			$data['umur'] = $today->diff($tanggal_lahir);
 
 			$this->load->view('html/header');
 			$this->load->view('ppk/log_pengobatan',$data);
@@ -606,6 +623,8 @@ class Ppk_C extends CI_Controller {
 					$result = $this->SO_M->create('wm_kondisi',$note_kondisi[$i]);
 				}
 			}
+
+			// var_dump($note_kondisi);
 			// $this->SO_M->truncateTable('wm_kondisi');
 			// var_dump($note_kondisi);
 			// die();
@@ -639,13 +658,17 @@ class Ppk_C extends CI_Controller {
 
 	public function view_resep_($nomor_identitas)
 	{
-		$dataWhere		=	array('nomor_identitas' =>$nomor_identitas);
-		$dataCol		=	array('id_user','nama_user','nomor_identitas','tanggal_lahir','alamat','akses','no_hp','link_foto');
-		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
+		$dataWhere					=	array('nomor_identitas' =>$nomor_identitas);
+		$dataCol					=	array('id_user','nama_user','nomor_identitas','tanggal_lahir','alamat','akses','no_hp','link_foto');
+		$data['user']				=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
 		if ($data['user']->num_rows() == 1) {
-			$data['user'] = $data['user']->result();
+			$data['user'] 			=	$data['user']->result();
 			if ($this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_pasien')->num_rows() != 0) {
-				$kirim['data'] = json_encode($data);
+				$today 				=	new DateTime();
+				$tanggal_lahir 		=	new DateTime($data['user'][0]->tanggal_lahir);
+				$data['umur'] 		=	$today->diff($tanggal_lahir);
+				$data['gejala']		=	$this->input->post('gejala[]');
+				$kirim['data'] 		=	json_encode($data);
 				$this->load->view('html/header');
 				$this->load->view('ppk/resep',$kirim);
 				$this->load->view('html/footer');
@@ -668,7 +691,7 @@ class Ppk_C extends CI_Controller {
 		$data['user']	=	$this->SO_M->readCol('user',$dataWhere,$dataCol);
 		if ($data['user']->num_rows() == 1) {
 			$data['user'] = $data['user']->result();
-			// if ($this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_pasien')->num_rows() != 0) {
+			if ($this->SO_M->readCol('wm_obat',array('id_pasien'=>$data['user'][0]->id_user),'id_pasien')->num_rows() != 0) {
 				
 				// dapatkan data dari tabel wm_gejala
 				$gejala 		=	$this->SO_M->readCol('wm_gejala',array('id_user'=>$data['user'][0]->id_user),array('id_gejala','detail_gejala'))->result_array();
@@ -697,9 +720,9 @@ class Ppk_C extends CI_Controller {
 				$querys = $this->db->get('karakteristik_obat');
 				
 				// dapatkan data kondisi pasien pada tabel wm_kondisi
-				$kondisiPasienMengidap = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0))->result_array();
+				$kondisiPasienMengidap = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0),'id_master_kondisi')->result_array();
 				$data['kondisiPasienMengidap'] = $kondisiPasienMengidap;
-				$kondisiPasienAman = $this->SO_M->read('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1))->result_array();
+				$kondisiPasienAman = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1),'id_master_kondisi')->result_array();
 				$data['kondisiPasienAman'] = $kondisiPasienAman;
 
 				// koreksi masing2 karakteristik
@@ -707,8 +730,7 @@ class Ppk_C extends CI_Controller {
 				$data['obat'] = $query;
 
 				// manipulasi array
-				for ($i=0; $i < ($querys->num_rows()) ; $i++) {
-
+				for ($i=0; $i < $querys->num_rows() ; $i++){
 					// $dataindikasi menyimpan apa saja indikasi yang dimilikisuatu obat
 					$dataWhere			=	array(	'tipe' => 'indikasi',	'id_obat' => $query[$i]->id_obat	);
 					$dataIndikasi		=	$this->SO_M->read('karakteristik_obat',$dataWhere)->result();
@@ -748,6 +770,7 @@ class Ppk_C extends CI_Controller {
 					
 					$dataWhere			=	array('tipe' => 'peringatan','id_obat' => $query[$i]->id_obat);
 					$dataPeringatan		= $this->SO_M->read('karakteristik_obat',$dataWhere)->result();
+
 					foreach ($dataPeringatan as $key => $value) {
 						if ($this->in_array_r($dataPeringatan[$key]->id_tipe_master,$kondisiPasienMengidap)) {
 							$data['obat'][$i]->karakteristik['peringatan']['ada'][] = array('id_karakteristik'	=>	$dataPeringatan[$key]->id_karakteristik,'id_tipe_master' => $dataPeringatan[$key]->id_tipe_master,'detail_tipe'		=>	$dataPeringatan[$key]->detail_tipe);
@@ -826,14 +849,17 @@ class Ppk_C extends CI_Controller {
 					}
 				}
 				echo json_encode($data);
-			// }else{
-				// $data = array('status' => false,'message' => 'Belum ada obat yang diresepkan');
-				// echo json_encode($data);
+			}else{
+				$dataeror = array('status' => false,'nomor_identitas' => $nomor_identitas);
+				echo json_encode($dataeror);
+				$this->SO_M->delete('wm_kondisi',array('id_user'=>$data['user'][0]->id_user));
+				$this->SO_M->delete('wm_gejala',array('id_user'=>$data['user'][0]->id_user));
+				$this->SO_M->delete('wm_obat',array('id_pasien'=>$data['user'][0]->id_user));
 
 				// $data['heading']	= "Data tidak ditemukan";
 				// $data['message']	= "<p>Belum ada obat yang diresepkan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien</a>, kemudian mulai alur pengobatan </p>";
 				// $this->load->view('errors/html/error_general',$data);
-			// }
+			}
 		}else{
 			$data['heading']	= "Data tidak ditemukan";
 			$data['message']	= "<p>Data users tidak ditemukan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien yang terdaftar</a>, kemudian mulai alur pengobatan </p>";
@@ -885,19 +911,22 @@ class Ppk_C extends CI_Controller {
 		}
 		// masukkan gejala ke gejala_log
 		$result = $this->SO_M->createS('gejala_log',$data['wm_gejala']);
-		var_dump($result);
+		// var_dump($result);
 
 		// masukkan kondisi ke kondisi_log
 		$result = $this->SO_M->createS('kondisi_log',$data['wm_kondisi']);
-		var_dump($result);
+		// var_dump($result);
 
 		// masukkan obat ke obat_log
 		$result = $this->SO_M->createS('obat_log',$data['wm_obat']);
-		var_dump($result);
+		// var_dump($result);
 
 		// masukkan pesan yang dimiliki sebuah log_pengobatan
 		$result = $this->SO_M->create('pesan_log',array('id_log'=>$id_log_pengobatan,'pesan'=>$pesan_resep));
-		var_dump($result);
+		// var_dump($result);
+
+		$result = $this->SO_M->readCol('user',array('id_user'=>$id_user),'nomor_identitas')->result();
+		redirect("Ppk_C/view_detail_per_log/".$result[0]->nomor_identitas."/".$id_log_pengobatan);
 	}
 }
 

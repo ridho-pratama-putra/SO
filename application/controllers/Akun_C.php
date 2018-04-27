@@ -142,8 +142,10 @@ class Akun_C extends CI_Controller {
 	{
 		// hapus apa saja session yang akan direset
 		$sess_array = array(
-							'nama_user' => '',
-							'akses' =>''
+							'akses'		=>	'',
+							'id_user'	=>	'',
+							'nama_user'	=>	'',
+							'foto'		=>	''
 		);
 
 		// hapus session
@@ -239,10 +241,14 @@ class Akun_C extends CI_Controller {
 		$this->form_validation->set_rules('alamat','Alamat','trim|required');
 		if ($this->form_validation->run() == FALSE) {
 			alert('alert_register_user','danger','Gagal','Cek lagi form inputan');
-			if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
-				redirect('Akun_C/view_register_user_ppk');
+			if (isset($this->session->userdata['logged_in'])) {
+				if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
+					redirect('Akun_C/view_register_user_ppk');
+				}else{
+					redirect('Akun_C/view_register_user');
+				}
 			}else{
-				redirect('');
+				redirect('Akun_C/view_register_user');
 			}
 		}
 		else {
@@ -285,10 +291,15 @@ class Akun_C extends CI_Controller {
 				// alert gagal upload foto ke direktori
 				alert('alert_register_foto','warning','Gagal','upload foto profil gagal');
 			}
-			if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
-				redirect('Akun_C/view_register_user_ppk');
-			}else{
-				redirect('');
+			if (isset($this->session->userdata['logged_in'])) {
+				if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
+					redirect('Akun_C/view_register_user_ppk');
+				}else{
+					redirect('Akun_C/view_register_user');
+				}
+			}
+			else{
+				redirect('Akun_C/view_register_user');
 			}
 		}
 	}
@@ -361,7 +372,7 @@ class Akun_C extends CI_Controller {
 		if ($update->status) {
 			alert('alert_edit_identitas','success','Berhasil','Perubahan telah masuk database');
 		}else{
-			alert('alert_edit_identitas','danger','Gagalagal','Perubahan tidak masuk database');
+			alert('alert_edit_identitas','danger','Gagal','Perubahan tidak masuk database');
 		}
 		redirect('Akun_C/view_edit_identitas/'.$this->input->post('id_user'));
 	}

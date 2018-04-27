@@ -4,216 +4,227 @@ $data = json_decode($data,false);
 <script type="text/javascript">
 	$(document).ready(function(){
 		update();
+		var response;
 	});
 	function update() {
 		var url = "<?=base_url('Ppk_C/cari_hasil_/'.$data->user[0]->nomor_identitas)?>";
 		var id_dokter = "<?=$this->session->userdata('logged_in')['id_user']?>";
 		$.get(url,function(data){
-			var response = JSON.parse(data);
+			// console.log(data);
+			response = JSON.parse(data);
 			console.log(response);
-			// parsing jumlah dan detail gejala pada wm_gejala
-			document.getElementById('jumlah_wm_gejala').innerHTML = response.gejala.length;
+			if (response.status == false) {
+				document.getElementById('resep').innerHTML = "";
+				$('#ModalRedirect').modal('show');
+				// window.alert("Anda akan dialihkan menuju halaman input identitas pasien");
+				// window.location.href = "<?=base_url('Ppk_C/view_gejala/')?>"+response.nomor_identitas;
+			}else{
+				// parsing jumlah dan detail gejala pada wm_gejala
+				document.getElementById('jumlah_wm_gejala').innerHTML = response.gejala.length;
 
-			// parsing detail gejala
-			html = '';
-			for(var i in response.gejala){
-				html += "<a class='nav-link disabled badge badge-warning text-white'>"+response.gejala[i].detail_gejala+"</a> ";
-			}
-			document.getElementById('detail_wm_gejala').innerHTML = html;
-
-			// parsing gejala yang belum terobati dan gejala yang diobati lebih dari 1 obat untuk dijadikan alert
-			html = '';
-			for (var i in response.gejala) {
-				// console.log(response.gejala[i].terobati);
-				if (typeof response.gejala[i].terobati == 'undefined') {
-					html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" belum terobati.</div>";
-				}else{
-					if (response.gejala[i].terobati == 'ganda') {
-						html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" diobati dengan obat ganda.</div>";
-					}
+				// parsing detail gejala
+				html = '';
+				for(var i in response.gejala){
+					html += "<a class='nav-link disabled badge badge-warning text-white'>"+response.gejala[i].detail_gejala+"</a> ";
 				}
-			}
-			document.getElementById('notif').innerHTML = html;
+				document.getElementById('detail_wm_gejala').innerHTML = html;
 
-			// parsing jumlah obat dan detailnya pada wm_obat
-			document.getElementById('jumlah_wm_obat').innerHTML = response.obat.length;
+				// parsing gejala yang belum terobati dan gejala yang diobati lebih dari 1 obat untuk dijadikan alert
+				// html = '';
+				// for (var i in response.gejala) {
+				// 	// console.log(response.gejala[i].terobati);
+				// 	if (typeof response.gejala[i].terobati == 'undefined') {
+				// 		html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" belum terobati.</div>";
+				// 	}else{
+				// 		if (response.gejala[i].terobati == 'ganda') {
+				// 			html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" diobati dengan obat ganda.</div>";
+				// 		}
+				// 	}
+				// }
+				// document.getElementById('notif').innerHTML = html;
 
-			// parsing kondisi pada wm_obat
-			var html = "<div id='accordion'>";
-			for(var k in response.obat){
-						
-						html 		+=	"<div class='card margin-top-20'>";
-						html 		+=	"<div class='card-header' id='heading"+response.obat[k].id_obat+"' role='tab'>";
-						html 		+=	"<div class='row'>";
-						html 		+=	"<div class='col'>";
-						html 		+=	"<h5>";
-						// class="collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
-						html 		+=	"<a href='#collapse"+response.obat[k].id_obat+"' class='collapsed' data-toggle='collapse' aria-expanded='false' aria-controls='collapse"+response.obat[k].id_obat+"'>"+response.obat[k].nama_obat;
-						html 		+=	"<i class='icon ion-chevron-down float-right'>";
-						html 		+=	"</i>";
-						html 		+=	"</a>";
-						html 		+=	"</h5>";
-						html 		+=	"</div>";
-						
-						html 		+=	"<div class='col-3 ditemukan rounded'>";
-						
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien'>";
-						html 		+=	"</i>";
-						
-						html 		+=	"<h6 class='text-center'>Indikasi Cocok/Obat ditemukan";
-						html 		+=	"</h6>";
-						html 		+=	"<h6 class='text-center'>"+response.obat[k].Iada+ " / " + response.obat.length;
-						html 		+=	"</h6>";
-						html 		+=	"</div>";
-						
-						html 		+=	"<div class='col-3 ditemukan rounded'>";
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik peringatan pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
-						html 		+=	"</i>";
-						html 		+=	"<h6 class='text-center'>Kandungan Peringatan/Obat ditemukan";
-						html 		+=	"</h6>";
-						if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
-							if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
-								html +=	"<h6 class='text-center'>"+response.obat[k].Pada+ "/" + response.obat.length;
-							}else{
-								html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
-							}
-						}else{
-							html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
-						}
-						html +=	"</h6>";
-						html +=	"</div>";
-						
-						html 		+=	"<div class='col-3 ditemukan rounded'>";
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
-						html 		+=	"</i>";
-						html 		+=	"<h6 class='text-center'>Kandungan Kontra/Obat ditemukan";
-						html 		+=	"</h6>";
-						if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
-							if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
-								html +=	"<h6 class='text-center'>"+response.obat[k].Kada+ " / " + response.obat.length;
-							}else{
-								html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
-							}
-						}else{
-							html 	+=	"<h6 class='text-center'>0 / "+ response.obat.length;
-						}
-						html 		+=	"</h6>";
-						html 		+=	"</div>";
+				// parsing jumlah obat dan detailnya pada wm_obat
+				document.getElementById('jumlah_wm_obat').innerHTML = response.obat.length;
 
-
-						html +=	"</div>";
-						html +=	"</div>";
-						// id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion"
-						html +=	"<div id='collapse"+response.obat[k].id_obat+"' class='collapse' role='tabpanel' aria-labelledby='heading"+response.obat[k].id_obat+"' data-parent='#accordion'>";
-						html +=	"<div class='card-body'>";
-						html +=	"<div class='row'>";
-						html +=	"<div class='col'>";
-						html +=	"<div class='row'>";
-
-						var bisa_diberikan = true;
-						for(var l in response.obat[k].karakteristik){
+				// parsing kondisi pada wm_obat
+				var html = "<div id='accordion'>";
+				for(var k in response.obat){
 							
-							html +=	"<div ";
-							if (l == 'indikasi') {
-								html +=	"class='col informasi hijau rounded'>";
-							}else if (l == 'kontraindikasi') {
-								html +=	"class='col informasi merah rounded'>";
-							}else{
-								html +=	"class='col informasi kuning rounded'>";
-							}
+							html 		+=	"<div class='card margin-top-20'>";
+							html 		+=	"<div class='card-header' id='heading"+response.obat[k].id_obat+"' role='tab'>";
+							html 		+=	"<div class='row'>";
+							html 		+=	"<div class='col'>";
+							html 		+=	"<h5>";
+							// class="collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
+							html 		+=	"<a href='#collapse"+response.obat[k].id_obat+"' class='collapsed' data-toggle='collapse' aria-expanded='false' aria-controls='collapse"+response.obat[k].id_obat+"'>"+response.obat[k].nama_obat;
+							html 		+=	"<i class='icon ion-chevron-down float-right'>";
+							html 		+=	"</i>";
+							html 		+=	"</a>";
+							html 		+=	"</h5>";
+							html 		+=	"</div>";
 							
-							html +=	"<h6>"+l;
-							html +=	"</h6>";
-							html +=	"<ul>";
+							html 		+=	"<div class='col-3 ditemukan rounded'>";
 							
-							// ada dan tanya
-							for(var m in response.obat[k].karakteristik[l]){
-								// console.log(response.obat[k].karakteristik[l]);
-								// console.log(m);
-								/*	obat[k]				=	index obat yang didapat
-									karakteristik[l]	=	index karakteristik yang didapat
-								*/
-								for(var n in response.obat[k].karakteristik[l][m]){
-									// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);			// console.log(n);
-
-									// '<a href="" data-toggle="modal" data-target="#ModalEditKondisi" data-idkondisi="'+data+'" ><i class="icon ion-edit"></i></a>'
-
-									html +=	"<li>"+response.obat[k].karakteristik[l][m][n].detail_tipe;
-									
-									if (l == 'indikasi') {
-										if (m == 'ada') {
-											html +=	"<i class='icon ion-checkmark-circled text-success'></i>";
-										}
-									}else if (l =='kontraindikasi') {
-										if (m == 'ada') {
-											html +=	"<i class='icon ion-android-alert text-danger'></i>";
-										}
-										else if(m =='tanya'){
-											html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
-											html +=	"<i class='icon ion-help-circled text-primary'></i>";
-											html +=	"</a>";
-											bisa_diberikan = false;
-										}
-									}else{
-										if (m == 'ada') {
-											html +=	"<i class='icon ion-android-alert text-warning'></i>";
-										}else if( m == 'tanya'){
-											html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
-											html +=	"<i class='icon ion-help-circled text-primary'></i>";
-											html +=	"</a>";
-											bisa_diberikan = false;
-										}
-									}
-									html +=	"</li>";
+							html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien'>";
+							html 		+=	"</i>";
+							
+							html 		+=	"<h6 class='text-center'>Indikasi Cocok";
+							html 		+=	"</h6>";
+							html 		+=	"<h6 class='text-center'>"+response.obat[k].Iada;
+							html 		+=	"</h6>";
+							html 		+=	"</div>";
+							
+							html 		+=	"<div class='col-3 ditemukan rounded'>";
+							html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik peringatan pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
+							html 		+=	"</i>";
+							html 		+=	"<h6 class='text-center'>Kandungan Peringatan";
+							html 		+=	"</h6>";
+							if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
+								if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
+									html +=	"<h6 class='text-center'>"+response.obat[k].Pada;
+								}else{
+									html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 								}
+							}else{
+								html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 							}
-							html +=	"</ul>";
+							html +=	"</h6>";
+							html +=	"</div>";
+							
+							html 		+=	"<div class='col-3 ditemukan rounded'>";
+							html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
+							html 		+=	"</i>";
+							html 		+=	"<h6 class='text-center'>Kandungan Kontra";
+							html 		+=	"</h6>";
+							if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
+								if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
+									html +=	"<h6 class='text-center'>"+response.obat[k].Kada;
+								}else{
+									html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+								}
+							}else{
+								html 	+=	"<h6 class='text-center'>0 / "+ response.obat.length;
+							}
+							html 		+=	"</h6>";
+							html 		+=	"</div>";
+
+
+							html +=	"</div>";
+							html +=	"</div>";
+							// id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion"
+							html +=	"<div id='collapse"+response.obat[k].id_obat+"' class='collapse' role='tabpanel' aria-labelledby='heading"+response.obat[k].id_obat+"' data-parent='#accordion'>";
+							html +=	"<div class='card-body'>";
+							html +=	"<div class='row'>";
+							html +=	"<div class='col'>";
+							html +=	"<div class='row'>";
+
+							var bisa_diberikan = true;
+							for(var l in response.obat[k].karakteristik){
+								
+								html +=	"<div ";
+								if (l == 'indikasi') {
+									html +=	"class='col informasi hijau rounded'>";
+								}else if (l == 'kontraindikasi') {
+									html +=	"class='col informasi merah rounded'>";
+								}else{
+									html +=	"class='col informasi kuning rounded'>";
+								}
+								
+								html +=	"<h6>"+l;
+								html +=	"</h6>";
+								html +=	"<ol>";
+								
+								// ada dan tanya
+								for(var m in response.obat[k].karakteristik[l]){
+									// console.log(response.obat[k].karakteristik[l]);
+									// console.log('M : '+m);
+									/*	obat[k]				=	index obat yang didapat
+										karakteristik[l]	=	index karakteristik yang didapat
+									*/
+									
+									for(var n in response.obat[k].karakteristik[l][m]){
+										// console.log(response.obat[k].karakteristik[l][m][n].id_karakteristik);			
+										// console.log('N : '+n);
+
+										// '<a href="" data-toggle="modal" data-target="#ModalEditKondisi" data-idkondisi="'+data+'" ><i class="icon ion-edit"></i></a>'
+
+										html +=	"<li>"+response.obat[k].karakteristik[l][m][n].detail_tipe;
+										
+										if (l == 'indikasi') {
+											if (m == 'ada') {
+												html +=	"<i class='icon ion-checkmark-circled text-success'></i>";
+											}
+										}else if (l =='kontraindikasi') {
+											if (m == 'ada') {
+												html +=	"<i class='icon ion-android-alert text-danger'></i>";
+											}
+											else if(m =='tanya'){
+												html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
+												html +=	"<i class='icon ion-help-circled text-primary'></i>";
+												html +=	"</a>";
+												bisa_diberikan = false;
+											}
+										}else if (l == 'peringatan'){
+											if (m == 'ada') {
+												html +=	"<i class='icon ion-android-alert text-warning'></i>";
+											}else if( m == 'tanya'){
+												html +=	"<a data-toggle='modal' data-target='#ModalEditKondisi' data-idtipemaster='"+response.obat[k].karakteristik[l][m][n].id_tipe_master+"' data-iduser='"+response.user[0].id_user+"'>";
+												html +=	"<i class='icon ion-help-circled text-primary'></i>";
+												html +=	"</a>";
+												bisa_diberikan = false;
+											}
+										}
+										html +=	"</li>";
+									}
+								}
+								html +=	"</ol>";
+								html +=	"</div>";
+							}
+							html +=	"</div>";
+
+
+							
+							html +=	"<div class='row'>";
+							html +=	"<div class='col  margin-top-10'>";
+							html += "<a data-toggle='collapse' href='#collapse-catatan-"+response.obat[k].id_obat+"' aria-expanded='false' aria-controls='collapse-catatan-"+response.obat[k].id_obat+"'> Catatan Obat </a>";
+							
+							html += "<div class='collapse' id='collapse-catatan-"+response.obat[k].id_obat+"'>";
+							html += "<div class='card card-body'>"
+							html +=	response.obat[k].catatan_obat;
+							html += "</div>";
+							html += "</div>";
+							
+							html +=	"</div>";
+							html +=	"</div>";
+
+							html +=	"</div>";
+							html +=	"</div>";
+							bisa_diberikan = 1;
+							if (bisa_diberikan) {
+								html += "<div class='row margin-top-10'>";
+								
+								html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
+								html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+								html+="</div>"
+								
+								html += "</div>";
+							}else{
+								html += "<div class='row margin-top-10'>";
+								
+								html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
+								html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+								html+="</div>"
+								
+								html += "</div>";
+							}
+							html +=	"</div>";
+							html +=	"</div>";
 							html +=	"</div>";
 						}
-							
-						html +=	"</div>";
-
-
-						
-						html +=	"<div class='row'>";
-						html +=	"<div class='col  margin-top-10'>";
-						html += "<a data-toggle='collapse' href='#collapse-catatan-"+response.obat[k].id_obat+"' aria-expanded='false' aria-controls='collapse-catatan-"+response.obat[k].id_obat+"'> Catatan Obat </a>";
-						
-						html += "<div class='collapse' id='collapse-catatan-"+response.obat[k].id_obat+"'>";
-						html += "<div class='card card-body'>"
-						html +=	response.obat[k].catatan_obat;
-						html += "</div>";
-						html += "</div>";
-						
-						html +=	"</div>";
-						html +=	"</div>";
-
-						html +=	"</div>";
-						html +=	"</div>";
-						bisa_diberikan = 1;
-						if (bisa_diberikan) {
-							html += "<div class='row margin-top-10'>";
-							
-							html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
-							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
-							html+="</div>"
-							
-							html += "</div>";
-						}else{
-							html += "<div class='row margin-top-10'>";
-							
-							html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
-							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
-							html+="</div>"
-							
-							html += "</div>";
-						}
-						html +=	"</div>";
-						html +=	"</div>";
-						html +=	"</div>";
-					}
-			html +=	"</div>";
-			document.getElementById('resep').innerHTML = html;
+				html +=	"</div>";
+				document.getElementById('resep').innerHTML = html;
+				
+			}
 		});
 	}
 
@@ -228,6 +239,15 @@ $data = json_decode($data,false);
 				update();
 			}
 		);
+	}
+
+	function redirect_view_gejala(){
+		var selectedValues = new Array();
+		for (var i = Things.length - 1; i >= 0; i--) {
+			Things[i]
+		}
+		window.location.href = "<?=base_url('Ppk_C/view_gejala/')?>"+response.nomor_identitas;
+		$('#select-gejala').val(selectedValues);
 	}
 </script>
 
@@ -401,6 +421,23 @@ $data = json_decode($data,false);
 	</form>
 </div>
 
+<!-- MODAL UNTUK REDIRECT KE VIEW_GEJALA -->
+<div class="modal fade" id="ModalRedirect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel_">Perhatian</h4>
+			</div>
+			<div class="modal-body">
+				<p>Form resep Kosong. Redirect ke halaman input gejala</p>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-primary text-white" onclick="redirect_view_gejala()">Ya</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END MODAL UNTUK REDIRECT KE VIEW_GEJALA -->
 
 
 <!-- SIDE NAAV HERE -->
@@ -416,10 +453,10 @@ $data = json_decode($data,false);
 			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled hijau" href="#"> 19 Februari 1997 / 20Thn</i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled hijau" href="#"><?=$data->user[0]->tanggal_lahir != '' ? $data->user[0]->tanggal_lahir : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">No. KTP<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
+			<span class="nav-link">No. Identitas<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
 		</li>
 	</ul>
 </nav>

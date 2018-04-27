@@ -6,6 +6,8 @@ class Pasien_C extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('SO_M');
+		date_default_timezone_set("Asia/Jakarta");
+		
 		if ($this->session->userdata('logged_in')['akses'] !== 'pasien' ){
 			redirect();
 		}
@@ -27,10 +29,13 @@ class Pasien_C extends CI_Controller {
 		
 		/*untuk aksi pada tombol detail user dari datatable registered user pada halaman registered user*/
 		$dataCondition['id_user']	=	$this->session->userdata('logged_in')['id_user'];
-		$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
+		$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto','tanggal_lahir');
 		
 		// cari informasi identitas user
 		$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+		$today = new DateTime();
+		$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
+		$data['umur'] = $today->diff($tanggal_lahir);
 
 		// cari kondisi user
 		$data['kondisi']			=	$this->SO_M->read('kondisi',$dataCondition)->result();
@@ -77,10 +82,13 @@ class Pasien_C extends CI_Controller {
 
 				unset($dataCondition['id_log']);
 				$dataCondition['id_user']	=	$this->session->userdata('logged_in')['id_user'];
-				$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto');
+				$dataCol					=	array('id_user','nama_user','nomor_identitas','no_hp','link_foto','tanggal_lahir');
 
 				// cari informasi identitas user
 				$data['user']				=	$this->SO_M->readCol('user',$dataCondition,$dataCol)->result();
+				$today = new DateTime();
+				$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
+				$data['umur'] = $today->diff($tanggal_lahir);
 
 				$this->load->view('html/header');
 				$this->load->view('pasien/detail_per_log',$data);
