@@ -30,18 +30,18 @@ $data = json_decode($data,false);
 				document.getElementById('detail_wm_gejala').innerHTML = html;
 
 				// parsing gejala yang belum terobati dan gejala yang diobati lebih dari 1 obat untuk dijadikan alert
-				// html = '';
-				// for (var i in response.gejala) {
-				// 	// console.log(response.gejala[i].terobati);
-				// 	if (typeof response.gejala[i].terobati == 'undefined') {
-				// 		html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" belum terobati.</div>";
-				// 	}else{
-				// 		if (response.gejala[i].terobati == 'ganda') {
-				// 			html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" diobati dengan obat ganda.</div>";
-				// 		}
-				// 	}
-				// }
-				// document.getElementById('notif').innerHTML = html;
+				html = '';
+				for (var i in response.gejala) {
+					// console.log(response.gejala[i].terobati);
+					if (typeof response.gejala[i].terobati == 'undefined') {
+						html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" belum terobati.</div>";
+					}else{
+						if (response.gejala[i].terobati == 'ganda') {
+							html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" diobati dengan obat ganda.</div>";
+						}
+					}
+				}
+				document.getElementById('notif').innerHTML = html;
 
 				// parsing jumlah obat dan detailnya pada wm_obat
 				document.getElementById('jumlah_wm_obat').innerHTML = response.obat.length;
@@ -243,9 +243,9 @@ $data = json_decode($data,false);
 
 	function redirect_view_gejala(){
 		var selectedValues = new Array();
-		for (var i = Things.length - 1; i >= 0; i--) {
-			Things[i]
-		}
+		// for (var i = Things.length - 1; i >= 0; i--) {
+		// 	Things[i]
+		// }
 		window.location.href = "<?=base_url('Ppk_C/view_gejala/')?>"+response.nomor_identitas;
 		$('#select-gejala').val(selectedValues);
 	}
@@ -453,7 +453,7 @@ $data = json_decode($data,false);
 			<span class="nav-link">Nama : <i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled hijau" href="#"><?=$data->user[0]->tanggal_lahir != '' ? $data->user[0]->tanggal_lahir : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled hijau" href="#"><?=$data->user[0]->tanggal_lahir != '' ? tgl_indo($data->user[0]->tanggal_lahir) : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
 			<span class="nav-link">No. Identitas<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>

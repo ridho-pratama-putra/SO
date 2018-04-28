@@ -1,0 +1,52 @@
+if (!array_key_exists('terobati', $data['gejala'][$key])) {
+	$data['gejala'][$key]['terobati'] = 'sudah';
+}else{
+	if ($data['gejala'][$key]['terobati'] == 'sudah') {
+		$data['gejala'][$key]['terobati'] = 'ganda';
+	}
+}
+
+
+TRIGGER ON KIRIM ULANG
+
+masukkan gejala2 ke wm_gejala ****tanpa disertai status (NGGANTI YOO, bukan saat klik masukkan obat)
+	cek dulu apakah gejala sudah ada apa belum di wm_gejala, jika sudah, nggak usah masuk
+	masukkan wm_kondisi juga
+
+HAPUS CODE INSERT WM_GEJALA DAN WM_KONDISI PADA KLIK MASUKKAN OBAT. KLIK MASUKKAN OBAT HANYA MEMASUKKAN KE WM_OBAT SAJA
+
+untuk setiap obat pada wm_obat, baca karakteristik indikasi nya
+jika sebuah karakteristik indikasi ditemukan pada array wm_gejala
+	jika data pada wm_gejala field terobati == ''
+		maka set data pada wm_gejala where wm_gejala.detail_indikasi = wm_obat.detail_indikasi ATAU id_indikasinya field terobati = sudah
+	jika data pada wm_gejala field terobati == 'sudah'
+		maka set data pada wm_gejala where wm_gejala.detail_indikasi = wm_obat.detail_indikasi ATAU id_indikasinya field terobati = ganda
+
+*
+	*	1
+	*	
+	*	2
+	*
+	*
+	*
+	*
+	
+*
+	*
+	*	1
+	*
+	*
+	*
+
+
+
+
+
+untuk setiap data pada wm_gejala
+	untuk setiap obat pada wm_obat
+jika sebuah karakteristik indikasi ditemukan pada array wm_gejala
+	jika data pada wm_gejala field terobati == ''
+		maka set data pada wm_gejala field terobati = sudah
+	jika data pada wm_gejala field terobati == 'sudah'
+		maka set data pada wm_gejala field terobati = ganda
+

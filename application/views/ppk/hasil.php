@@ -11,7 +11,7 @@ $data = json_decode($data,false);
 		var selected_gejala = <?php echo $data->gejala_pasien?>;
 		$('#select_gejala').val(selected_gejala).select2();
 
-		// seperti "onload"..hehe. update itu untuk tampilkan hasil pencarian. show_kondisi itu untuk menampilkan apa saja kondisi (rekam medis) seorang pasien.
+		// seperti "onload". update itu untuk tampilkan hasil pencarian. show_kondisi itu untuk menampilkan apa saja kondisi (rekam medis) seorang pasien.
 		update();
 		// show_kondisi();
 		
@@ -113,8 +113,10 @@ $data = json_decode($data,false);
 	function update(){
 		// console.log('update');
 		show_kondisi();
+
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 
+		// cari obat ang relevan, cari histori gejala, cari kondiisi pasien. hasi lpencarian disimpan pada json
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
 		var id_dokter = "<?=$this->session->userdata('logged_in')['id_user']?>";
 		var formData = new FormData($('#cari_gejala')[0])
@@ -321,10 +323,12 @@ $data = json_decode($data,false);
 					currentDiv.innerHTML = html;
 
 					// fetch data histori log pengobatan yang ditemukan
-					html = '';
+					html = '<a class="btn btn-primary btn-block" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> Ditemukan log pengobatan yang mirip, klik  untuk melihat</a> <div class="collapse" id="collapseExample"> <div class="card card-body">';
+
 					for(var k in response.histori){
 						html += "<a href='<?=base_url("Ppk_C/view_detail_per_log/").$data->user[0]->nomor_identitas."/"?>"+k+"' class='btn btn-primary btn-block margin-top-5' target='_blank'> Ditemukan Log pengobatan yang mirip pada tanggal : "+response.histori[k]['tanggal']+" sebanyak : "+response.histori[k]['banyak']+" gejala </a>";
 					}
+					html += '</div></div>';
 
 					currentDiv = document.getElementById("histori_ditemukan");
 					currentDiv.innerHTML = html;
@@ -415,6 +419,7 @@ $data = json_decode($data,false);
 		});
 	}
 
+	// untuk masukkan obat ke wm_obat
 	function masukkan_wm(id_pasien,id_dokter,id_obat){
 		$.post("<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
 			{
@@ -424,11 +429,13 @@ $data = json_decode($data,false);
 				post_id_obat		: id_obat
 			},function (data) {
 				$("#notif").html(data);	
+				koreksi_gejala();
 				// update();
 				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
 			}
 		);
 	}
+	
 	// untuk hapus suatu obat dari wm_obat
 	function hapus_wm(id_pasien,id_dokter,id_obat){
 		$.post("<?=base_url('Ppk_C/handle_delete_wm_obat')?>",
@@ -442,6 +449,7 @@ $data = json_decode($data,false);
 				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
 			}
 		);
+		koreksi_gejala();
 	}
 
 	// untuk cek adakah gejala yang belum terobati, jika ada maka tampilkan alert, jika tidak ada(semua gejala telah terobati) maka redirect ke halaman view_resep_
@@ -452,6 +460,28 @@ $data = json_decode($data,false);
 		}else{
 			
 		}
+	}
+
+	function koreksi_gejala() {
+		// cek gejala. cek mana saja yang sudah terobati dan mana saja yang belum terobati
+		url = "<?=base_url("Ppk_C/koreksi_gejala/").$data->user[0]->id_user?>";
+		$.get(url,function(data){
+			var response = JSON.parse(data);
+			// console.log(response);
+			// parsing gejala yang belum terobati dan gejala yang diobati lebih dari 1 obat untuk dijadikan alert
+			var html = '';
+			for (var i in response.gejala) {
+				// console.log(response.gejala[i].terobati);
+				if (typeof response.gejala[i].terobati == 'undefined') {
+					html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" belum terobati.</div>";
+				}else if (response.gejala[i].terobati == 'ganda') {
+					html += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.gejala[i].detail_gejala+" diobati dengan obat ganda.</div>";
+				}else if (response.gejala[i].terobati == 'sudah') {
+						html += "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Berhasil</strong> Gejala "+response.gejala[i].detail_gejala+" telah diberi obat.</div>";
+				}
+			}
+			document.getElementById('notif').innerHTML += html;
+		});
 	}
 </script>
 <!-- funstion tampilkan hasil collapsible -->
@@ -526,12 +556,12 @@ $data = json_decode($data,false);
 						<input type="hidden" name="nomor_identitas" value="<?=$data->user[0]->nomor_identitas?>">
 					<br>
 					<br>
+					<span class="badge badge-success margin-top-5"id="obat_ditemukan"></span>
 					<div class="row">
 						<div class="col">
 							<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">Kirim ulang</a>
 						</div>
 					</div>
-				<span class="badge badge-success margin-top-5"id="obat_ditemukan"></span>
 				<div id="histori_ditemukan"></div>
 			</div>
 		</div>
@@ -541,8 +571,8 @@ $data = json_decode($data,false);
 		</div>
 		<div class="margin-top-15">
 			<!-- <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button> -->
-			<!-- <a href="<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a> -->
-			<a class="btn btn-primary btn-lg btn-block" onclick="redirect_resep()"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a>
+			<a href="<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a>
+			<!-- <a class="btn btn-primary btn-lg btn-block" onclick="redirect_resep()"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a> -->
 		</div>
 		<div class="margin-top-15" id='ke-resep-obat'></div>
 	</form>
@@ -563,7 +593,7 @@ $data = json_decode($data,false);
 			</span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$data->user[0]->tanggal_lahir != '' ? $data->user[0]->tanggal_lahir : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
+			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$data->user[0]->tanggal_lahir != '' ? tgl_indo($data->user[0]->tanggal_lahir) : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
 			<span class="nav-link">Nomor Identitas<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
