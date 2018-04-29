@@ -242,12 +242,7 @@ $data = json_decode($data,false);
 	}
 
 	function redirect_view_gejala(){
-		var selectedValues = new Array();
-		// for (var i = Things.length - 1; i >= 0; i--) {
-		// 	Things[i]
-		// }
 		window.location.href = "<?=base_url('Ppk_C/view_gejala/')?>"+response.nomor_identitas;
-		$('#select-gejala').val(selectedValues);
 	}
 </script>
 

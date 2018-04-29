@@ -762,8 +762,10 @@ class Ppk_C extends CI_Controller {
 				$this->load->view('ppk/resep',$kirim);
 				$this->load->view('html/footer');
 			}else{
+				$this->SO_M->delete('wm_gejala',array('id_user'=>$data['user'][0]->id_user));
+				$this->SO_M->delete('wm_kondisi',array('id_user'=>$data['user'][0]->id_user));
 				$data['heading']	= "Data tidak ditemukan";
-				$data['message']	= "<p>Belum ada obat yang diresepkan. Coba<a href='".base_url()."Ppk_C/view_id'> input identitas pasien</a>, kemudian mulai alur pengobatan </p>";
+				$data['message']	= "<p>Belum ada obat yang diresepkan. Coba inputkan lagi gejala yang dirasakan pasien <a href='".base_url()."Ppk_C/view_gejala/".$data['user'][0]->nomor_identitas."'>disini</a> untuk memulai lagi alur pengobatan </p>";
 				$this->load->view('errors/html/error_general',$data);
 			}
 		}else{
