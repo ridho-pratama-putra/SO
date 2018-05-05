@@ -237,7 +237,7 @@ class Akun_C extends CI_Controller {
 	{
 		$this->form_validation->set_rules('nama_user','Nama','trim|required');
 		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|is_unique[user.nomor_identitas]');
-		$this->form_validation->set_rules('no_hp','No HP','trim|required|min_length[12]');
+		$this->form_validation->set_rules('no_hp','No HP','trim|required|min_length[10]');
 		$this->form_validation->set_rules('alamat','Alamat','trim|required');
 		if ($this->form_validation->run() == FALSE) {
 			alert('alert_register_user','danger','Gagal','Cek lagi form inputan');

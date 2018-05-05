@@ -128,6 +128,7 @@ class Ppk_C extends CI_Controller {
 			$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
 			$data['umur'] = $today->diff($tanggal_lahir);
 			$data['gejala']	=	$this->SO_M->readS('master_gejala')->result();
+			$this->SO_M->delete('wm_obat',array('id_pasien'=>$data['user'][0]->id_user));
 			$this->load->view('html/header');
 			$this->load->view('ppk/form_gejala',$data);
 			$this->load->view('html/footer');
@@ -498,6 +499,24 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	// untuk dapatkan gejala yang terdapat pada wm_obat, karena form input pencarian benar2 berfungsi sebagai pencari sebagaimana seharusnya.
+	function get_wm_gejala($id_user)
+	{
+		echo json_encode($this->SO_M->readCol('wm_gejala',array('id_user'=>$id_user),array('id_wm_gejala','id_gejala','detail_gejala'))->result());
+	}
+
+	// untuk delete data pada wm_gejala
+	function handle_delete_wm_gejala()
+	{
+		if ($this->input->post() !== null) {
+			if ($this->SO_M->delete('wm_gejala',array('id_wm_gejala'=>$this->input->post('post_id_wm_gejala')))) {
+				echo json_encode(array('status'=>1));
+			}else{
+				echo json_encode(array('status'=>0));
+			}
+		}
+	}
+
 	// dapatkan suatu kondisi seseorang. fungsi ini diguankan saat modal edit kondisi dipanggil
 	public function get_kondisi($id_kondisi)
 	{
@@ -731,6 +750,7 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	// 
 	public function handle_delete_wm_obat()
 	{
 		if ($this->input->post() != null) {
@@ -745,6 +765,7 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
+	// untuk halaman cekout dari obat2 yang dipilih
 	public function view_resep_($nomor_identitas)
 	{
 		$dataWhere					=	array('nomor_identitas' =>$nomor_identitas);

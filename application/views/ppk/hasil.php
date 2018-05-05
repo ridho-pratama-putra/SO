@@ -480,12 +480,58 @@ $data = json_decode($data,false);
 						html += "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Berhasil</strong> Gejala "+response.gejala[i].detail_gejala+" telah diberi obat.</div>";
 				}
 			}
-			document.getElementById('notif').innerHTML += html;
+			document.getElementById('notif').innerHTML = html;
 		});
 	}
+
+	function cekAvailableWmObat(id_user = <?=$data->user[0]->id_user?>){
+		document.getElementById('tutupHapusWmGejala').innerHTML = 'MOHON TUNGGU..';
+		document.getElementById('availableWmObat').innerHTML ='';
+		var url ="<?=base_url('Ppk_C/get_wm_gejala/')?>"+id_user;
+		$.get(url,function(data){
+			var response = JSON.parse(data);
+			if (response.length == 0) {
+				document.getElementById('availableWmObat').innerHTML = '<h6>Tutup jendela ini, kemudian masukkan beberapa obat ke peresepan melalui form pencarian indikasi</h6>';
+				document.getElementById('tutupHapusWmGejala').setAttribute("href","<?=base_url('Ppk_C/view_gejala/').$data->user[0]->nomor_identitas?>");
+				document.getElementById('tutupHapusWmGejala').innerHTML = 'TUTUP';
+				document.getElementById('tutupHapusWmGejala').removeAttribute("data-dismiss");
+			}else{
+				var html = '';
+				// console.log(response.length);
+				for(var i in response) {
+				html += "<div class='row margin-top-5'>";
+					html += "<div class='col'>";
+						html += response[i].detail_gejala;
+					html += "</div>";
+					html += "<div class='col'>";
+						html += '<button type="button" class="btn btn-primary float-right" onclick="hapusWmGejala('+response[i].id_wm_gejala+')"><i class="icon ion-android-delete"></i></button>';
+						// html += response[i].id_user;
+					html += "</div>";
+				html += "</div>";
+				}
+				document.getElementById('availableWmObat').innerHTML = html;
+				document.getElementById('tutupHapusWmGejala').innerHTML = 'TUTUP';
+				document.getElementById('tutupHapusWmGejala').setAttribute("data-dismiss","modal");
+				koreksi_gejala();
+			}
+		});
+	}
+
+	// function unutk tombol hapus suatu gejala pada wm obat
+	function hapusWmGejala(id_wm_gejala) {
+		
+		$.post(
+			"<?=base_url('Ppk_C/handle_delete_wm_gejala')?>",{
+				post_id_wm_gejala : id_wm_gejala
+			},function(){
+				cekAvailableWmObat();
+			}
+		);
+	}
+
+
 </script>
 <!-- funstion tampilkan hasil collapsible -->
-
 <!-- MODAL UNTUK UPDATE KONDISI SEORANG PASIEN -->
 <div class="modal fade" id="ModalEditKondisi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
@@ -540,41 +586,75 @@ $data = json_decode($data,false);
 </div>
 <!-- END MODAL UNTUK UNKNOWN FACT -->
 
+<!-- MODAL UNTUK HAPUS BEBERAPA GEJALA PADA WM -->
+<div class="modal fade hide" id="hapusWm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog" role="document">
+		<form id="formunknownfact" method="POST">      
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel_">Berikut ini gejala yang telah masuk kedalam database</h4>
+					
+				</div>
+				<div class="modal-body">
+					<div id="alertHapusWmObat">
+						
+					</div>
+					<div id="availableWmObat">
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-secondary text-white" data-dismiss="modal" id="tutupHapusWmGejala" role="button">TUTUP</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- END MODAL UNTUK HAPUS BEBERAPA GEJALA PADA WM -->
+
 <!-- konten kanan -->
 <div class="col-md-10 konten-kanan" id="style-1">
 	<form method="POST" id="cari_gejala" action="<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>">	
 		<div class="row" id="indikasi-yang-dicari">
 			<div class="col">
 				<h3>Indikasi yang dicari:</h3>
-						<select class="js-example-basic-multiple col" id="select_gejala" name="gejala[]" multiple title="klik untuk menambah atau mengganti gejala">
-							<?php
-								foreach ($data->gejala_master as $key => $value) {
-									echo "<option value='$value->id_gejala'>$value->detail_gejala</option>";
-								}
-							?>
-						</select>
-						<input type="hidden" name="nomor_identitas" value="<?=$data->user[0]->nomor_identitas?>">
-					<br>
-					<br>
-					<span class="badge badge-success margin-top-5"id="obat_ditemukan"></span>
-					<div class="row">
-						<div class="col">
-							<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">Kirim ulang</a>
-						</div>
+					<select class="js-example-basic-multiple col" id="select_gejala" name="gejala[]" multiple title="klik untuk menambah atau mengganti gejala">
+						<?php
+							foreach ($data->gejala_master as $key => $value) {
+								echo "<option value='$value->id_gejala'>$value->detail_gejala</option>";
+							}
+						?>
+					</select>
+					<input type="hidden" name="nomor_identitas" value="<?=$data->user[0]->nomor_identitas?>">
+				<br>
+				<br>
+				<span class="badge badge-success"id="obat_ditemukan"></span>
+				<div class="row margin-top-5">
+					<div class="col">
+						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">KIRIM ULANG</a>
 					</div>
-				<div id="histori_ditemukan"></div>
+					<div class="col">
+						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" data-toggle="modal" data-target="#hapusWm" onclick="cekAvailableWmObat()">HAPUS BEBERAPA HASIL DIAGNOSA</a>
+					</div>
+				</div>
+				<div class="row margin-top-10">
+					<div class="col">
+						<div id="histori_ditemukan"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="margin-top-5" id="notif"></div>
-	<!-- collapsible ajax HERE-->
+		<!-- collapsible ajax hasil pencarian obat HERE-->
 		<div id="hasil">
 		</div>
-		<div class="margin-top-15">
+		<!-- END collapsible ajax hasil pencarian obat HERE-->
+		<div class="margin-top-5">
 			<!-- <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button> -->
 			<a href="<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a>
 			<!-- <a class="btn btn-primary btn-lg btn-block" onclick="redirect_resep()"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a> -->
 		</div>
-		<div class="margin-top-15" id='ke-resep-obat'></div>
+		<div class="margin-top-5" id='ke-resep-obat'></div>
 	</form>
 </div>
 

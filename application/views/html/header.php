@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-	<title>Sistem Pemberian Saran Obat</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sistem pemberian saran obat menggunakan metode Forward Chaining dan Backward Chaining oleh ridho pratama putra">
+    <meta name="author" content="mandor: M. Zainal Arifin, analis: Agusta Rakhmat Taufani, kuli : Ridho Pratama Putra">
+    <title> Sistem Pemberian Saran Obat</title
 </head>
 
 <link rel="shortcut icon" href="<?php echo base_url()?>assets/images/favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,7 +50,7 @@
 <body>
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-			<a href="<?=base_url()?>" class="navbar-brand text-white">Sistem Pemberian Saran Obat</a>
+			<a href="<?=base_url()?>" class="navbar-brand text-white"><h6 style="margin-top: px;">Sistem Pemberian Saran Obat</h6></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>

@@ -30,7 +30,7 @@
 		<h4>Daftar obat yang diberikan</h4>
 		<ol>
 			<?php foreach ($obat_per_log as $key => $value) {	?>
-				<li><a class="btn text-white badge badge-primary" href="<?=base_url()?>Ppk_C/view_karakteristik_obat/<?=$value->id_obat?>" role='button'><?= $value->nama_obat ?></a></li>
+				<li><a class="btn text-white badge badge-primary" href="<?=base_url()?>Pasien_C/view_karakteristik_obat/<?=$value->id_log."/".$value->id_obat."/".$user[0]->id_user?>" role='button'><?= $value->nama_obat ?></a></li>
 			<?php } ?>
 		</ol>
 	</div>
