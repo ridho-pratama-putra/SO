@@ -176,14 +176,14 @@ class Akun_C extends CI_Controller {
 	*/
 	function handle_register_user()
 	{
-		$this->form_validation->set_rules('nama_user','Nama','trim|required');
-		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|is_unique[user.nomor_identitas]');
-		$this->form_validation->set_rules('no_hp','No HP','trim|required|min_length[12]');
-		$this->form_validation->set_rules('alamat','Alamat','trim|required');
+		$this->form_validation->set_rules('nama_user','Nama','trim|required|alpha');
+		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|numeric|is_unique[user.nomor_identitas]');
+		$this->form_validation->set_rules('no_hp','No HP','trim|required|numeric|min_length[10]|numeric');
+		$this->form_validation->set_rules('alamat','Alamat','trim|required|alpha_numeric_spaces');
 
 		if ($this->form_validation->run() == FALSE) {
-			alert('alert_register_user','danger','Gagal','Kesalahan pada form validation');
-			redirect('Akun_C/view_register_user');
+			// alert('alert_register_user','danger','Gagal','Kesalahan pada form validation');
+			$this->view_register_user();
 		}
 		else {
 
@@ -235,71 +235,59 @@ class Akun_C extends CI_Controller {
 	/*function dobawah ini digunakan saat ppk ingin mendaftarkan pasien baru*/
 	function handle_register_user_umum()
 	{
-		$this->form_validation->set_rules('nama_user','Nama','trim|required');
-		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|is_unique[user.nomor_identitas]');
-		$this->form_validation->set_rules('no_hp','No HP','trim|required|min_length[10]');
-		$this->form_validation->set_rules('alamat','Alamat','trim|required');
-		if ($this->form_validation->run() == FALSE) {
-			alert('alert_register_user','danger','Gagal','Cek lagi form inputan');
-			if (isset($this->session->userdata['logged_in'])) {
-				if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
-					redirect('Akun_C/view_register_user_ppk');
-				}else{
-					redirect('Akun_C/view_register_user');
-				}
-			}else{
-				redirect('Akun_C/view_register_user');
+		if ($this->session->userdata['logged_in']['akses'] == 'ppk' or $this->session->userdata['logged_in']['akses'] == 'pasien') {
+			$this->form_validation->set_rules('nama_user','Nama','trim|alpha|required');
+			$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|numeric|is_unique[user.nomor_identitas]');
+			$this->form_validation->set_rules('no_hp','No HP','trim|required|numeric|min_length[10]');
+			$this->form_validation->set_rules('alamat','Alamat','trim|required|alpha_numeric_spaces');
+			if ($this->form_validation->run() == FALSE) {
+				$this->view_register_user();
 			}
-		}
-		else {
-			// settingan uplod gambar
-			$config['upload_path']          = FCPATH."assets/images/users_photo/";
-			$config['allowed_types']        = 'jpg|png|jpeg';
-			$this->load->library('upload',$config);
-			// coba upload foto
-			if($this->upload->do_upload('link_foto')){
-				// dapatkan informasi gambar yang diupload. datax digunakan untuk ambil nama foto biar disimpan di database
-				$datax = $this->upload->data();	
-				// buat alert kalau insert pp di direktori berhasil (link belum masuk db)
-				alert('alert_register_foto','success','Berhasil','Upload foto profil berhasil');
-				
-				// setelah upload foto ke direktori berhasil, ambil semua inputan pengguna
-				$data = array(	
-								'nama_user'			=>	$this->input->post('nama_user'),
-								'password'			=>	hash("sha256", "SO"),
-								'nomor_identitas'	=>	$this->input->post('nomor_identitas'),
-								'no_hp'				=>	$this->input->post('no_hp'),
-								'alamat'			=>	$this->input->post('alamat'),
-								'akses'				=>	'pasien',
-								'link_foto'			=>	"assets/images/users_photo/".$datax['file_name']
-				);
+			else {
+				// settingan uplod gambar
+				$config['upload_path']          = FCPATH."assets/images/users_photo/";
+				$config['allowed_types']        = 'jpg|png|jpeg';
+				$this->load->library('upload',$config);
+				// coba upload foto
+				if($this->upload->do_upload('link_foto')){
+					// dapatkan informasi gambar yang diupload. datax digunakan untuk ambil nama foto biar disimpan di database
+					$datax = $this->upload->data();	
+					// buat alert kalau insert pp di direktori berhasil (link belum masuk db)
+					alert('alert_register_foto','success','Berhasil','Upload foto profil berhasil');
+					
+					// setelah upload foto ke direktori berhasil, ambil semua inputan pengguna
+					$data = array(	
+									'nama_user'			=>	$this->input->post('nama_user'),
+									'password'			=>	hash("sha256", "SO"),
+									'nomor_identitas'	=>	$this->input->post('nomor_identitas'),
+									'no_hp'				=>	$this->input->post('no_hp'),
+									'alamat'			=>	$this->input->post('alamat'),
+									'akses'				=>	'pasien',
+									'link_foto'			=>	"assets/images/users_photo/".$datax['file_name']
+					);
 
-				// masukkan data ke database
-				$result = $this->SO_M->create('user',$data);
+					// masukkan data ke database
+					$result = $this->SO_M->create('user',$data);
 
-				// jika berhasil memasukkan ke database
-				if ($result) {
-					alert('alert_register_user','success','Berhasil','Registrasi berhasil');
+					// jika berhasil memasukkan ke database
+					if ($result) {
+						alert('alert_register_user','success','Berhasil','Registrasi berhasil');
+					}
+
+					// jika gagal masuk ke database
+					else{
+						alert('alert_register_user','warning','Gagal','Kesalahan kueri');
+					}
 				}
-
-				// jika gagal masuk ke database
 				else{
-					alert('alert_register_user','warning','Gagal','Kesalahan kueri');
+					// alert gagal upload foto ke direktori
+					alert('alert_register_foto','warning','Gagal','upload foto profil gagal');
 				}
-			}
-			else{
-				// alert gagal upload foto ke direktori
-				alert('alert_register_foto','warning','Gagal','upload foto profil gagal');
-			}
-			if (isset($this->session->userdata['logged_in'])) {
 				if ($this->session->userdata['logged_in']['akses'] == 'ppk') {
-					redirect('Akun_C/view_register_user_ppk');
+					redirect('Akun_C/view_register_user');
 				}else{
 					redirect('Akun_C/view_register_user');
 				}
-			}
-			else{
-				redirect('Akun_C/view_register_user');
 			}
 		}
 	}
@@ -375,5 +363,14 @@ class Akun_C extends CI_Controller {
 			alert('alert_edit_identitas','danger','Gagal','Perubahan tidak masuk database');
 		}
 		redirect('Akun_C/view_edit_identitas/'.$this->input->post('id_user'));
+	}
+
+	function handle_delete_user($id_user){
+		if ($this->session->userdata['logged_in']['akses'] == 'admin') {
+			$this->SO_M->delete('user',array('id_user'=>$id_user));
+			redirect('Akun_C/view_registered_user');
+		}else{
+			redirect('Akun_C/view_registered_user');
+		}
 	}
 }

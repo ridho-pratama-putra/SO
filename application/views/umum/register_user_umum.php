@@ -3,6 +3,11 @@
 	<div class="col-lg-6 offset-lg-3 center-block" id="alert">
 	<?=$this->session->flashdata("alert_register_foto");?>
 	<?=$this->session->flashdata("alert_register_user");?>
+	<?php if (validation_errors()) { ?>
+		<div class="alert alert-danger" alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+		<?=validation_errors()?>
+		</div>
+	<?php }?>
 	</div>
 	<br>
 	<div class="jumbotron col-lg-6 offset-lg-3">

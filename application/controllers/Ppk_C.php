@@ -349,7 +349,6 @@ class Ppk_C extends CI_Controller {
 
 
 			// sorting indikasi dari tinggi ke rendah
-			$maxIfounded;
 			for ($i=0; $i < sizeof($data['obat']); $i++) {
 				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
 					if ($data['obat'][$j]->Iada < $data['obat'][$j+1]->Iada) {
@@ -360,36 +359,59 @@ class Ppk_C extends CI_Controller {
 					}
 				}
 			}
-			
-			$maxIfounded = $data['obat'][0]->Iada;
-			// echo $maxIfounded;
-			for ($i=0; $i < sizeof($data['obat']); $i++) { 
-				if ($data['obat'][$i]->Iada == $maxIfounded) {
-					for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
-						if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada ) {
-							$temp = $data['obat'][$j];
-							$data['obat'][$j] = $data['obat'][$j+1];
-							$data['obat'][$j+1] = $temp;
-						}
+
+			// sorting peringatan rendah ke tinggi
+			for ($i=0; $i < sizeof($data['obat']); $i++) {
+				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
+					if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada) {
+						// var_dump($data['obat'][$j]->Iada);
+						$temp = $data['obat'][$j];
+						$data['obat'][$j] = $data['obat'][$j+1];
+						$data['obat'][$j+1] = $temp;
 					}
 				}
 			}
 			
-			$minPfounded = $data['obat'][0]->Pada;
-			for ($i=0; $i < sizeof($data['obat']); $i++) { 
-				if ($data['obat'][$i]->Iada == $maxIfounded) {
-					if ($data['obat'][$i]->Pada == $minPfounded) {
-						for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
-							if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
-								// echo $data['obat'][$j]->Kada." | ";
-								$temp = $data['obat'][$j];
-								$data['obat'][$j] = $data['obat'][$j+1];
-								$data['obat'][$j+1] = $temp;
-							}
-						}
+			// sorting kontraindikasi rendah ke tinggi
+			for ($i=0; $i < sizeof($data['obat']); $i++) {
+				for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) {
+					if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada) {
+						// var_dump($data['obat'][$j]->Iada);
+						$temp = $data['obat'][$j];
+						$data['obat'][$j] = $data['obat'][$j+1];
+						$data['obat'][$j+1] = $temp;
 					}
 				}
 			}
+			// ambil yang paling tinggi, yakni pada indek 0
+			// $maxIfounded = $data['obat'][0]->Iada;
+			// for ($i=0; $i < sizeof($data['obat']); $i++) { 
+			// 	if ($data['obat'][$i]->Iada == $maxIfounded) {
+			// 		for ($j=$i; $j < sizeof($data['obat'])-1 ; $j++) { 
+			// 			if ($data['obat'][$j]->Pada > $data['obat'][$j+1]->Pada ) {
+			// 				$temp = $data['obat'][$j];
+			// 				$data['obat'][$j] = $data['obat'][$j+1];
+			// 				$data['obat'][$j+1] = $temp;
+			// 			}
+			// 		}
+			// 	}
+			// }
+			
+			// $minPfounded = $data['obat'][0]->Pada;
+			// for ($i=0; $i < sizeof($data['obat']); $i++) { 
+			// 	if ($data['obat'][$i]->Iada == $maxIfounded) {
+			// 		if ($data['obat'][$i]->Pada == $minPfounded) {
+			// 			for ($j=0; $j < sizeof($data['obat'])-1 ; $j++) { 
+			// 				if ($data['obat'][$j]->Kada > $data['obat'][$j+1]->Kada ) {
+			// 					// echo $data['obat'][$j]->Kada." | ";
+			// 					$temp = $data['obat'][$j];
+			// 					$data['obat'][$j] = $data['obat'][$j+1];
+			// 					$data['obat'][$j+1] = $temp;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
 			echo json_encode($data);
 		}else{
 			$data = array('status' => false,'message' => 'tidak ada data yang di post');
