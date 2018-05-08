@@ -247,7 +247,7 @@
 									<select class="form-control" name="status" id="status">
 										<option selected disabled>Pilih Status</option>
 										<option value="1">Aman</option>
-										<option value="0">Mengidap</option>
+										<option value="0">Hindari</option>
 									</select>
 								</div>
 							</div>

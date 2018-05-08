@@ -7,6 +7,7 @@
 	}
 </style>
 <div class="col margin-top-15">
+	<h2>OBAT <?=$obat[0]->nama_obat?></h2>
 	<div class="col-12 rounded konten-karakteristik">
 		<h3>INDIKASI</h3>
 		<ul>
