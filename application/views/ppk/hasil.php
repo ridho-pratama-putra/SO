@@ -29,7 +29,18 @@ $data = json_decode($data,false);
 		$('#ModalUnknownFact').on('hidden.bs.modal', function (e) {
 			// console.log('onhide');
 			update();
-		})
+		});
+
+		// untuk handle disaat modal tambah obat ditutup
+		$('#LihatWmObat').on('hidden.bs.modal', function (e) {
+			// console.log('onhide');
+			update();
+		});
+
+		// $('#LihatWmGejala').on('hidden.bs.modal', function (e) {
+		// 	// console.log('onhide');
+		// 	update();
+		// });
 
 		// button saat seorang pasien menderita penyakit tersebut
 		$("#btn-ya-kondisi" ).click(function() {
@@ -53,7 +64,7 @@ $data = json_decode($data,false);
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					console.log(jqXHR, textStatus, errorThrown);
-					$('#btn-ya-kondisi').text('Eror'); //change button text
+					$('#btn-ya-kondisi').text('ULANG'); //change button text
 					$('#btn-ya-kondisi').attr('disabled',false); //set button enable 
 				}
 			});
@@ -81,7 +92,7 @@ $data = json_decode($data,false);
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					console.log(jqXHR, textStatus, errorThrown);
-					$('#btn-tidak-kondisi').text('Eror'); //change button text
+					$('#btn-tidak-kondisi').text('ULANG'); //change button text
 					$('#btn-tidak-kondisi').attr('disabled',false); //set button enable 
 				}
 			});
@@ -97,15 +108,17 @@ $data = json_decode($data,false);
 		$.get("<?=base_url("Ppk_C/get_col_kondisi/").$data->user[0]->id_user?>",function(html){
 			note_kondisi = JSON.parse(html);
 			// reset variabel html
-			html = '';
+			html_aman = '';
+			html_hindari = '';
 			for(var i in note_kondisi){
 				if (note_kondisi[i].status == 0) {
-					html += "<a class='nav-link disabled text-white badge badge-danger'>"+note_kondisi[i].detail_kondisi+"</a> ";
+					html_hindari += "<a class='nav-link disabled text-white badge badge-danger'>"+note_kondisi[i].detail_kondisi+"</a> ";
 				}else{
-					html += "<a class='nav-link disabled text-white badge badge-success'>"+note_kondisi[i].detail_kondisi+"</a> ";
+					html_aman += "<a class='nav-link disabled text-white badge badge-success'>"+note_kondisi[i].detail_kondisi+"</a> ";
 				}
 			}
-			document.getElementById('note-kondisi').innerHTML = html;	
+			document.getElementById('note-kondisi-aman').innerHTML = html_aman;	
+			document.getElementById('note-kondisi-hindari').innerHTML = html_hindari;	
 		});
 	}
 	
@@ -113,13 +126,18 @@ $data = json_decode($data,false);
 	function update(){
 		// console.log('update');
 		show_kondisi();
-
+		koreksi_gejala();
+		cekAvailableWmObat_();
 		$('#kirim-ulang').text('MOHON TUNGGU..');
 
 		// cari obat ang relevan, cari histori gejala, cari kondiisi pasien. hasi lpencarian disimpan pada json
 		var url = "<?=base_url("Ppk_C/cari_hasil/").$data->user[0]->nomor_identitas?>";
 		var id_dokter = "<?=$this->session->userdata('logged_in')['id_user']?>";
-		var formData = new FormData($('#cari_gejala')[0])
+		var formData = new FormData($('#cari_gejala')[0]);
+
+		// untuk generate elemen tombol resep saat sudah ada obat di wm_pbat
+		var tombolresep = '';
+
 		$.ajax({
 			url : url,
 			type: "POST", 
@@ -127,24 +145,28 @@ $data = json_decode($data,false);
 			contentType: false,
 			processData: false,
 			success: function(data){
+				// console.log(data);
 				// $("#notif").html(data);	
 				response = JSON.parse(data);
+
 				if (typeof response.obat == 'undefined') {
 					$('#hasil').empty();
 					$('#kirim-ulang').text('KIRIM ULANG');
 				}else{
 					console.log(response);
 					document.getElementById("obat_ditemukan").innerHTML = response.obat.length + ' Obat ditemukan';
+					
+					// apakah di wmobat sudah ada obat?
+					var boolwmobat = false;
+
 					var html = "<div class='row padding-top-10'>";
 					html +=	"<div class='col'>";
-					html +=	"<div class='margin-top-20'>";
-					html +=	"</div>";
-					html +=	"<div id='accordion'>";
+					html +=	"<div id='accordion' class='margin-top-20'>";
 					
 					// fetch data obat yang ditemukan
 					for(var k in response.obat){
 						
-						html 		+=	"<div class='card margin-top-20'>";
+						html 		+=	"<div class='card margin-top-5'>";
 						html 		+=	"<div class='card-header' id='heading"+response.obat[k].id_obat+"'>";
 						html 		+=	"<div class='row'>";
 						html 		+=	"<div class='col'>";
@@ -158,7 +180,7 @@ $data = json_decode($data,false);
 						
 						html 		+=	"<div class='col-3 ditemukan rounded'>";
 						
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien' onclick='dobol()'>";
+						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien'>";
 						html 		+=	"</i>";
 						
 						html 		+=	"<h6 class='text-center'>Indikasi Cocok/Obat ditemukan";
@@ -294,12 +316,15 @@ $data = json_decode($data,false);
 						html += "<div class='row margin-top-10'>";
 						if (response.obat[k].wm_obat == 'belum') {
 							html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
-							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
-							html+="</div>"
+							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")' title='Masukkan obat ke peresepan'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+							html+="</div>";
+							// boolwmobat = false;
 						}else{
 							html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
-							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
-							html+="</div>"
+							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")' title='Obat telah masuk kedalam peresepan. Kunjungi halaman peresepan melalui tombol daftar resep di ujung akhir halaman ini'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+							html+="</div>";
+
+							boolwmobat = true;
 						}
 							
 						if (bisa_diberikan == false) {
@@ -319,27 +344,38 @@ $data = json_decode($data,false);
 					html +=	"</div>";
 					html +=	"</div>";
 
-					var currentDiv = document.getElementById("hasil"); 
-					currentDiv.innerHTML = html;
+					document.getElementById("hasil").innerHTML = html;
+					// console.log(response.histori);
+					html ='';
+					if (response.histori.length != 0) {
+						// fetch data histori log pengobatan yang ditemukan
+						html = '<a class="btn btn-primary btn-block" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> DITEMUKAN LOG PENGOBATAN YANG MIRIP, KLIK UNTUK MELIHAT</a> <div class="collapse" id="collapseExample"> <div class="card card-body">';
 
-					// fetch data histori log pengobatan yang ditemukan
-					html = '<a class="btn btn-primary btn-block" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> Ditemukan log pengobatan yang mirip, klik  untuk melihat</a> <div class="collapse" id="collapseExample"> <div class="card card-body">';
-
-					for(var k in response.histori){
-						html += "<a href='<?=base_url("Ppk_C/view_detail_per_log/").$data->user[0]->nomor_identitas."/"?>"+k+"' class='btn btn-primary btn-block margin-top-5' target='_blank'> Ditemukan Log pengobatan yang mirip pada tanggal : "+response.histori[k]['tanggal']+" sebanyak : "+response.histori[k]['banyak']+" gejala </a>";
+						for(var k in response.histori){
+							html += "<a href='<?=base_url("Ppk_C/view_detail_per_log/").$data->user[0]->nomor_identitas."/"?>"+response.histori[k].id_log+"' class='btn btn-primary btn-block margin-top-5' target='_blank'> TANGGAL : "+response.histori[k]['tanggal']+" SEBANYAK : "+response.histori[k]['jumlah']+" GEJALA </a>";
+						}
+						html += '</div>';
+						html += '</div>';
 					}
-					html += '</div></div>';
 
 					currentDiv = document.getElementById("histori_ditemukan");
 					currentDiv.innerHTML = html;
 
 					$('#kirim-ulang').text('KIRIM ULANG');
+					if (boolwmobat) {
+						tombolresep = "<a href='<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>' class='btn btn-dark btn-block'><i class='icon ion-clipboard'></i> KE DAFTAR RESEP</a>";
+						document.getElementById("tombolResep").className = "col";
+						document.getElementById('tombolResep').innerHTML = tombolresep;
+					}else{
+						document.getElementById('tombolResep').innerHTML = '';
+					}
+					// console.log('tombolResep '+ tombolresep);
 				}
 
 			},error: function (jqXHR, textStatus, errorThrown)
 			{
 				console.log(jqXHR, textStatus, errorThrown);
-				$('#kirim-ulang').text('eror');
+				$('#kirim-ulang').text('KIRIM ULANG');
 				$('#kirim-ulang').attr('disabled',false);
 			}
 		});
@@ -365,7 +401,7 @@ $data = json_decode($data,false);
 			error: function (jqXHR, textStatus, errorThrown)
 			{
 				console.log(jqXHR, textStatus, errorThrown);
-				$('#btn-unknown-ya-kondisi').text('Eror'); //change button text
+				$('#btn-unknown-ya-kondisi').text('ULANG'); //change button text
 				$('#btn-unknown-ya-kondisi').attr('disabled',false); //set button enable 
 			}
 		});
@@ -391,7 +427,7 @@ $data = json_decode($data,false);
 			error: function (jqXHR, textStatus, errorThrown)
 			{
 				console.log(jqXHR, textStatus, errorThrown);
-				$('#btn-unknown-tidak-kondisi').text('Eror'); //change button text
+				$('#btn-unknown-tidak-kondisi').text('ULANG'); //change button text
 				$('#btn-unknown-tidak-kondisi').attr('disabled',false); //set button enable 
 			}
 		});
@@ -428,15 +464,43 @@ $data = json_decode($data,false);
 				post_gejala			: $("#select_gejala").val(),
 				post_id_obat		: id_obat
 			},function (data) {
-				$("#notif").html(data);	
-				koreksi_gejala();
+				// $("#notif").html(data);	
 				// update();
-				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Obat telah masuk kedalam peresepan. Kunjungi halaman peresepan melalui tombol daftar resep di ujung akhir halaman ini'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+				
+				cekAvailableWmObat_();
+				document.getElementById('notif').innerHTML = data;
+				koreksi_gejala();
+				
 			}
 		);
+
+		// $.ajax({
+		// 	type: 'POST',
+		// 	url: "<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
+		// 	data: {
+		// 		post_id_pasien		: id_pasien,
+		// 		post_id_dokter		: id_dokter,
+		// 		post_gejala			: $("#select_gejala").val(),
+		// 		post_id_obat		: id_obat
+		// 	},
+		// 	dataType: "text",
+		// 	success: function(resultData) {
+		// 		document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Obat telah masuk kedalam peresepan. Kunjungi halaman peresepan melalui tombol daftar resep di ujung akhir halaman ini'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
+				
+		// 		cekAvailableWmObat_();
+		// 		document.getElementById('notif').innerHTML = resultData;
+		// 		koreksi_gejala();
+		// 	},
+		// 	error: function (jqXHR, textStatus, errorThrown)
+		// 		{
+		// 			console.log(jqXHR, textStatus, errorThrown);
+		// 			document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Masukkan obat ke peresepan'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+		// 		}
+		// });
 	}
 	
-	// untuk hapus suatu obat dari wm_obat
+	// untuk hapus suatu obat dari wm_obat // hanya untuk tombol setiap obat. 
 	function hapus_wm(id_pasien,id_dokter,id_obat){
 		$.post("<?=base_url('Ppk_C/handle_delete_wm_obat')?>",
 			{
@@ -444,9 +508,11 @@ $data = json_decode($data,false);
 				post_id_dokter		: id_dokter,
 				post_id_obat		: id_obat
 			},function(data){
-				$("#notif").html(data);	
 				// update();
-				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+				// console.log(data);
+				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Masukkan obat ke peresepan'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+				document.getElementById('notif').innerHTML = data;
+				cekAvailableWmObat_();
 			}
 		);
 		koreksi_gejala();
@@ -463,11 +529,13 @@ $data = json_decode($data,false);
 	}
 
 	function koreksi_gejala() {
+		// console.log('koreksigejala');
 		// cek gejala. cek mana saja yang sudah terobati dan mana saja yang belum terobati
 		url = "<?=base_url("Ppk_C/koreksi_gejala/").$data->user[0]->id_user?>";
 		$.get(url,function(data){
+			// console.log(data);
+			if (data != 'empty') {
 			var response = JSON.parse(data);
-			// console.log(response);
 			// parsing gejala yang belum terobati dan gejala yang diobati lebih dari 1 obat untuk dijadikan alert
 			var html = '';
 			for (var i in response.gejala) {
@@ -480,21 +548,22 @@ $data = json_decode($data,false);
 						html += "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Berhasil</strong> Gejala "+response.gejala[i].detail_gejala+" telah diberi obat.</div>";
 				}
 			}
-			document.getElementById('notif').innerHTML = html;
+			document.getElementById('notif').innerHTML += html;
+		}
 		});
 	}
 
-	function cekAvailableWmObat(id_user = <?=$data->user[0]->id_user?>){
-		document.getElementById('tutupHapusWmGejala').innerHTML = 'MOHON TUNGGU..';
-		document.getElementById('availableWmObat').innerHTML ='';
+	function cekAvailableWmGejala(id_user = <?=$data->user[0]->id_user?>){
+		document.getElementById('tutupLihatWmGejala').innerHTML = 'MOHON TUNGGU..';
+		document.getElementById('availableWmGejala').innerHTML ='';
 		var url ="<?=base_url('Ppk_C/get_wm_gejala/')?>"+id_user;
 		$.get(url,function(data){
 			var response = JSON.parse(data);
 			if (response.length == 0) {
-				document.getElementById('availableWmObat').innerHTML = '<h6>Tutup jendela ini, kemudian masukkan beberapa obat ke peresepan melalui form pencarian indikasi</h6>';
-				document.getElementById('tutupHapusWmGejala').setAttribute("href","<?=base_url('Ppk_C/view_gejala/').$data->user[0]->nomor_identitas?>");
-				document.getElementById('tutupHapusWmGejala').innerHTML = 'TUTUP';
-				document.getElementById('tutupHapusWmGejala').removeAttribute("data-dismiss");
+				document.getElementById('availableWmGejala').innerHTML = '<h6>Tutup jendela ini, kemudian masukkan beberapa obat ke peresepan melalui form pencarian indikasi</h6>';
+				document.getElementById('tutupLihatWmGejala').setAttribute("href","<?=base_url('Ppk_C/view_gejala/').$data->user[0]->nomor_identitas?>");
+				document.getElementById('tutupLihatWmGejala').innerHTML = 'TUTUP';
+				document.getElementById('tutupLihatWmGejala').removeAttribute("data-dismiss");
 			}else{
 				var html = '';
 				// console.log(response.length);
@@ -504,27 +573,104 @@ $data = json_decode($data,false);
 						html += response[i].detail_gejala;
 					html += "</div>";
 					html += "<div class='col'>";
-						html += '<button type="button" class="btn btn-primary float-right" onclick="hapusWmGejala('+response[i].id_wm_gejala+')"><i class="icon ion-android-delete"></i></button>';
+						html += '<button type="button" class="btn btn-primary float-right" onclick="HapusWmGejala('+response[i].id_wm_gejala+','+response[i].id_gejala+')"><i class="icon ion-android-delete"></i></button>';
 						// html += response[i].id_user;
 					html += "</div>";
 				html += "</div>";
 				}
-				document.getElementById('availableWmObat').innerHTML = html;
-				document.getElementById('tutupHapusWmGejala').innerHTML = 'TUTUP';
-				document.getElementById('tutupHapusWmGejala').setAttribute("data-dismiss","modal");
-				koreksi_gejala();
+				document.getElementById('availableWmGejala').innerHTML = html;
+				document.getElementById('tutupLihatWmGejala').innerHTML = 'TUTUP';
+				document.getElementById('tutupLihatWmGejala').setAttribute("data-dismiss","modal");
 			}
+			koreksi_gejala();
 		});
 	}
 
 	// function unutk tombol hapus suatu gejala pada wm obat
-	function hapusWmGejala(id_wm_gejala) {
+	function HapusWmGejala(id_wm_gejala,id_gejala) {
 		
 		$.post(
 			"<?=base_url('Ppk_C/handle_delete_wm_gejala')?>",{
 				post_id_wm_gejala : id_wm_gejala
 			},function(){
+				cekAvailableWmGejala();
+				$("#select_gejala option[value="+id_gejala+"]").prop("selected",false).parent().trigger("change");
+			}
+		);
+	}
+
+	// cek apakah ada obat di wmobat
+	function cekAvailableWmObat(){
+		// console.log('cekAvailableWmObat');
+		document.getElementById('tutupLihatWmObat').innerHTML = 'MOHON TUNGGU..';
+		document.getElementById('availableWmObat').innerHTML ='';
+		var id_user = <?=$data->user[0]->id_user?>;
+		var url ="<?=base_url('Ppk_C/get_wm_obat/')?>"+id_user;
+		$.get(url,function(data){
+			// console.log(data.length);
+			var response = JSON.parse(data);
+			// console.log(response);
+			if (response.length == 0) {
+				// return response;
+				document.getElementById('availableWmObat').innerHTML = '<h6>Belum ada obat yang diresepkan. Obat yang telah diresepkan akan tampil disini.</h6>';
+					// document.getElementById('tutupLihatWmObat').setAttribute("href","<?=base_url('Ppk_C/view_gejala/').$data->user[0]->nomor_identitas?>");
+				document.getElementById('tutupLihatWmObat').innerHTML = 'TUTUP';
+					// document.getElementById('tutupLihatWmObat').removeAttribute("data-dismiss");
+			}else{
+				// return data;
+				var html = '';
+				// // console.log(response);
+				for(var i in response) {
+				html += "<div class='row margin-top-5'>";
+					html += "<div class='col'>";
+						html += response[i].nama_obat;
+					html += "</div>";
+					html += "<div class='col'>";
+						html += '<button type="button" class="btn btn-primary float-right" onclick="hapusWmObat('+response[i].id_wm_obat+')"><i class="icon ion-android-delete"></i></button>';
+				// 		// html += response[i].id_user;
+					html += "</div>";
+				html += "</div>";
+				}
+				document.getElementById('availableWmObat').innerHTML = html;
+				document.getElementById('tutupLihatWmObat').innerHTML = 'TUTUP';
+				document.getElementById('tutupLihatWmObat').setAttribute("data-dismiss","modal");
+			}
+			// koreksi_gejala();
+			// panggil update saat modal lihat wmobat ditutup 
+		});
+	}
+
+	// untuk cek apakah ada obat pada wmobat
+	function cekAvailableWmObat_(){
+		// console.log('cekAvailableWmObat_');
+		var id_user = <?=$data->user[0]->id_user?>;
+		var url ="<?=base_url('Ppk_C/get_wm_obat/')?>"+id_user;
+		var dataGet;
+		$.get(url,function(data){
+			// console.log(data);
+			var response = JSON.parse(data);
+			// console.log(response);
+			if (response.length == 0) {
+				document.getElementById('tombolResep').innerHTML = "";
+				document.getElementById('tombolResep').className = '';
+			}else{
+				document.getElementById("tombolResep").className = "col";
+				document.getElementById('tombolResep').innerHTML = "<a href='<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>' class='btn btn-dark btn-block'><i class='icon ion-clipboard'></i> KE DAFTAR RESEP</a>";
+			}
+		});
+	}
+
+
+	function hapusWmObat(id_wm_obat){
+		// console.log('hapusWmObat');
+		$.post(
+			// false karena bersahal dari halaman hasil, bukan resep
+			"<?=base_url('Ppk_C/handle_delete_wm_obat/0')?>",{
+				post_id_wm_obat : id_wm_obat
+			},function(){
+				// console.log(data);
 				cekAvailableWmObat();
+				// ModalAvailableObat();
 			}
 		);
 	}
@@ -587,30 +733,50 @@ $data = json_decode($data,false);
 <!-- END MODAL UNTUK UNKNOWN FACT -->
 
 <!-- MODAL UNTUK HAPUS BEBERAPA GEJALA PADA WM -->
-<div class="modal fade hide" id="hapusWm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+<div class="modal fade hide" id="LihatWmGejala" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
 	<div class="modal-dialog" role="document">
-		<form id="formunknownfact" method="POST">      
+		<form  method="POST">      
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title" id="myModalLabel_">Berikut ini gejala yang telah masuk kedalam database</h4>
 					
 				</div>
 				<div class="modal-body">
-					<div id="alertHapusWmObat">
-						
-					</div>
-					<div id="availableWmObat">
+					<div id="availableWmGejala">
 						
 					</div>
 				</div>
 				<div class="modal-footer">
-					<a class="btn btn-secondary text-white" data-dismiss="modal" id="tutupHapusWmGejala" role="button">TUTUP</a>
+					<a class="btn btn-secondary text-white" data-dismiss="modal" id="tutupLihatWmGejala" role="button">TUTUP</a>
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
 <!-- END MODAL UNTUK HAPUS BEBERAPA GEJALA PADA WM -->
+
+<!-- MODAL UNTUK HAPUS BEBERAPA obat PADA WM -->
+<div class="modal fade hide" id="LihatWmObat" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog" role="document">
+		<form  method="POST">      
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel_">Berikut ini obat yang telah masuk kedalam database</h4>
+					
+				</div>
+				<div class="modal-body">
+					<div id="availableWmObat">
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-secondary text-white" data-dismiss="modal" id="tutupLihatWmObat" role="button">TUTUP</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- END MODAL UNTUK HAPUS BEBERAPA obat PADA WM -->
 
 <!-- konten kanan -->
 <div class="col-md-10 konten-kanan" id="style-1">
@@ -633,9 +799,7 @@ $data = json_decode($data,false);
 					<div class="col">
 						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" id="kirim-ulang" onclick="update()">KIRIM ULANG</a>
 					</div>
-					<div class="col">
-						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" data-toggle="modal" data-target="#hapusWm" onclick="cekAvailableWmObat()">HAPUS BEBERAPA HASIL DIAGNOSA</a>
-					</div>
+					
 				</div>
 				<div class="row margin-top-10">
 					<div class="col">
@@ -649,10 +813,18 @@ $data = json_decode($data,false);
 		<div id="hasil">
 		</div>
 		<!-- END collapsible ajax hasil pencarian obat HERE-->
-		<div class="margin-top-5">
-			<!-- <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</button> -->
-			<a href="<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a>
-			<!-- <a class="btn btn-primary btn-lg btn-block" onclick="redirect_resep()"><i class="icon ion-clipboard"></i> Ke daftar resep obat</a> -->
+		<div class="row margin-top-10">
+		<div class="col">
+						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" data-toggle="modal" data-target="#LihatWmGejala" onclick="cekAvailableWmGejala()">LIHAT DIAGNOSA</a>
+					</div>
+					<div class="col">
+						<a class="btn btn-primary btn-block bg-dark" href="#" role="button" data-toggle="modal" data-target="#LihatWmObat" onclick="cekAvailableWmObat()">LIHAT OBAT DIRESEPKAN</a>
+					</div>
+		<div id="tombolResep">
+			<!-- <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> KE DAFTAR RESEP</button> -->
+			<!-- <a href="<?=base_url('Ppk_C/view_resep_/'.$data->user[0]->nomor_identitas)?>" class="btn btn-primary btn-lg btn-block"><i class="icon ion-clipboard"></i> KE DAFTAR RESEP</a> -->
+			<!-- <a class="btn btn-primary btn-lg btn-block" onclick="redirect_resep()"><i class="icon ion-clipboard"></i> KE DAFTAR RESEP</a> -->
+		</div>
 		</div>
 		<div class="margin-top-5" id='ke-resep-obat'></div>
 	</form>
@@ -668,19 +840,30 @@ $data = json_decode($data,false);
 		</li>
 
 		<li class="nav-item">
-			<span class="nav-link">Nama : 
+			<span class="nav-link"><h6>Nama : </h6>
 				<i class="nav-link disabled" href="#"><?=$data->user[0]->nama_user?><a href="<?=base_url('Ppk_C/view_detail_user/').$data->user[0]->nomor_identitas?>" target="_blank"><i class="icon ion-arrow-right-c float-right"></i></a></i>
 			</span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Tanggal Lahir / Umur<i class="nav-link disabled" href="#"> <?=$data->user[0]->tanggal_lahir != '' ? tgl_indo($data->user[0]->tanggal_lahir) : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
+			<span class="nav-link"><h6>Tanggal Lahir / Umur </h6><i class="nav-link disabled" href="#"> <?=$data->user[0]->tanggal_lahir != '' ? tgl_indo($data->user[0]->tanggal_lahir) : 'YYYY-mm-dd' ?> / <?=$data->umur->y?> Thn</i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Nomor Identitas<i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
+			<span class="nav-link"><h6>Nomor Identitas</h6><i class="nav-link disabled"><?=$data->user[0]->nomor_identitas?></i></span>
 		</li>
 		<li class="nav-item">
-			<span class="nav-link">Note Kondisi
-				<div id='note-kondisi'></div>
+			<span class="nav-link"><h6>Note Kondisi</h6> 
+				<div class="row margin-top-5">
+					<div class="col">
+						<h6>Aman : </h6>
+						<div id='note-kondisi-aman'></div>
+					</div>
+				</div>
+				<div class="row margin-top-10">
+					<div class="col">
+						<h6>Hindari : </h6>
+						<div id='note-kondisi-hindari'></div>
+					</div>
+				</div>
 			</span>
 		</li>
 		<!--<li class="nav-item">

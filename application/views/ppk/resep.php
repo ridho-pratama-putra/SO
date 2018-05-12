@@ -48,6 +48,7 @@ $data = json_decode($data,false);
 
 				// parsing kondisi pada wm_obat
 				var html = "<div id='accordion'>";
+				var notif_obat_gk_penting = '';
 				for(var k in response.obat){
 							
 							html 		+=	"<div class='card margin-top-20'>";
@@ -71,6 +72,9 @@ $data = json_decode($data,false);
 							html 		+=	"<h6 class='text-center'>Indikasi Cocok";
 							html 		+=	"</h6>";
 							html 		+=	"<h6 class='text-center'>"+response.obat[k].Iada;
+							if (response.obat[k].Iada == '0') {
+								notif_obat_gk_penting += "<div class='alert alert-warning alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Peringatan</strong> "+response.obat[k].nama_obat+" tidak diperlukan, mohon hapus dari peresepan.</div>";
+							}
 							html 		+=	"</h6>";
 							html 		+=	"</div>";
 							
@@ -83,10 +87,10 @@ $data = json_decode($data,false);
 								if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
 									html +=	"<h6 class='text-center'>"+response.obat[k].Pada;
 								}else{
-									html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+									html +=	"<h6 class='text-center'>0 ";
 								}
 							}else{
-								html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+								html +=	"<h6 class='text-center'>0 ";
 							}
 							html +=	"</h6>";
 							html +=	"</div>";
@@ -100,10 +104,10 @@ $data = json_decode($data,false);
 								if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
 									html +=	"<h6 class='text-center'>"+response.obat[k].Kada;
 								}else{
-									html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+									html +=	"<h6 class='text-center'>0 ";
 								}
 							}else{
-								html 	+=	"<h6 class='text-center'>0 / "+ response.obat.length;
+								html 	+=	"<h6 class='text-center'>0 ";
 							}
 							html 		+=	"</h6>";
 							html 		+=	"</div>";
@@ -200,30 +204,20 @@ $data = json_decode($data,false);
 							html +=	"</div>";
 							html +=	"</div>";
 							bisa_diberikan = 1;
-							if (bisa_diberikan) {
-								html += "<div class='row margin-top-10'>";
-								
-								html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
-								html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
-								html+="</div>"
-								
-								html += "</div>";
-							}else{
-								html += "<div class='row margin-top-10'>";
-								
-								html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
-								html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
-								html+="</div>"
-								
-								html += "</div>";
-							}
+							
+							html += "<div class='row margin-top-10'>";
+							html += "<div class= 'col' id='wm_obat"+response.obat[k].id_obat+"'>";
+							html += "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm_obat("+response.user[0].id_user+","+id_dokter+","+response.obat[k].id_obat+")'><i class='icon ion-android-delete'></i> Hapus dari daftar resep </button> ";
+							html += "</div>"
+							html += "</div>";
+
 							html +=	"</div>";
 							html +=	"</div>";
 							html +=	"</div>";
 						}
 				html +=	"</div>";
 				document.getElementById('resep').innerHTML = html;
-				
+				document.getElementById('notif').innerHTML += notif_obat_gk_penting;
 			}
 		});
 	}

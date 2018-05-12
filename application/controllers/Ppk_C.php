@@ -47,44 +47,52 @@ class Ppk_C extends CI_Controller {
 	// detail untuk setiap log pengobatan. detailnya yakni gejalanya apa saja, obatnya apa saja. obat bisa diklik untuk melihat karakteristiknya
 	public function view_detail_per_log($nomor_identitas,$id_log)
 	{
-		
-		$data['gejala_per_log']		=	$this->SO_M->rawQuery("	SELECT
-																gejala_log.id_log_gejala,
-																gejala_log.id_log,
-																master_gejala.detail_gejala
+		$data['log_pengobatan']		=	$this->SO_M->readCol('log_pengobatan',array('id_log'=>$id_log),array('tanggal'));
+		if ($data['log_pengobatan']->num_rows() > 0) {
+			
+			$data['log_pengobatan'] = $data['log_pengobatan']->result();
+			
+			$data['gejala_per_log']		=	$this->SO_M->rawQuery("	SELECT
+																	gejala_log.id_log_gejala,
+																	gejala_log.id_log,
+																	master_gejala.detail_gejala
 
-																FROM
-																gejala_log
-																INNER JOIN master_gejala ON gejala_log.id_gejala = master_gejala.id_gejala
-																WHERE id_log = ".$id_log)->result();
-		$data['obat_per_log']		=	$this->SO_M->rawQuery("	SELECT
-																obat_log.id_log_obat,
-																obat_log.id_log,
-																master_obat.id_obat,
-																master_obat.nama_obat
+																	FROM
+																	gejala_log
+																	INNER JOIN master_gejala ON gejala_log.id_gejala = master_gejala.id_gejala
+																	WHERE id_log = ".$id_log)->result();
+			$data['obat_per_log']		=	$this->SO_M->rawQuery("	SELECT
+																	obat_log.id_log_obat,
+																	obat_log.id_log,
+																	master_obat.id_obat,
+																	master_obat.nama_obat
 
-																FROM
-																obat_log
-																INNER JOIN master_obat ON obat_log.id_obat = master_obat.id_obat
-																WHERE id_log = ".$id_log)->result();
-		
-		$data['log_pengobatan']		=	$this->SO_M->readCol('log_pengobatan',array('id_log'=>$id_log),array('tanggal'))->result();
+																	FROM
+																	obat_log
+																	INNER JOIN master_obat ON obat_log.id_obat = master_obat.id_obat
+																	WHERE id_log = ".$id_log)->result();
+			
 
-		$data['kondisi_per_log']	=	$this->SO_M->readCol('kondisi_log',array('id_log'=>$id_log,'status'=>0),array('detail_kondisi','status'))->result();
+			$data['kondisi_per_log']	=	$this->SO_M->readCol('kondisi_log',array('id_log'=>$id_log,'status'=>0),array('detail_kondisi','status'))->result();
 
-		$data['pesan_per_log']		=	$this->SO_M->read('pesan_log',array('id_log'=>$id_log))->result();
+			$data['pesan_per_log']		=	$this->SO_M->read('pesan_log',array('id_log'=>$id_log))->result();
 
-		// cari informasi identitas user
-		$data['user']				=	$this->SO_M->readCol('user',array('nomor_identitas'=>$nomor_identitas),array('id_user','nama_user','nomor_identitas','no_hp','link_foto','tanggal_lahir'))->result();
+			// cari informasi identitas user
+			$data['user']				=	$this->SO_M->readCol('user',array('nomor_identitas'=>$nomor_identitas),array('id_user','nama_user','nomor_identitas','no_hp','link_foto','tanggal_lahir'))->result();
 
-		$today = new DateTime();
-		$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
-		
-		$data['umur'] = $today->diff($tanggal_lahir);
+			$today = new DateTime();
+			$tanggal_lahir = new DateTime($data['user'][0]->tanggal_lahir);
+			
+			$data['umur'] = $today->diff($tanggal_lahir);
 
-		$this->load->view('html/header');
-		$this->load->view('ppk/detail_per_log',$data);
-		$this->load->view('html/footer');
+			$this->load->view('html/header');
+			$this->load->view('ppk/detail_per_log',$data);
+			$this->load->view('html/footer');
+		}else{
+			$data['heading']	= "Data tidak ditemukan";
+			$data['message']	= "<p>Data id_log_pengobatan tidak ditemukan";
+			$this->load->view('errors/html/error_general',$data);
+		}
 	}
 
 	// digunakan untuk menampilkan informasi mengenai karakteristik yang dimiliki suatu obat pada table log pengobatan dan pada knowledge base obat.
@@ -221,24 +229,16 @@ class Ppk_C extends CI_Controller {
 			unset($where,$dataWhere);
 
 			// cari log pengobatan dengan gejala yang mirip dengan masukan
-			$this->db->select('gejala_log.id_log , log_pengobatan.tanggal');
+			$this->db->select('gejala_log.id_log , log_pengobatan.tanggal , COUNT(log_pengobatan.id_log) AS jumlah');
 			$this->db->where($where_);
+			$this->db->group_by('log_pengobatan.id_log'); 
 			$this->db->order_by('tanggal', 'ASC');
 			$this->db->join('log_pengobatan','gejala_log.id_log = log_pengobatan.id_log','inner');
 			$query = $this->db->get('gejala_log')->result();
 
-			// data log pengobatan ang mirip dengan gejala inputan
-			$data['histori'] = array();
-			foreach ($query as $key => $value) {
-				if (!isset($data['histori'][$value->id_log])) {
-					$data['histori'][$value->id_log] = array('banyak' => 1, 'tanggal' => $value->tanggal);
-				}else{
-					$data['histori'][$value->id_log]['banyak'] = $data['histori'][$value->id_log]['banyak'] + 1;
-				}
-			}
-
+			$data['histori'] = $query;
 			unset($query);
-
+			
 			// masukkan data ke tabel wm_gejala
 			for ($i=0; $i < sizeof($gejalas) ; $i++) { 
 				$result = $this->SO_M->readCol('wm_gejala',array('id_gejala'=>$gejalas[$i],'id_user'=>$data['user'][0]->id_user),'id_wm_gejala');
@@ -423,7 +423,7 @@ class Ppk_C extends CI_Controller {
 	public function koreksi_gejala($id_user)
 	{
 		$result = $this->SO_M->readCol('wm_obat',array('id_pasien'=>$id_user),'id_obat');
-		if ($result->num_rows() != 0 ) {
+		if ($result->num_rows() != 0  OR $result->num_rows() > 0) {
 			
 			// dapatkan data dari tabel wm_gejala
 			$gejala 		=	$this->SO_M->readCol('wm_gejala',array('id_user'=>$id_user),array('id_gejala','detail_gejala'))->result_array();
@@ -478,7 +478,11 @@ class Ppk_C extends CI_Controller {
 					}
 				}
 			}
+			// echo "<pre>";
+			// var_dump($data);
 			echo json_encode($data);
+		}else{
+			echo json_encode($data['status'] = 'empty');
 		}
 	}
 
@@ -521,10 +525,19 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
-	// untuk dapatkan gejala yang terdapat pada wm_obat, karena form input pencarian benar2 berfungsi sebagai pencari sebagaimana seharusnya.
+	// untuk dapatkan gejala yang terdapat pada wm_gejala, karena form input pencarian benar2 berfungsi sebagai pencari sebagaimana seharusnya.
 	function get_wm_gejala($id_user)
 	{
 		echo json_encode($this->SO_M->readCol('wm_gejala',array('id_user'=>$id_user),array('id_wm_gejala','id_gejala','detail_gejala'))->result());
+	}
+
+	// untuk dapatkan gejala yang terdapat pada wm_obat, karena form input pencarian benar2 berfungsi sebagai pencari sebagaimana seharusnya.
+	function get_wm_obat($id_user)
+	{
+		$this->db->select('wm_obat.id_wm_obat,wm_obat.id_obat , master_obat.nama_obat');
+		$this->db->where(array('id_pasien'=>$id_user));
+		$this->db->join('master_obat','wm_obat.id_obat = master_obat.id_obat','inner');
+		echo json_encode($this->db->get('wm_obat')->result());
 	}
 
 	// untuk delete data pada wm_gejala
@@ -772,19 +785,33 @@ class Ppk_C extends CI_Controller {
 		}
 	}
 
-	// 
-	public function handle_delete_wm_obat()
+	// from_resep true apabila dari halaman peresepan, false jika dari halaman hasil. tujuannya menghapus obat pada wmobat tapi butuh parameter beda
+	public function handle_delete_wm_obat($from_resep = TRUE)
 	{
-		if ($this->input->post() != null) {
-			$id_obat		= $this->input->post('post_id_obat');
-			$id_pasien		= $this->input->post('post_id_pasien');
-			$id_dokter		= $this->input->post('post_id_dokter');
-			if ($this->SO_M->delete('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter))) {
-				alert('','success','Berhasil','Obat berhasi dihapus dari wm_obat',false);
+		if ($from_resep == TRUE) {
+			if ($this->input->post() != null) {
+				$id_obat		= $this->input->post('post_id_obat');
+				$id_pasien		= $this->input->post('post_id_pasien');
+				$id_dokter		= $this->input->post('post_id_dokter');
+				if ($this->SO_M->delete('wm_obat',array('id_obat'=>$id_obat,'id_pasien'=>$id_pasien,'id_dokter'=>$id_dokter))) {
+					alert('','success','Berhasil','Obat berhasi dihapus dari wm_obat',false);
+				}
+			}else{
+				alert('','warning','Peringatan','Nothing post',false);
 			}
 		}else{
-			alert('','warning','Peringatan','Nothing post',false);
+			if ($this->input->post() != null) {
+				$id_wm_obat		= $this->input->post('post_id_wm_obat');
+				if ($this->SO_M->delete('wm_obat',array('id_wm_obat'=>$id_wm_obat))) {
+					echo json_encode(array('status'=>1));
+				}else{
+					echo json_encode(array('status'=>0));
+				}
+			}else{
+				alert('','warning','Peringatan','Nothing post',false);
+			}
 		}
+		// echo "string $from_resep";
 	}
 
 	// untuk halaman cekout dari obat2 yang dipilih

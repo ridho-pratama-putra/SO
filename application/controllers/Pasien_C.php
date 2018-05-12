@@ -44,7 +44,7 @@ class Pasien_C extends CI_Controller {
 		$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataCondition)->result();
 
 		$this->load->view('html/header');
-		$this->load->view('html/sidebar-kanan');
+		// $this->load->view('html/sidebar-kanan');
 		$this->load->view('pasien/log_pengobatan',$data);
 		$this->load->view('html/footer');
 	}
