@@ -112,9 +112,9 @@ $data = json_decode($data,false);
 			html_hindari = '';
 			for(var i in note_kondisi){
 				if (note_kondisi[i].status == 0) {
-					html_hindari += "<a class='nav-link disabled text-white badge badge-danger'>"+note_kondisi[i].detail_kondisi+"</a> ";
+					html_hindari += "<a class='text-white badge badge-danger' title='"+note_kondisi[i].detail_kondisi+"'>"+note_kondisi[i].detail_kondisi+"</a> ";
 				}else{
-					html_aman += "<a class='nav-link disabled text-white badge badge-success'>"+note_kondisi[i].detail_kondisi+"</a> ";
+					html_aman += "<a class='text-white badge badge-success' title='"+note_kondisi[i].detail_kondisi+"'>"+note_kondisi[i].detail_kondisi+"</a> ";
 				}
 			}
 			document.getElementById('note-kondisi-aman').innerHTML = html_aman;	
@@ -377,7 +377,7 @@ $data = json_decode($data,false);
 				console.log(jqXHR, textStatus, errorThrown);
 				$('#kirim-ulang').text('KIRIM ULANG');
 				$('#kirim-ulang').attr('disabled',false);
-				update();
+				// update();
 			}
 		});
 	}
