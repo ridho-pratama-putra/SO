@@ -64,7 +64,7 @@ $data = json_decode($data,false);
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					console.log(jqXHR, textStatus, errorThrown);
-					$('#btn-ya-kondisi').text('ULANG'); //change button text
+					$('#btn-ya-kondisi').text('YA'); //change button text
 					$('#btn-ya-kondisi').attr('disabled',false); //set button enable 
 				}
 			});
@@ -92,7 +92,7 @@ $data = json_decode($data,false);
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					console.log(jqXHR, textStatus, errorThrown);
-					$('#btn-tidak-kondisi').text('ULANG'); //change button text
+					$('#btn-tidak-kondisi').text('TIDAK'); //change button text
 					$('#btn-tidak-kondisi').attr('disabled',false); //set button enable 
 				}
 			});
@@ -377,6 +377,7 @@ $data = json_decode($data,false);
 				console.log(jqXHR, textStatus, errorThrown);
 				$('#kirim-ulang').text('KIRIM ULANG');
 				$('#kirim-ulang').attr('disabled',false);
+				update();
 			}
 		});
 	}
@@ -457,65 +458,57 @@ $data = json_decode($data,false);
 
 	// untuk masukkan obat ke wm_obat
 	function masukkan_wm(id_pasien,id_dokter,id_obat){
-		$.post("<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
-			{
+		document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' ><i class='icon ion-ios-clock'></i> Mohon Tunggu</button> ";
+
+		$.ajax({
+			type: 'POST',
+			url: "<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
+			data: {
 				post_id_pasien		: id_pasien,
 				post_id_dokter		: id_dokter,
 				post_gejala			: $("#select_gejala").val(),
 				post_id_obat		: id_obat
-			},function (data) {
-				// $("#notif").html(data);	
-				// update();
+			},
+			dataType: "text",
+			success: function(resultData) {
 				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Obat telah masuk kedalam peresepan. Kunjungi halaman peresepan melalui tombol daftar resep di ujung akhir halaman ini'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
 				
 				cekAvailableWmObat_();
-				document.getElementById('notif').innerHTML = data;
+				document.getElementById('notif').innerHTML = resultData;
 				koreksi_gejala();
-				
-			}
-		);
-
-		// $.ajax({
-		// 	type: 'POST',
-		// 	url: "<?=base_url('Ppk_C/handle_insert_wm_obat')?>",
-		// 	data: {
-		// 		post_id_pasien		: id_pasien,
-		// 		post_id_dokter		: id_dokter,
-		// 		post_gejala			: $("#select_gejala").val(),
-		// 		post_id_obat		: id_obat
-		// 	},
-		// 	dataType: "text",
-		// 	success: function(resultData) {
-		// 		document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Obat telah masuk kedalam peresepan. Kunjungi halaman peresepan melalui tombol daftar resep di ujung akhir halaman ini'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
-				
-		// 		cekAvailableWmObat_();
-		// 		document.getElementById('notif').innerHTML = resultData;
-		// 		koreksi_gejala();
-		// 	},
-		// 	error: function (jqXHR, textStatus, errorThrown)
-		// 		{
-		// 			console.log(jqXHR, textStatus, errorThrown);
-		// 			document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Masukkan obat ke peresepan'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
-		// 		}
-		// });
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+				{
+					console.log(jqXHR, textStatus, errorThrown);
+					document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Masukkan obat ke peresepan'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
+				}
+		});
 	}
 	
 	// untuk hapus suatu obat dari wm_obat // hanya untuk tombol setiap obat. 
 	function hapus_wm(id_pasien,id_dokter,id_obat){
-		$.post("<?=base_url('Ppk_C/handle_delete_wm_obat')?>",
-			{
+		document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' ><i class='icon ion-ios-clock'></i> Mohon Tunggu</button> ";
+		$.ajax({
+			type: 'POST',
+			url: "<?=base_url('Ppk_C/handle_delete_wm_obat')?>",
+			data: {
 				post_id_pasien		: id_pasien,
 				post_id_dokter		: id_dokter,
 				post_id_obat		: id_obat
-			},function(data){
-				// update();
-				// console.log(data);
+			},
+			dataType: "text",
+			success: function(resultData) {
 				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='masukkan_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Masukkan obat ke peresepan'><i class='icon ion-ios-plus-outline'></i> Masukkan ke daftar resep</button> ";
-				document.getElementById('notif').innerHTML = data;
+				document.getElementById('notif').innerHTML = resultData;
 				cekAvailableWmObat_();
+				koreksi_gejala();
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				console.log(jqXHR, textStatus, errorThrown);
+				document.getElementById('wm_obat'+id_obat).innerHTML = "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='hapus_wm("+id_pasien+","+id_dokter+","+id_obat+")' title='Obat gagal dihapus, mohon ulangi lagi penghapusan obat'><i class='icon ion-android-delete'></i> Hapus dari daftar resep</button> ";
 			}
-		);
-		koreksi_gejala();
+		});
 	}
 
 	// untuk cek adakah gejala yang belum terobati, jika ada maka tampilkan alert, jika tidak ada(semua gejala telah terobati) maka redirect ke halaman view_resep_
