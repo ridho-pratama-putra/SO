@@ -178,7 +178,7 @@ class Akun_C extends CI_Controller {
 	{
 		$this->form_validation->set_rules('nama_user','Nama','trim|required|alpha');
 		$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|numeric|is_unique[user.nomor_identitas]');
-		$this->form_validation->set_rules('no_hp','No HP','trim|required|numeric|min_length[10]|numeric');
+		$this->form_validation->set_rules('no_hp','No HP','trim|required|numeric|min_length[9]|numeric');
 		$this->form_validation->set_rules('alamat','Alamat','trim|required|alpha_numeric_spaces');
 
 		if ($this->form_validation->run() == FALSE) {
@@ -205,7 +205,7 @@ class Akun_C extends CI_Controller {
 								'nama_user'			=>	$this->input->post('nama_user'),
 								'password'			=>	hash("sha256", "SO"),
 								'nomor_identitas'	=>	$this->input->post('nomor_identitas'),
-								'no_hp'				=>	$this->input->post('no_hp'),
+								'no_hp'				=>	'+62'.$this->input->post('no_hp'),
 								'alamat'			=>	$this->input->post('alamat'),
 								'akses'				=>	$this->input->post('akses'),
 								'link_foto'			=>	"assets/images/users_photo/".$datax['file_name']
@@ -238,7 +238,7 @@ class Akun_C extends CI_Controller {
 		if ($this->session->userdata['logged_in']['akses'] == 'ppk' or $this->session->userdata['logged_in']['akses'] == 'pasien') {
 			$this->form_validation->set_rules('nama_user','Nama','trim|alpha|required');
 			$this->form_validation->set_rules('nomor_identitas','No identitas','trim|required|numeric|is_unique[user.nomor_identitas]');
-			$this->form_validation->set_rules('no_hp','No HP','trim|required|numeric|min_length[10]');
+			$this->form_validation->set_rules('no_hp','No HP','trim|required|numeric|min_length[9]');
 			$this->form_validation->set_rules('alamat','Alamat','trim|required|alpha_numeric_spaces');
 			if ($this->form_validation->run() == FALSE) {
 				$this->view_register_user();
@@ -260,7 +260,7 @@ class Akun_C extends CI_Controller {
 									'nama_user'			=>	$this->input->post('nama_user'),
 									'password'			=>	hash("sha256", "SO"),
 									'nomor_identitas'	=>	$this->input->post('nomor_identitas'),
-									'no_hp'				=>	$this->input->post('no_hp'),
+									'no_hp'				=>	'+62'.$this->input->post('no_hp'),
 									'alamat'			=>	$this->input->post('alamat'),
 									'akses'				=>	'pasien',
 									'link_foto'			=>	"assets/images/users_photo/".$datax['file_name']

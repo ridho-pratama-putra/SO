@@ -74,6 +74,8 @@ class Pasien_C extends CI_Controller {
 																		obat_log
 																		INNER JOIN master_obat ON obat_log.id_obat = master_obat.id_obat
 																		WHERE id_log = ".$id_log)->result();
+			$data['dokter']				=	$this->SO_M->rawQuery("SELECT obat_log.id_dokter, user.nama_user, user.no_hp FROM obat_log INNER JOIN user ON obat_log.id_dokter = user.id_user WHERE obat_log.id_log = ".$id_log." limit 1")->result();
+				// $data['dokter']				=	$this->SO_M->rawQuery("SELECT id_dokter FROM obat_log WHERE id_log = ".$id_log." limit 1")->result();
 				$data['log_pengobatan']		=	$this->SO_M->read('log_pengobatan',$dataCondition)->result();
 				$data['kondisi_per_log']	=	$this->SO_M->readCol('kondisi_log',array('id_log'=>$id_log,'status'=>0),array('detail_kondisi','status'))->result();
 

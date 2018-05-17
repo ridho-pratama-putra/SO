@@ -23,7 +23,10 @@
 			<div class="col-12 margin-top-15 form-group">
 				<input type="text" class="form-control" id="nomor_identitas" placeholder="Masukkan nomor identitas" title="masukkan nomor identitas" name="nomor_identitas">
 			</div>
-			<div class="col-12 margin-top-15 form-group">
+			<div class="col-12 margin-top-15 form-group input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text">+62</div>
+				</div>
 				<input type="telephone" class="form-control" id="no_hp" placeholder="Masukkan nomor hp" title="masukkan nomor hp" name="no_hp">
 			</div>
 			<div class="col-12 margin-top-15 form-group">

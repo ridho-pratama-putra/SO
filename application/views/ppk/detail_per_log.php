@@ -51,6 +51,13 @@
 
 	<div class="col-12">
 		<br>
+		<h4>Dokter</h4>
+		<ol>
+			<h6><?=$dokter[0]->nama_user?><a href="https://api.whatsapp.com/send?phone=<?=$dokter[0]->no_hp?>"><img src="<?=base_url('assets/images/WhatsApp.png')?>" style='width:90px'></a></h6>
+		</ol>
+	</div>
+	<div class="col-12">
+		<br>
 		<h4>Pesan untuk pasien saat pemeriksaan</h4>
 		<div class="margin-top-15 padding-bottom-10">
 			<h6>
