@@ -262,18 +262,18 @@ class Ppk_C extends CI_Controller {
 			unset($dataWhere);
 			$data['kondisiPasienAman'] = $kondisiPasienAman;
 
-			for ($i=0; $i < sizeof($kondisiPasienMengidap) ; $i++) { 
-				$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'id_master_kondisi'=>$kondisiPasienMengidap[$i]['id_master_kondisi'],'detail_kondisi'=>$kondisiPasienMengidap[$i]['detail_kondisi']),'id_wm_kondisi');
-				if ($result->num_rows()==0) {
-					$result = $this->SO_M->create('wm_kondisi',$kondisiPasienMengidap[$i]);
-				}
-			}
-			for ($i=0; $i < sizeof($kondisiPasienAman) ; $i++) { 
-				$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'id_master_kondisi'=>$kondisiPasienAman[$i]['id_master_kondisi'],'detail_kondisi'=>$kondisiPasienAman[$i]['detail_kondisi']),'id_wm_kondisi');
-				if ($result->num_rows()==0) {
-					$result = $this->SO_M->create('wm_kondisi',$kondisiPasienAman[$i]);
-				}
-			}
+			// for ($i=0; $i < sizeof($kondisiPasienMengidap) ; $i++) { 
+			// 	$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'id_master_kondisi'=>$kondisiPasienMengidap[$i]['id_master_kondisi'],'detail_kondisi'=>$kondisiPasienMengidap[$i]['detail_kondisi']),'id_wm_kondisi');
+			// 	if ($result->num_rows()==0) {
+			// 		$result = $this->SO_M->create('wm_kondisi',$kondisiPasienMengidap[$i]);
+			// 	}
+			// }
+			// for ($i=0; $i < sizeof($kondisiPasienAman) ; $i++) { 
+			// 	$result = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'id_master_kondisi'=>$kondisiPasienAman[$i]['id_master_kondisi'],'detail_kondisi'=>$kondisiPasienAman[$i]['detail_kondisi']),'id_wm_kondisi');
+			// 	if ($result->num_rows()==0) {
+			// 		$result = $this->SO_M->create('wm_kondisi',$kondisiPasienAman[$i]);
+			// 	}
+			// }
 
 
 			// result dari query cari obat yang sesuai gejala
@@ -665,7 +665,7 @@ class Ppk_C extends CI_Controller {
 		}
 
 		$result = $this->SO_M->read('kondisi',array('id_user'=>$dataAdd['id_user'],'id_master_kondisi'=>$dataAdd['id_master_kondisi']));
-			if ($result->num_rows()==0) {
+		if ($result->num_rows()==0) {
 				
 			$result 	=	$this->SO_M->create('kondisi',$dataAdd);
 			$results	=	json_decode($result);
@@ -880,12 +880,18 @@ class Ppk_C extends CI_Controller {
 				$this->db->where($where);
 				$this->db->join('master_obat','karakteristik_obat.id_obat = master_obat.id_obat','inner');
 				$querys = $this->db->get('karakteristik_obat');
-				
+
+				// dapatkan kondisi pasien
+				$kondisiPasienMengidap				= $this->SO_M->readCol('kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0),'id_master_kondisi')->result_array();
+				$data['kondisiPasienMengidap']		= $kondisiPasienMengidap;
+				$kondisiPasienAman	 				= $this->SO_M->readCol('kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1),'id_master_kondisi')->result_array();
+				$data['kondisiPasienAman'] 			= $kondisiPasienAman;
+
 				// dapatkan data kondisi pasien pada tabel wm_kondisi
-				$kondisiPasienMengidap = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0),'id_master_kondisi')->result_array();
-				$data['kondisiPasienMengidap'] = $kondisiPasienMengidap;
-				$kondisiPasienAman = $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1),'id_master_kondisi')->result_array();
-				$data['kondisiPasienAman'] = $kondisiPasienAman;
+				// $kondisiPasienMengidap 			= $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>0),'id_master_kondisi')->result_array();
+				// $data['kondisiPasienMengidap'] 	= $kondisiPasienMengidap;
+				// $kondisiPasienAman 				= $this->SO_M->readCol('wm_kondisi',array('id_user'=>$data['user'][0]->id_user,'status'=>1),'id_master_kondisi')->result_array();
+				// $data['kondisiPasienAman'] 		= $kondisiPasienAman;
 
 				// koreksi masing2 karakteristik obat pada wm_obat
 				$query = $querys->result();
@@ -1039,7 +1045,8 @@ class Ppk_C extends CI_Controller {
 		$id_user = $this->input->post('id_user');
 
 		// get all wm_kondisi
-		$data['wm_kondisi'] = $this->SO_M->read('wm_kondisi',array('id_user'=>$id_user))->result();
+		// $data['wm_kondisi'] = $this->SO_M->read('wm_kondisi',array('id_user'=>$id_user))->result();
+		$data['wm_kondisi'] = $this->SO_M->readCol('kondisi',array('id_user'=>$id_user),array('id_user','id_master_kondisi','detail_kondisi','status'))->result();
 		
 		// delete all data where id_user = $id_user
 		$this->SO_M->delete('wm_kondisi',array('id_user'=>$id_user));
