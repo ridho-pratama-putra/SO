@@ -15,8 +15,8 @@
 		<?=$this->session->flashdata("alert_create_obat");?>
 		<?=$this->session->flashdata("alert_delete_obat");?>
 		<?=$this->session->flashdata("alert_rename_obat");?>
-		<h3>Daftar KB Obat</h3>
-		<a class="btn btn-primary" href="<?=base_url()?>Admin_C/view_create_obat">Tambah KB Obat</a>
+		<h3>Daftar Pengetahuan Obat</h3>
+		<a class="btn btn-primary" href="<?=base_url()?>Admin_C/view_create_obat">Tambah Pengetahuan Obat</a>
 	</div>
 	<div class="col row margin-top-15">
 		<table id="read_obat" class="table table-striped table-hover" cellspacing="0" width="100%" style="width: 100%">

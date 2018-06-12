@@ -10,6 +10,7 @@ class Admin_C extends CI_Controller {
 			redirect();
 		}
 	}
+
 	// tampikan seluruh obat yang ada di database
 	function view_read_obat()
 	{
@@ -97,6 +98,13 @@ class Admin_C extends CI_Controller {
 		$this->load->view('html/footer');
 	}
 
+	// untuk view apa saja sediaan yang ada di database
+	function view_read_sediaan(){
+		$data['master_sediaan'] = $this->SO_M->readS('master_sediaan')->result();
+		$this->load->view('html/header');
+		$this->load->view('admin/view_sediaan',$data);
+		$this->load->view('html/footer');
+	}
 	/*digunakan oleh datatable untuk menampilkan data pada view_$karakteristik*/
 	function dataTable($karakteristik,$id_obat)
 	{
@@ -150,6 +158,29 @@ class Admin_C extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	// insert data sediaan ke master sediaan
+	function handle_add_sediaan(){
+		if ($this->input->post() != null) {
+			$result 	= 	$this->SO_M->create('master_sediaan',array('sediaan'=>$this->input->post('nama_jenis_sediaan')));
+			$results	=	json_decode($result,true);
+			if ($results['status']) {
+				alert('alert_create_sediaan','success','Berhasil','Create sediaan ke master_sediaan berhasil');
+			}
+			else{
+				if ($results['error_message']['code'] == 1062) {
+					alert('alert_create_sediaan','warning','Gagal','Nama sediaan sudah ada');
+				}
+				else{
+					alert('alert_create_sediaan','warning','Gagal','Create sediaan ke master_sediaan gagal');
+				}
+			}
+			redirect("Admin_C/view_read_sediaan");
+		}else{
+			$datae['heading']	=	"Tidak ada data yang di post";
+			$datae['message']	=	"<p>Kembali ke halaman <a href='".base_url()."Admin_C/view_read_sediaan'>Master Sediaan</a>.</p>";
+			$this->load->view('errors/html/error_404',$datae);
+		}
+	}
 	// dari ajax untuk delete gejala
 	function handle_delete_gejala()
 	{
@@ -574,13 +605,14 @@ class Admin_C extends CI_Controller {
 	// untuk ambil daftar obat yang  memiliki sutu nilai pada tabel gejala / kondisi
 	function get_obat($tipe,$id_tipe_master)
 	{
-		$this->db->select(array('id_obat','tipe'));
+		$this->db->select(array('karakteristik_obat.id_obat','master_obat.nama_obat','tipe'));
 		$this->db->distinct();
 		if ($tipe == 'kondisi') {
 			$this->db->where(array('id_tipe_master'=>$id_tipe_master,'tipe !=' => 'indikasi'));
 		}else{
 			$this->db->where(array('id_tipe_master'=>$id_tipe_master,'tipe' => 'indikasi'));
 		}
+		$this->db->join('master_obat','master_obat.id_obat = karakteristik_obat.id_obat');
 		$data['result'] = $this->db->get('karakteristik_obat')->result();
 		$this->load->view('html/header');
 		$this->load->view('admin/view_obat_per_karakteristik',$data);

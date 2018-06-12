@@ -31,7 +31,7 @@
 	}
 
 	textarea {
-	height: 280px;
+	height: 500px;
 	border: 2px solid green;
 	font-family: Verdana;
 	font-size: 11px;
@@ -51,8 +51,6 @@
 	padding: 5px;
 	border: 1px solid #666;
 	}
-
-
 
 	a[data-wysihtml-command-value="red"] {
 	color: red;

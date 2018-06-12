@@ -105,8 +105,7 @@ class Ppk_C extends CI_Controller {
 		$data['obat'] 				=	$this->SO_M->read('master_obat',$dataCondition)->result();
 		
 		// ambil data catatan yang terdapat pada suatu obat
-		$data['catatan_obat'] 		=	$this->SO_M->read('catatan_obat',$dataCondition)->result();
-
+		$data['catatan_obat'] 		=	$this->SO_M->read('catatan_obat',array('id_obat'=>$id_obat))->result();
 		// ambil kontra berdsarkan id obat
 		$dataCondition['tipe'] 		=	'kontraindikasi';
 		$data['kontraindikasi_obat']=	$this->SO_M->read('karakteristik_obat',$dataCondition)->result();

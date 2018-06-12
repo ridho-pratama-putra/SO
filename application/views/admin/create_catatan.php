@@ -30,7 +30,7 @@
 	}
 
 	textarea {
-	height: 280px;
+	height: 500px;
 	border: 2px solid green;
 	font-family: Verdana;
 	font-size: 11px;

@@ -48,9 +48,9 @@
 		<h3>CATATAN OBAT</h3>
 		<?php
 		foreach ($catatan_obat as $key => $value) {
-			?>
-			<?=$value->catatan?>
-			<?php
+			
+			echo $value->catatan;
+			
 		}
 		?>
 	</div>

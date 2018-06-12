@@ -14,7 +14,7 @@
 			</thead>
 				<?php foreach ($result as $key => $value) {	?>
 				<tr>
-					<td><?=$value->id_obat?></td>
+					<td><?=$value->tipe." ".$value->nama_obat?></td>
 					<td><a href="<?=base_url('Admin_C/view_karakteristik/').$value->tipe.'/'.$value->id_obat?>" class="btn btn-secondary" target='_blank'>Lihat Detail</a></td>
 				</tr>
 				<?php } ?>

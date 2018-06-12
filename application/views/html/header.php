@@ -20,7 +20,10 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/sidebar-kanan.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/custom.css">
+
+<!-- SELECT2 -->
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/select2/css/select2.min.css"/>
+
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/ionicons-2.0.1/css/ionicons.css"/>
 <!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/sweetalert/src/sweetalert.css"/> -->
 
@@ -64,14 +67,17 @@
 						$method = $this->router->fetch_method();
 						if ($this->session->userdata('logged_in')['akses'] == 'admin') { ?>
 							<li class="nav-item">
-								<a class="nav-link <?=($method == 'view_read_obat') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_read_obat">Lihat KB Obat</a>
+								<a class="nav-link <?=($method == 'view_read_obat') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_read_obat">Master Obat</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link <?=($method == 'view_gejala') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_gejala">Lihat Gejala</a>
+								<a class="nav-link <?=($method == 'view_gejala') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_gejala">Master Gejala</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link <?=($method == 'view_kondisi') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_kondisi">Lihat Kondisi</a>
+								<a class="nav-link <?=($method == 'view_kondisi') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_kondisi">Master Kondisi</a>
 							</li>
+							<!-- <li class="nav-item">
+								<a class="nav-link <?=($method == 'view_sediaan') ? 'active' : ''?>" href="<?=base_url()?>Admin_C/view_read_sediaan">Master Sediaan</a>
+							</li> -->
 							<li class="nav-item">
 								<a class="nav-link <?=($method == 'view_registered_user') ? 'active' : ''?>" href="<?=base_url()?>Akun_C/view_registered_user">Registered User</a>
 							</li>
@@ -85,7 +91,7 @@
 						<?php }
 							elseif ($this->session->userdata('logged_in')['akses'] == 'ppk') {?>
 							<li class="nav-item">
-								<a class="nav-link <?=($method == 'view_read_obat') ? 'active' : ''?>" href="<?=base_url()?>Ppk_C/view_read_obat">Lihat KB Obat</a>
+								<a class="nav-link <?=($method == 'view_read_obat') ? 'active' : ''?>" href="<?=base_url()?>Ppk_C/view_read_obat">Pengetahuan Obat</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link <?=($method == 'view_registered_user') ? 'active' : ''?>" href="<?=base_url()?>Akun_C/view_registered_user">Registered user</a>
