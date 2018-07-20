@@ -28,7 +28,8 @@
 				<br>
 				</div>
 				<div class="col-sm-12">
-					<button type="submit" id="btn-cari-id" <!-- onclick="cariID() -->" class="btn btn-primary btn-block bg-dark text-white active" role='button'>Kirim</button> 
+					<!-- <button type="submit" id="btn-cari-id" onclick="cariID()" class="btn btn-primary btn-block bg-dark text-white active" role='button'>Kirim</button>  -->
+					<button type="submit" id="btn-cari-id" class="btn btn-primary btn-block bg-dark text-white active" role='button'>Kirim</button> 
 				</div>
 			</div>
 		</form>

@@ -94,6 +94,8 @@ class Akun_C extends CI_Controller {
 			// cari where nomor dan pass ada di db
 			$result = $this->SO_M->read('user',$data)->result();
 			
+			// die();
+			
 			// saat record ditemukan
 			if ($result != array()) {
 				
