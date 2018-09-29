@@ -180,47 +180,50 @@ $data = json_decode($data,false);
 						
 						html 		+=	"<div class='col-3 ditemukan rounded'>";
 						
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien'>";
-						html 		+=	"</i>";
+						// html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik indikasi pada obat ini yang cocok dengan gejala yang dirasakan pasien'>";
+						// html 		+=	"</i>";
 						
-						html 		+=	"<h6 class='text-center'>Indikasi Cocok/Obat ditemukan";
-						html 		+=	"</h6>";
-						html 		+=	"<h6 class='text-center'>"+response.obat[k].Iada+ " / " + response.obat.length;
+						html 		+=	"<h6 class='text-center'>Indikasi yang cocok: "+response.obat[k].Iada+" gejala";
 						html 		+=	"</h6>";
 						html 		+=	"</div>";
 						
 						html 		+=	"<div class='col-3 ditemukan rounded'>";
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik peringatan pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
-						html 		+=	"</i>";
-						html 		+=	"<h6 class='text-center'>Kandungan Peringatan/Obat ditemukan";
-						html 		+=	"</h6>";
+						html 		+=	"<h6 class='text-center'>Peringatan yang harus diperhatikan : ";
+						// html 		+=	"</h6>";
 						if (typeof response.obat[k].karakteristik.peringatan != 'undefined') {
 							if (typeof response.obat[k].karakteristik.peringatan.ada != 'undefined') {
-								html +=	"<h6 class='text-center'>"+response.obat[k].Pada+ "/" + response.obat.length;
+								html +=	response.obat[k].Pada;
+								// html +=	"<h6 class='text-center'>"+response.obat[k].Pada+ "/" + response.obat.length;
 							}else{
-								html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+								html += "0";
+								// html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 							}
 						}else{
-							html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+							html +=	"0";
+							// html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 						}
-						html +=	"</h6>";
+						html 		+=	" peringatan</h6>";
+						// html +=	"</h6>";
 						html +=	"</div>";
 						
 						html 		+=	"<div class='col-3 ditemukan rounded'>";
-						html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
-						html 		+=	"</i>";
-						html 		+=	"<h6 class='text-center'>Kandungan Kontra/Obat ditemukan";
-						html 		+=	"</h6>";
+						// html 		+=	"<i class='icon ion-ios-help float-right' data-toggle='tooltip' data-placement='top' title='Informasi mengenai berapa karakteristik kontraindikasi pada obat ini yang harus dihindari oleh pasien sesuai dengan rekam medis'>";
+						// html 		+=	"</i>";
+						html 		+=	"<h6 class='text-center'>Kontraindikasi yang harus diperhatikan : ";
+						// html 		+=	"</h6>";
 						if (typeof response.obat[k].karakteristik.kontraindikasi != 'undefined') {
 							if (typeof response.obat[k].karakteristik.kontraindikasi.ada != 'undefined') {
-								html +=	"<h6 class='text-center'>"+response.obat[k].Kada+ " / " + response.obat.length;
+								html +=	response.obat[k].Kada;
+								// html +=	"<h6 class='text-center'>"+response.obat[k].Kada+ " / " + response.obat.length;
 							}else{
-								html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
+								html += "0";
+								// html +=	"<h6 class='text-center'>0 / "+ response.obat.length;
 							}
 						}else{
-							html 	+=	"<h6 class='text-center'>0 / "+ response.obat.length;
+							html 	+=	"0";
+							// html 	+=	"<h6 class='text-center'>0 / "+ response.obat.length;
 						}
-						html 		+=	"</h6>";
+						html 		+=	" kontraindikasi</h6>";
 						html 		+=	"</div>";
 
 

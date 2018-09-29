@@ -56,7 +56,7 @@
 				<?=$dokter[0]->nama_user?>
 			</h6>
 			<h3>
-				<a href="https://api.whatsapp.com/send?phone=<?=$dokter[0]->no_hp?>"><img src="<?=base_url('assets/images/WhatsApp.png')?>" style='width:90px'></a>
+				<a href="https://wa.me/<?=$dokter[0]->no_hp?>"><img src="<?=base_url('assets/images/WhatsApp.png')?>" style='width:90px'></a>
 				<a href="sms:<?=$dokter[0]->no_hp?>"><i class="icon ion-android-textsms"></i></a>
 			</h3>
 		</ol>
